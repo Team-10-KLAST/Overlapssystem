@@ -47,6 +47,72 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.HasKey("ResidentId");
 
                     b.ToTable("Residents");
+
+                    b.HasData(
+                        new
+                        {
+                            ResidentId = 1,
+                            Initials = "L",
+                            MedicinTime = new TimeOnly(8, 0, 0),
+                            PaymentMethod = 0,
+                            ShoppingDay = "Tirsdag"
+                        },
+                        new
+                        {
+                            ResidentId = 2,
+                            Initials = "T",
+                            MedicinTime = new TimeOnly(8, 0, 0),
+                            PaymentMethod = 1,
+                            ShoppingDay = "Onsdag"
+                        },
+                        new
+                        {
+                            ResidentId = 3,
+                            Initials = "S",
+                            MedicinTime = new TimeOnly(18, 0, 0),
+                            PaymentMethod = 0,
+                            ShoppingDay = "Torsdag"
+                        },
+                        new
+                        {
+                            ResidentId = 4,
+                            Initials = "SH",
+                            MedicinTime = new TimeOnly(8, 0, 0),
+                            PaymentMethod = 1,
+                            ShoppingDay = "Mandag"
+                        },
+                        new
+                        {
+                            ResidentId = 5,
+                            Initials = "A",
+                            MedicinTime = new TimeOnly(10, 0, 0),
+                            PaymentMethod = 2,
+                            ShoppingDay = "Fredag"
+                        },
+                        new
+                        {
+                            ResidentId = 6,
+                            Initials = "B",
+                            MedicinTime = new TimeOnly(7, 45, 0),
+                            PaymentMethod = 1,
+                            ShoppingDay = "Tirsdag"
+                        },
+                        new
+                        {
+                            ResidentId = 7,
+                            Initials = "J",
+                            MedicinTime = new TimeOnly(8, 0, 0),
+                            PaymentMethod = 2,
+                            ShoppingDay = "Onsdag"
+                        },
+                        new
+                        {
+                            ResidentId = 8,
+                            Initials = "D",
+                            MedicinTime = new TimeOnly(8, 0, 0),
+                            PaymentMethod = 0,
+                            ShoppingDay = "Torsdag"
+                        });
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.ResidentSchema", b =>
@@ -76,6 +142,72 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.HasIndex("ResidentId");
 
                     b.ToTable("ResidentSchemas");
+
+                    b.HasData(
+                        new
+                        {
+                            ResidentSchemaId = 1,
+                            RelativeContact = "Mor: 12 34 56 78",
+                            ResidentId = 1,
+                            Status = "Stabil dag, ingen bemærkninger.",
+                            TrafficLight = 0
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 2,
+                            RelativeContact = "Far: 23 45 67 89",
+                            ResidentId = 2,
+                            Status = "Lidt urolig om morgenen, faldt til ro efter morgenmad.",
+                            TrafficLight = 1
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 3,
+                            RelativeContact = "Søster: 34 56 78 90",
+                            ResidentId = 3,
+                            Status = "God dag, deltog i fællesaktiviteter.",
+                            TrafficLight = 0
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 4,
+                            RelativeContact = "Mor: 45 67 89 01",
+                            ResidentId = 4,
+                            Status = "Skal have ekstra opsyn ved badning.",
+                            TrafficLight = 1
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 5,
+                            RelativeContact = "Bror: 56 78 90 12",
+                            ResidentId = 5,
+                            Status = "Anspændt, har brug for ro.",
+                            TrafficLight = 2
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 6,
+                            RelativeContact = "Mor: 67 89 01 23",
+                            ResidentId = 6,
+                            Status = "Glad og energisk hele dagen.",
+                            TrafficLight = 0
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 7,
+                            RelativeContact = "Far: 78 90 12 34",
+                            ResidentId = 7,
+                            Status = "Lidt træt, sov middagslur.",
+                            TrafficLight = 0
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 8,
+                            RelativeContact = "Plejefar: 89 01 23 45",
+                            ResidentId = 8,
+                            Status = "Konflikt med medbeboer, kræver opfølgning.",
+                            TrafficLight = 2
+                        });
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.ResidentSchema", b =>
