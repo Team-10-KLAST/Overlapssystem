@@ -11,8 +11,8 @@ namespace Overlapssystem.Domain.Entities;
 // A resident can have many ResidentSchemas over time (one per shift). 
 public class Resident
 {
-    // Primary key. EF Core recognizres "Id" by convention as the PK. 
-    public int Id { get; set; }
+    // Primary key.
+    public int ResidentId { get; set; }
     public string Initials { get; set; } = string.Empty;
     // Which days of the week the resident typically goes shopping
     // Free text because the format can vary ("Tirsdag", "Fredag kl 15")
