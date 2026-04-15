@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
     <Folder Include="Repositories\" />
   </ItemGroup>
 
@@ -21,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Overlapssystem.Application\Overlapssystem.Application.csproj" />
     <ProjectReference Include="..\Overlapssystem.Domain\Overlapssystem.Domain.csproj" />
   </ItemGroup>
 
