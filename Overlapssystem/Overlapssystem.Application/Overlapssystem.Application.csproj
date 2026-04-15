@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Overlapssystem.Domain\Overlapssystem.Domain.csproj" />
+    <ProjectReference Include="..\Overlapssystem.Infrastructure\Overlapssystem.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
