@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Overlapssystem.Application\Overlapssystem.Application.csproj" />
     <ProjectReference Include="..\Overlapssystem.Domain\Overlapssystem.Domain.csproj" />
   </ItemGroup>
 
