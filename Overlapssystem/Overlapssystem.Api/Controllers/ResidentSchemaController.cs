@@ -1,0 +1,47 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Overlapssystem.Application.Interfaces;
+using Overlapssystem.Shared.DTOs;
+
+namespace Overlapssystem.Api.Controllers;
+
+//  API controller for reisent schemas
+// Handles HTTP requests from Blazor frontend
+
+[ApiController]
+[Route("api/[controller]")]
+public class ResidentSchemaController : ControllerBase
+{
+
+    // The service is injected cia constructor 
+    private readonly IResidentSchemaService _service;
+
+    public ResidentSchemaController(IResidentSchemaService service)
+    {
+        _service = service;
+    }
+
+    // GET api/residentschema
+    // Returns all resident schemas as DTOs. 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ResidentSchemaDto>>> GetAll()
+    {
+        // Fetch entities from the service 
+        var schemas = await _service.GetAllAsync();
+
+        // Map entities to DTOs 
+        var dtos = schemas.Select(s => new ResidentSchemaDto
+        {
+            ResidentSchemaId = s.ResidentSchemaId,
+            Initials = s.Resident.Initials,
+            RelativeContact = s.RelativeContact,
+            Status = s.Status,
+            TrafficLight = s.TrafficLight.ToString(),
+            Shoppingday = s.Resident.ShoppingDay,
+            MedicinTime = s.Resident.MedicinTime.ToString("HH:mm"),
+            PaymentMethod = s.Resident.PaymentMethod.ToString()
+        });
+
+        // Return with HTTP 200 OK
+        return Ok(dtos);
+    }
+}
