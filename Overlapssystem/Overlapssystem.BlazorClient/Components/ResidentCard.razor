@@ -9,12 +9,12 @@
 
 <div class="resident-card">
 
-    @* HEADER - Resident initials. This is the active part of MY feature. *@
+    @* HEADER  *@
     <div class="card-header">
         <span class="initials">@Schema.Initials</span>
     </div>
 
-    @* RISK ASSESSMENT - Traffic light (placeholder for teammate's feature). *@
+    @* RISK ASSESSMENT  *@
     <div class="card-section risk-section">
         <span class="section-label">Risiko</span>
         <div class="traffic-light-placeholder">
@@ -24,37 +24,37 @@
         </div>
     </div>
 
-    @* MEDICATION - Fixed medication times (placeholder for teammate's feature). *@
+    @* MEDICATION  *@
     <div class="card-section">
         <span class="section-label">Medicin</span>
         <span class="section-value">@Schema.MedicinTime</span>
     </div>
 
-    @* PN MEDICATION - As-needed medication (placeholder for teammate's feature). *@
+    @* PN MEDICATION  *@
     <div class="card-section">
         <span class="section-label">PN-tid</span>
         <span class="section-value placeholder-text">—</span>
     </div>
 
-    @* SHOPPING DAY - When the resident goes shopping with staff. *@
+    @* SHOPPING DAY *@
     <div class="card-section">
         <span class="section-label">Handledag</span>
         <span class="section-value">@Schema.ShoppingDay</span>
     </div>
 
-    @* PAYMENT METHOD - How the resident pays when shopping. *@
+    @* PAYMENT METHOD *@
     <div class="card-section">
         <span class="section-label">Betaling</span>
         <span class="section-value">@Schema.PaymentMethod</span>
     </div>
 
-    @* RELATIVE CONTACT - Notes about contact with relatives. *@
+    @* RELATIVE CONTACT *@
     <div class="card-section">
         <span class="section-label">Pårørende</span>
         <span class="section-value">@Schema.RelativeContact</span>
     </div>
 
-    @* STATUS - Free text notes (placeholder - will become editable). *@
+    @* STATUS - (placeholder - will become editable). *@
     <div class="card-section status-section">
         <span class="section-label">Status</span>
         <span class="section-value">@Schema.Status</span>

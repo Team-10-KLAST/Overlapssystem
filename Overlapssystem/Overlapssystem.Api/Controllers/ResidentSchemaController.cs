@@ -12,7 +12,7 @@ namespace Overlapssystem.Api.Controllers;
 public class ResidentSchemaController : ControllerBase
 {
 
-    // The service is injected cia constructor 
+    
     private readonly IResidentSchemaService _service;
 
     public ResidentSchemaController(IResidentSchemaService service)

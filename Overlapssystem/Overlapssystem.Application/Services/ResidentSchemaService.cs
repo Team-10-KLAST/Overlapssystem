@@ -15,8 +15,7 @@ namespace Overlapssystem.Application.Services;
 // The DbConterxt is injected via the constructor. 
 public class ResidentSchemaService : IResidentSchemaService
 {
-    // Our gateway to the database. 
-    // Readonly because we never reassign it after construction. 
+    
     private readonly AppDbContext _context;
 
     public ResidentSchemaService( AppDbContext context)

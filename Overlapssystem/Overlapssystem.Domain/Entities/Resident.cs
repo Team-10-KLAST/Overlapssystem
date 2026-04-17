@@ -11,15 +11,10 @@ namespace Overlapssystem.Domain.Entities;
 // A resident can have many ResidentSchemas over time (one per shift). 
 public class Resident
 {
-    // Primary key.
     public int ResidentId { get; set; }
-    public string Initials { get; set; } = string.Empty;
-    // Which days of the week the resident typically goes shopping
-    // Free text because the format can vary ("Tirsdag", "Fredag kl 15")
+    public string Initials { get; set; } = string.Empty
     public string ShoppingDay { get; set; } = string.Empty;
-    // The time of day medication is given 
     public TimeOnly MedicinTime { get; set; }
-    //How the resident pays when shopping. Enum -> stored in database as int. 
     public PaymentMethod PaymentMethod { get; set; }
 
     // Foreign key to the department this resident lives in.

@@ -12,7 +12,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register application services for Dependency Injection 
-// "Scoped" because one instance per HTTP request matches DbContext lifetime. 
 builder.Services.AddScoped<IResidentSchemaService, ResidentSchemaService>();
 
 builder.Services.AddControllers();

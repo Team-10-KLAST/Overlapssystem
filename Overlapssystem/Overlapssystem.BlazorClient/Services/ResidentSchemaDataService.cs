@@ -18,7 +18,7 @@ public class ResidentSchemaDataService : IResidentSchemaDataService
     {
         var result = await _http.GetFromJsonAsync<List<ResidentSchemaDto>>("api/residentschema");
 
-        // return empty list if the API returns null (defensive coding)
+        // return empty list if the API returns null 
         return result ?? new List<ResidentSchemaDto>();
     }
 

@@ -10,6 +10,5 @@ namespace Overlapssystem.Application.Interfaces;
 public interface IResidentSchemaService
 {
     // Returns all resident schemas, including their related Resident. 
-    // Async because database calls should never block the calling threead. 
     Task<IEnumerable<ResidentSchema>> GetAllAsync();
 }

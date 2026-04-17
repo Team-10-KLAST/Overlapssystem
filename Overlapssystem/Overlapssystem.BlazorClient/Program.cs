@@ -13,4 +13,5 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https:/
 
 // REgister Blazor-side services for Dependency Injection 
 builder.Services.AddScoped<IResidentSchemaDataService, ResidentSchemaDataService>();
+
 await builder.Build().RunAsync();
