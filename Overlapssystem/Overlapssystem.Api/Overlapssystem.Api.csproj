@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Overlapssystem.Application\Overlapssystem.Application.csproj" />
     <ProjectReference Include="..\Overlapssystem.Infrastructure\Overlapssystem.Infrastructure.csproj" />
     <ProjectReference Include="..\Overlapssystem.Shared\Overlapssystem.Shared.csproj" />
