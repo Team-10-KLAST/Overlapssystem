@@ -1,0 +1,61 @@
+﻿@page "/choose-shift"
+@using System.Globalization
+@using Overlapssystem.Shared.DTOs
+@inject HttpClient Http
+
+<h3>Vælg vagt</h3>
+
+<div>
+    <label>Dato:</label>
+    <input type="date" @bind="model.Date" @bind:format="yyyy-MM-dd" max="@MaxDate" />
+</div>
+
+<br />
+
+<div>
+    <label>Vagt type:</label>
+    <select @bind="model.ShiftType">
+        @foreach (var type in Enum.GetValues(typeof(Overlapssystem.Shared.ShiftType)))
+        {
+            <option value="@type">@type</option>
+        }
+    </select>
+</div>
+
+<br />
+
+<button @onclick="SaveShift">Gem</button>
+
+<br /><br />
+
+<p>@message</p>
+
+@code {
+    private string MaxDate => DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+    private CreateShiftDto model = new()
+    {
+        Date = DateTime.Today
+    };
+
+    private string message = string.Empty;
+
+    private async Task SaveShift()
+    {
+        if (model.Date.Date > DateTime.Today)
+        {
+            message = "Du kan ikke vælge en dato i fremtiden.";
+            return;
+        }
+
+        var response = await Http.PostAsJsonAsync("api/shift", model);
+        if (response.IsSuccessStatusCode)
+        {
+            message = $"Vagt gemt: {model.Date:yyyy-MM-dd} - {model.ShiftType}";
+        }
+        else
+        {
+            message = "Der skete en fejl, da vagten skulle gemmes.";
+        }
+    }
+}
