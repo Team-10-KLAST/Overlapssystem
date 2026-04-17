@@ -22,6 +22,35 @@ namespace Overlapssystem.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Department", b =>
+                {
+                    b.Property<int>("DepartmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"));
+
+                    b.Property<string>("DepartmentName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DepartmentId");
+
+                    b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            DepartmentId = 1,
+                            DepartmentName = "Skoven"
+                        },
+                        new
+                        {
+                            DepartmentId = 2,
+                            DepartmentName = "Slottet"
+                        });
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
                 {
                     b.Property<int>("ResidentId")
@@ -29,6 +58,9 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResidentId"));
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Initials")
                         .IsRequired()
@@ -52,6 +84,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentId = 1,
+                            DepartmentId = 1,
                             Initials = "L",
                             MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 0,
@@ -60,6 +93,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentId = 2,
+                            DepartmentId = 1,
                             Initials = "T",
                             MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 1,
@@ -68,6 +102,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentId = 3,
+                            DepartmentId = 1,
                             Initials = "S",
                             MedicinTime = new TimeOnly(18, 0, 0),
                             PaymentMethod = 0,
@@ -76,6 +111,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentId = 4,
+                            DepartmentId = 1,
                             Initials = "SH",
                             MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 1,
@@ -84,6 +120,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentId = 5,
+                            DepartmentId = 1,
                             Initials = "A",
                             MedicinTime = new TimeOnly(10, 0, 0),
                             PaymentMethod = 2,
@@ -92,6 +129,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentId = 6,
+                            DepartmentId = 1,
                             Initials = "B",
                             MedicinTime = new TimeOnly(7, 45, 0),
                             PaymentMethod = 1,
@@ -100,6 +138,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentId = 7,
+                            DepartmentId = 1,
                             Initials = "J",
                             MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 2,
@@ -108,10 +147,83 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentId = 8,
+                            DepartmentId = 1,
                             Initials = "D",
                             MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 0,
                             ShoppingDay = "Torsdag"
+                        },
+                        new
+                        {
+                            ResidentId = 9,
+                            DepartmentId = 2,
+                            Initials = "M",
+                            MedicinTime = new TimeOnly(9, 0, 0),
+                            PaymentMethod = 0,
+                            ShoppingDay = "Mandag"
+                        },
+                        new
+                        {
+                            ResidentId = 10,
+                            DepartmentId = 2,
+                            Initials = "K",
+                            MedicinTime = new TimeOnly(8, 0, 0),
+                            PaymentMethod = 1,
+                            ShoppingDay = "Tirsdag"
+                        },
+                        new
+                        {
+                            ResidentId = 11,
+                            DepartmentId = 2,
+                            Initials = "P",
+                            MedicinTime = new TimeOnly(12, 0, 0),
+                            PaymentMethod = 2,
+                            ShoppingDay = "Onsdag"
+                        },
+                        new
+                        {
+                            ResidentId = 12,
+                            DepartmentId = 2,
+                            Initials = "R",
+                            MedicinTime = new TimeOnly(8, 0, 0),
+                            PaymentMethod = 0,
+                            ShoppingDay = "Torsdag"
+                        },
+                        new
+                        {
+                            ResidentId = 13,
+                            DepartmentId = 2,
+                            Initials = "N",
+                            MedicinTime = new TimeOnly(17, 0, 0),
+                            PaymentMethod = 1,
+                            ShoppingDay = "Fredag"
+                        },
+                        new
+                        {
+                            ResidentId = 14,
+                            DepartmentId = 2,
+                            Initials = "F",
+                            MedicinTime = new TimeOnly(8, 0, 0),
+                            PaymentMethod = 2,
+                            ShoppingDay = "Mandag"
+                        },
+                        new
+                        {
+                            ResidentId = 15,
+                            DepartmentId = 2,
+                            Initials = "E",
+                            MedicinTime = new TimeOnly(20, 0, 0),
+                            PaymentMethod = 0,
+                            ShoppingDay = "Onsdag"
+                        },
+                        new
+                        {
+                            ResidentId = 16,
+                            DepartmentId = 2,
+                            Initials = "H",
+                            MedicinTime = new TimeOnly(8, 0, 0),
+                            PaymentMethod = 1,
+                            ShoppingDay = "Fredag"
                         });
                 });
 
@@ -147,7 +259,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 1,
-                            RelativeContact = "Mor: 12 34 56 78",
+                            RelativeContact = "Mor ringede, kommer på besøg torsdag eftermiddag.",
                             ResidentId = 1,
                             Status = "Stabil dag, ingen bemærkninger.",
                             TrafficLight = 0
@@ -155,7 +267,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 2,
-                            RelativeContact = "Far: 23 45 67 89",
+                            RelativeContact = "Ingen kontakt i dag.",
                             ResidentId = 2,
                             Status = "Lidt urolig om morgenen, faldt til ro efter morgenmad.",
                             TrafficLight = 1
@@ -163,7 +275,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 3,
-                            RelativeContact = "Søster: 34 56 78 90",
+                            RelativeContact = "Søster hentede til frokost, aftale om næste besøg fredag.",
                             ResidentId = 3,
                             Status = "God dag, deltog i fællesaktiviteter.",
                             TrafficLight = 0
@@ -171,7 +283,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 4,
-                            RelativeContact = "Mor: 45 67 89 01",
+                            RelativeContact = "Far besøgte kl. 14, gik godt.",
                             ResidentId = 4,
                             Status = "Skal have ekstra opsyn ved badning.",
                             TrafficLight = 1
@@ -179,7 +291,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 5,
-                            RelativeContact = "Bror: 56 78 90 12",
+                            RelativeContact = "Mor ringede, beboer ville ikke tale i telefon.",
                             ResidentId = 5,
                             Status = "Anspændt, har brug for ro.",
                             TrafficLight = 2
@@ -187,7 +299,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 6,
-                            RelativeContact = "Mor: 67 89 01 23",
+                            RelativeContact = "Ingen kontakt i dag.",
                             ResidentId = 6,
                             Status = "Glad og energisk hele dagen.",
                             TrafficLight = 0
@@ -195,7 +307,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 7,
-                            RelativeContact = "Far: 78 90 12 34",
+                            RelativeContact = "Plejefar afleverede tøj, kort besøg.",
                             ResidentId = 7,
                             Status = "Lidt træt, sov middagslur.",
                             TrafficLight = 0
@@ -203,10 +315,74 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 8,
-                            RelativeContact = "Plejefar: 89 01 23 45",
+                            RelativeContact = "Aftalt med mor at hun ringer i morgen kl. 10.",
                             ResidentId = 8,
                             Status = "Konflikt med medbeboer, kræver opfølgning.",
                             TrafficLight = 2
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 9,
+                            RelativeContact = "Mor kom forbi med kage, hyggeligt besøg.",
+                            ResidentId = 9,
+                            Status = "Rolig dag, god stemning.",
+                            TrafficLight = 0
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 10,
+                            RelativeContact = "Ingen kontakt i dag.",
+                            ResidentId = 10,
+                            Status = "Nægtede morgenmad, spiste lidt til frokost.",
+                            TrafficLight = 1
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 11,
+                            RelativeContact = "Bror ringede, vil besøge i weekenden.",
+                            ResidentId = 11,
+                            Status = "Deltog i musik-aktivitet, sang med.",
+                            TrafficLight = 0
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 12,
+                            RelativeContact = "Plejemor hentede til tandlæge kl. 10.",
+                            ResidentId = 12,
+                            Status = "Træt efter tandlægebesøg, hvilede sig.",
+                            TrafficLight = 1
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 13,
+                            RelativeContact = "Far ringede, beboer glad for samtalen.",
+                            ResidentId = 13,
+                            Status = "God dag, hjalp med at dække bord.",
+                            TrafficLight = 0
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 14,
+                            RelativeContact = "Ingen kontakt i dag.",
+                            ResidentId = 14,
+                            Status = "Urolig, havde svært ved at falde til ro.",
+                            TrafficLight = 2
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 15,
+                            RelativeContact = "Mor og søster besøgte, gik en tur sammen.",
+                            ResidentId = 15,
+                            Status = "Glad efter besøg, snakkede om det hele aftenen.",
+                            TrafficLight = 0
+                        },
+                        new
+                        {
+                            ResidentSchemaId = 16,
+                            RelativeContact = "Aftalt med far at han kommer lørdag.",
+                            ResidentId = 16,
+                            Status = "Stille dag, så film om eftermiddagen.",
+                            TrafficLight = 0
                         });
                 });
 

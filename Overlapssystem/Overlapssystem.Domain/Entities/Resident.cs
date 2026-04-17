@@ -21,4 +21,8 @@ public class Resident
     public TimeOnly MedicinTime { get; set; }
     //How the resident pays when shopping. Enum -> stored in database as int. 
     public PaymentMethod PaymentMethod { get; set; }
+
+    // Foreign key to the department this resident lives in.
+    // Navigation is uni-directional: Resident -> Department only. 
+    public int DepartmentId { get; set; }
 }
