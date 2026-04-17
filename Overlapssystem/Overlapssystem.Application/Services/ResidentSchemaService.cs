@@ -13,7 +13,7 @@ namespace Overlapssystem.Application.Services;
 // concrete implementation of IResidentSchemaService 
 // Handles the business logic of fetching resident schemas. 
 // The DbConterxt is injected via the constructor. 
-public class ResidentSchemaService
+public class ResidentSchemaService : IResidentSchemaService
 {
     // Our gateway to the database. 
     // Readonly because we never reassign it after construction. 
