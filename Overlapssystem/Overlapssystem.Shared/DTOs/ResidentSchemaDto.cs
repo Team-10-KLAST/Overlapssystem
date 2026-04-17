@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Overlapssystem.Shared.DTOs;
+﻿namespace Overlapssystem.Shared.DTOs;
 
 // Data Transfer Object for a resident's schema card. 
 // Combines data from both Resident and ResidentSchema into one 

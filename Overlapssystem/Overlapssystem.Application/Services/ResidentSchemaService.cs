@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
 using Overlapssystem.Infrastructure.Data;
@@ -12,7 +7,6 @@ namespace Overlapssystem.Application.Services;
 
 // concrete implementation of IResidentSchemaService 
 // Handles the business logic of fetching resident schemas. 
-// The DbConterxt is injected via the constructor. 
 public class ResidentSchemaService : IResidentSchemaService
 {
     
