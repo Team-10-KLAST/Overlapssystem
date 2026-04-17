@@ -5,20 +5,14 @@
 
 <PageTitle>Overlapssystem</PageTitle>
 
-@* ============================================================
-   OVERLAP SYSTEM PAGE
-   Main view displayed on the wall-mounted screen in staff room.
-   Layout: three horizontal sections (top, middle, bottom).
-   ============================================================ *@
-
 <div class="overlap-page">
 
-    @* TOP SECTION - Shift info (date, shift type) - placeholder for other feature *@
+    @* TOP SECTION - Shift info placeholder *@
     <div class="overlap-top">
         <p>Vagtinfo: dato og vagttype kommer her</p>
     </div>
 
-    @* MIDDLE SECTION - Resident schema cards - THIS IS MY FEATURE *@
+    @* MIDDLE SECTION - Resident schema cards - MY FEATURE *@
     <div class="overlap-middle">
         @if (schemas == null)
         {
@@ -33,17 +27,13 @@
             <div class="resident-grid">
                 @foreach (var schema in schemas)
                 {
-                    @* Each card will be a ResidentCard component (Part 9).
-                       For now we just show the initials to verify data loads. *@
-                    <div class="resident-card-placeholder">
-                        <strong>@schema.Initials</strong>
-                    </div>
+                    <ResidentCard Schema="@schema" />
                 }
             </div>
         }
     </div>
 
-    @* BOTTOM SECTION - Department tasks - placeholder for other feature *@
+    @* BOTTOM SECTION - Department tasks placeholder *@
     <div class="overlap-bottom">
         <p>Afdelingsopgaver kommer her</p>
     </div>
@@ -51,12 +41,8 @@
 </div>
 
 @code {
-    // List of resident schemas fetched from the API.
-    // Null means "still loading", empty means "no data found".
     private IEnumerable<ResidentSchemaDto>? schemas;
 
-    // OnInitializedAsync runs when the page first loads.
-    // This is Blazor's equivalent of WPF's Loaded event.
     protected override async Task OnInitializedAsync()
     {
         schemas = await SchemaService.GetAllAsync();

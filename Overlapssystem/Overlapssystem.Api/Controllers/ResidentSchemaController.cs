@@ -36,7 +36,7 @@ public class ResidentSchemaController : ControllerBase
             RelativeContact = s.RelativeContact,
             Status = s.Status,
             TrafficLight = s.TrafficLight.ToString(),
-            Shoppingday = s.Resident.ShoppingDay,
+            ShoppingDay = s.Resident.ShoppingDay,
             MedicinTime = s.Resident.MedicinTime.ToString("HH:mm"),
             PaymentMethod = s.Resident.PaymentMethod.ToString()
         });
