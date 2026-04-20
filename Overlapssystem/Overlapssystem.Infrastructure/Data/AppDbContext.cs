@@ -4,27 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Overlapssystem.Infrastructure.Identity;
 using Overlapssystem.Domain.Entities;
 using Overlapssystem.Domain.Enums;
 
+
 namespace Overlapssystem.Infrastructure.Data
 {
-    public class AppDbContext : DbContext
+    // Inherits from IdentityDbContext so Identity tables (AspNetUsers, AspNetRoles, etc.) are included in the database
+    // and share the same DbContext as the rest of the application data
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
-        {
-        }
+        // DbContextOptions are provided via dependency injection (configured in Program.cs)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // DbSets tilføjes efterhånden som du opretter entities
-        // Eksempel (tilføj selv når du har oprettet klassen):
-        // public DbSet<Beboer> Beboere { get; set; }
-
+        // DbSets for EF Core so it can create tables and manage data for these entities
+        public DbSet<Employee> Employees { get; set; } = null!;
         public DbSet<Resident> Residents { get; set; }
         public DbSet<ResidentSchema> ResidentSchemas { get; set; }
         public DbSet<Department> Departments { get; set; }
-
-
 
         /// OnModelCreating is EF Core's hook for configuring the model. 
         /// We use it here to seed mock data so every developer
@@ -35,6 +34,25 @@ namespace Overlapssystem.Infrastructure.Data
             // - it lets EF Core apply its default conventions before we add our own
             base.OnModelCreating(modelBuilder);
 
+            //Configure the one-to-one relationship between ApplicationUser and Employee
+            modelBuilder.Entity<ApplicationUser>(user =>
+            {
+                user.HasOne(u => u.Employee)
+                    .WithOne()
+                    .HasForeignKey<ApplicationUser>(u => u.EmployeeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            //Configure Employee entity details
+            modelBuilder.Entity<Employee>(employee =>
+            {
+                employee.HasKey(e => e.EmployeeId);
+                employee.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
+                employee.Property(e => e.LastName).IsRequired().HasMaxLength(100);
+            });
+
+            //Seed Residents - 8 mock residents 
+            // Structure from excisting Exce-bases system.
             // Seed departments 
             modelBuilder.Entity<Department>().HasData(
                 new Department { DepartmentId = 1, DepartmentName = "Skoven" },
@@ -88,8 +106,6 @@ namespace Overlapssystem.Infrastructure.Data
                 new ResidentSchema { ResidentSchemaId = 15, ResidentId = 15, RelativeContact = "Mor og søster besøgte, gik en tur sammen.", Status = "Glad efter besøg, snakkede om det hele aftenen.", TrafficLight = TrafficLight.Green },
                 new ResidentSchema { ResidentSchemaId = 16, ResidentId = 16, RelativeContact = "Aftalt med far at han kommer lørdag.", Status = "Stille dag, så film om eftermiddagen.", TrafficLight = TrafficLight.Green }
             );
-
         }
     }
-    
 }
