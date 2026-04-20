@@ -1,0 +1,28 @@
+﻿@* This page displays the login form *@
+
+@page "/login"
+@using Overlapssystem.BlazorClient.Services
+@using Overlapssystem.Shared.DTOs
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
+
+<h2>Log ind</h2>
+
+@* Error message *@
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <p>@_errorMessage</p>
+}
+
+@* Login form *@
+<label>Email</label>
+<input type="email" @bind="_loginDto.Email" placeholder="Email" />
+
+<label>Adgangskode</label>
+<input type="password" @bind="_loginDto.Password" placeholder="Adgangskode" />
+
+@* Login button *@
+<button @onclick="HandleLogin" disabled="@_isLoading">
+    @(_isLoading ? "Logger ind..." : "Log ind")
+</button>
+

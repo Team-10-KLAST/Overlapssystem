@@ -8,8 +8,6 @@ using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Application.Services;
 using Overlapssystem.Infrastructure.Data;
 using Overlapssystem.Infrastructure.Identity;
-using Overlapssystem.Application.Interfaces;
-using Overlapssystem.Application.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
