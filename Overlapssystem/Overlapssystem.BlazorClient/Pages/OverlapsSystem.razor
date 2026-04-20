@@ -1,7 +1,4 @@
 ﻿@page "/overlapssystem"
-@using Overlapssystem.BlazorClient.Services
-@using Overlapssystem.Shared.DTOs
-@inject IResidentSchemaDataService SchemaService
 
 <PageTitle>Overlapssystem</PageTitle>
 
@@ -10,6 +7,9 @@
     @* TOP SECTION - Shift info placeholder *@
     <div class="overlap-top">
         <p>Vagtinfo: dato og vagttype kommer her</p>
+        <button class="btn btn-outline-danger btn-sm" @onclick="HandleLogout">
+            Log ud
+        </button>
     </div>
 
     @* MIDDLE SECTION - Resident schema cards *@
@@ -39,12 +39,3 @@
     </div>
 
 </div>
-
-@code {
-    private IEnumerable<ResidentSchemaDto>? schemas;
-
-    protected override async Task OnInitializedAsync()
-    {
-        schemas = await SchemaService.GetAllAsync();
-    }
-}
