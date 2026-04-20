@@ -7,7 +7,7 @@ namespace Overlapssystem.Domain.Entities;
 public class Resident
 {
     public int ResidentId { get; set; }
-    public string Initials { get; set; } = string.Empty
+    public string Initials { get; set; } = string.Empty;
     public string ShoppingDay { get; set; } = string.Empty;
     public TimeOnly MedicinTime { get; set; }
     public PaymentMethod PaymentMethod { get; set; }

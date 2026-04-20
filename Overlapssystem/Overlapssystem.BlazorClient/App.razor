@@ -1,4 +1,6 @@
 ﻿@* CascadingAuthenticationState makes authentication state available throughout the entire app *@
+@using Microsoft.AspNetCore.Components.Authorization
+
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">

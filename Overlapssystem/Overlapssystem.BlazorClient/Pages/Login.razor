@@ -3,26 +3,36 @@
 @page "/login"
 @using Overlapssystem.BlazorClient.Services
 @using Overlapssystem.Shared.DTOs
-@using Microsoft.AspNetCore.Authorization
 @attribute [AllowAnonymous]
 
-<h2>Log ind</h2>
+@* Centered login card *@
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="width: 400px;">
 
-@* Error message *@
-@if (!string.IsNullOrEmpty(_errorMessage))
-{
-    <p>@_errorMessage</p>
-}
+        <h3 class="text-center mb-4">Log ind</h3>
 
-@* Login form *@
-<label>Email</label>
-<input type="email" @bind="_loginDto.Email" placeholder="Email" />
+        @* Error message *@
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="alert alert-danger">@_errorMessage</div>
+        }
 
-<label>Adgangskode</label>
-<input type="password" @bind="_loginDto.Password" placeholder="Adgangskode" />
+        @* Email field *@
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" @bind="_loginDto.Email" placeholder="Email" />
+        </div>
 
-@* Login button *@
-<button @onclick="HandleLogin" disabled="@_isLoading">
-    @(_isLoading ? "Logger ind..." : "Log ind")
-</button>
+        @* Password field *@
+        <div class="mb-3">
+            <label class="form-label">Adgangskode</label>
+            <input type="password" class="form-control" @bind="_loginDto.Password" placeholder="Adgangskode" />
+        </div>
 
+        @* Login button *@
+        <button class="btn btn-primary w-100" @onclick="HandleLogin" disabled="@_isLoading">
+            @(_isLoading ? "Logger ind..." : "Log ind")
+        </button>
+
+    </div>
+</div>

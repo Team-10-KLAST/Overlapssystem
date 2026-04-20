@@ -80,6 +80,8 @@ var app = builder.Build();
 
 // Seed identity data (roles and admin user)
 await IdentitySeeder.SeedAsync(app.Services);
+if (app.Environment.IsDevelopment())
+    await EmployeeSeeder.SeedAsync(app.Services);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
