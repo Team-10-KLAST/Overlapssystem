@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Overlapssystem.Infrastructure.Data;
+using Overlapssystem.Application.Interfaces;
+using Overlapssystem.Application.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register application services for Dependency Injection 
+builder.Services.AddScoped<IResidentSchemaService, ResidentSchemaService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
