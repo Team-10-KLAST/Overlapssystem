@@ -8,6 +8,8 @@ using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Application.Services;
 using Overlapssystem.Infrastructure.Data;
 using Overlapssystem.Infrastructure.Identity;
+using Overlapssystem.Application.Interfaces;
+using Overlapssystem.Application.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +54,9 @@ builder.Services.AddAuthentication(options =>
             Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!))
     };
 });
+
+// Register application services for Dependency Injection 
+builder.Services.AddScoped<IResidentSchemaService, ResidentSchemaService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
