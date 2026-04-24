@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
-using Overlapssystem.Infrastructure.Data;
 
 namespace Overlapssystem.Application.Services;
 
@@ -10,9 +9,9 @@ namespace Overlapssystem.Application.Services;
 public class ResidentSchemaService : IResidentSchemaService
 {
     
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public ResidentSchemaService( AppDbContext context)
+    public ResidentSchemaService(IAppDbContext context)
     {
         _context = context;
     }

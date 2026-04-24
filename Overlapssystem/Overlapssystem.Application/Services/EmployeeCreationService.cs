@@ -5,15 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
-using Overlapssystem.Infrastructure.Data;
 
 namespace Overlapssystem.Application.Services
 {
     public class EmployeeCreationService : IEmployeeCreationService
     {
-        private readonly AppDbContext _context;
+        private readonly IAppDbContext _context;
 
-        public EmployeeCreationService(AppDbContext context)
+        public EmployeeCreationService(IAppDbContext context)
         {
             _context = context;
         }
