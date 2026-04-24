@@ -8,22 +8,23 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Overlapssystem.Infrastructure.Identity;
 using Overlapssystem.Domain.Entities;
 using Overlapssystem.Domain.Enums;
+using Overlapssystem.Application.Interfaces;
 
 
 namespace Overlapssystem.Infrastructure.Data
 {
     // Inherits from IdentityDbContext so Identity tables (AspNetUsers, AspNetRoles, etc.) are included in the database
     // and share the same DbContext as the rest of the application data
-    public class AppDbContext : IdentityDbContext<ApplicationUser>
+    public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
     {
         // DbContextOptions are provided via dependency injection (configured in Program.cs)
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // DbSets for EF Core so it can create tables and manage data for these entities
-        public DbSet<Employee> Employees { get; set; } = null!;
-        public DbSet<Resident> Residents { get; set; }
-        public DbSet<ResidentSchema> ResidentSchemas { get; set; }
-        public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees => Set<Employee>();
+        public DbSet<Resident> Residents => Set<Resident>();
+        public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
+        public DbSet<Department> Departments => Set<Department>();
 
         /// OnModelCreating is EF Core's hook for configuring the model. 
         /// We use it here to seed mock data so every developer

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Overlapssystem.Application.Interfaces
 {
+    // This interface defines the contract for a service that creates new employee records in the database.
     public interface IEmployeeCreationService
     {
         Task<int> CreateEmployeeAsync(string firstName, string lastName);

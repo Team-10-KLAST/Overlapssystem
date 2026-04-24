@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.25" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Overlapssystem.Domain\Overlapssystem.Domain.csproj" />
-    <ProjectReference Include="..\Overlapssystem.Infrastructure\Overlapssystem.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
