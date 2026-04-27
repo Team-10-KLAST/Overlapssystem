@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overlapssystem.Api", "Overl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overlapssystem.BlazorClient", "Overlapssystem.BlazorClient\Overlapssystem.BlazorClient.csproj", "{5D7207C2-45FA-403D-8FA8-56AFAA8532B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overlapssystem.Test", "Overlapssystem.Test\Overlapssystem.Test.csproj", "{568C669D-3EDB-4CF2-94C5-C20B01FE6F3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{5D7207C2-45FA-403D-8FA8-56AFAA8532B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D7207C2-45FA-403D-8FA8-56AFAA8532B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D7207C2-45FA-403D-8FA8-56AFAA8532B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{568C669D-3EDB-4CF2-94C5-C20B01FE6F3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{568C669D-3EDB-4CF2-94C5-C20B01FE6F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{568C669D-3EDB-4CF2-94C5-C20B01FE6F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{568C669D-3EDB-4CF2-94C5-C20B01FE6F3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
