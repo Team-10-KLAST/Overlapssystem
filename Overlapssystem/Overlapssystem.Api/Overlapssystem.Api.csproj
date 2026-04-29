@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Overlapssystem.Application\Overlapssystem.Application.csproj" />
+    <ProjectReference Include="..\Overlapssystem.BlazorClient\Overlapssystem.BlazorClient.csproj" />
     <ProjectReference Include="..\Overlapssystem.Infrastructure\Overlapssystem.Infrastructure.csproj" />
     <ProjectReference Include="..\Overlapssystem.Shared\Overlapssystem.Shared.csproj" />
   </ItemGroup>
