@@ -402,7 +402,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TrafficLight")
+                    b.Property<int?>("TrafficLight")
                         .HasColumnType("int");
 
                     b.HasKey("ResidentSchemaId");
