@@ -1,0 +1,41 @@
+﻿@page "/overlapssystem"
+
+<PageTitle>Overlapssystem</PageTitle>
+
+<div class="overlap-page">
+
+    @* TOP SECTION - Shift info placeholder *@
+    <div class="overlap-top">
+        <p>Vagtinfo: dato og vagttype kommer her</p>
+        <button class="btn btn-outline-danger btn-sm" @onclick="HandleLogout">
+            Log ud
+        </button>
+    </div>
+
+    @* MIDDLE SECTION - Resident schema cards *@
+    <div class="overlap-middle">
+        @if (schemas == null)
+        {
+            <p>Henter borgerskemaer...</p>
+        }
+        else if (!schemas.Any())
+        {
+            <p>Ingen borgerskemaer fundet.</p>
+        }
+        else
+        {
+            <div class="resident-grid">
+                @foreach (var schema in schemas)
+                {
+                    <ResidentCard Schema="@schema" />
+                }
+            </div>
+        }
+    </div>
+
+    @* BOTTOM SECTION - Department tasks placeholder *@
+    <div class="overlap-bottom">
+        <p>Afdelingsopgaver kommer her</p>
+    </div>
+
+</div>

@@ -7,18 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.25" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.23" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.23" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.25" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Overlapssystem.Application\Overlapssystem.Application.csproj" />
-    <ProjectReference Include="..\Overlapssystem.Domain\Overlapssystem.Domain.csproj" />
     <ProjectReference Include="..\Overlapssystem.Shared\Overlapssystem.Shared.csproj" />
   </ItemGroup>
 

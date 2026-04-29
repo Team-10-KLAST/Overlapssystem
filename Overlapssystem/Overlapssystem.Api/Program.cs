@@ -1,38 +1,22 @@
-using Microsoft.EntityFrameworkCore;
-using Overlapssystem.Infrastructure.Repositories.Data;
-using Overlapssystem.Application.Interfaces;
-using Overlapssystem.Application.Services;
-using Overlapssystem.BlazorClient.Services;
+using Overlapssystem.Api;
+using Overlapssystem.Api.Seed;
+using Overlapssystem.Application;
+using Overlapssystem.Infrastructure;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("BlazorClient", policy =>
-    {
-        policy
-            .WithOrigins("https://localhost:7262")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-      });
-  });
-
-builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Dependency injection for ShiftService, som håndterer forretningslogikken for vagter
-builder.Services.AddScoped<IShiftService, ShiftService>();
+// Register services in the DI container in each layer's DependencyInjection class.
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
+builder.Services.AddApi(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+await IdentitySeeder.SeedAsync(app.Services);
+if (app.Environment.IsDevelopment())
+    await EmployeeSeeder.SeedAsync(app.Services);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -40,19 +24,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors("BlazorClient");
-
+app.UseCors("AllowBlazor");
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
-try
-{
-    await app.RunAsync();
-}
-catch (Exception ex)
-{
-    Console.WriteLine("Unhandled exception: " + ex);
-    throw;
-}
+app.Run();
