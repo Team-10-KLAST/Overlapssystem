@@ -7,7 +7,7 @@ public class ResidentSchema
     public int ResidentSchemaId { get; set; }
     public string RelativeContact { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
-    public TrafficLight TrafficLight { get; set; }
+    public TrafficLight? TrafficLight { get; set; }
     public int ResidentId { get; set; }
 
     // Navigation property - lets us access the actual Resident object

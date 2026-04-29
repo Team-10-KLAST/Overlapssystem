@@ -11,7 +11,7 @@ public class ResidentSchemaDto
     public string Status { get; set; } = string.Empty;
 
     // Trafficlight send as string so frontend doesnt need to know about our enum.
-    public string TrafficLight { get; set; } = string.Empty;
+    public string? TrafficLight { get; set; }
     public string ShoppingDay { get; set; } = string.Empty;
     //Medicin time as string, so frontend doesnt need to know about time only show it
     public string MedicinTime { get; set; } = string.Empty;
