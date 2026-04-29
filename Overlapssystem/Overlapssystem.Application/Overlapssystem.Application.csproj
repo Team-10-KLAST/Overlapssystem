@@ -7,12 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Services\" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.25" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Overlapssystem.Domain\Overlapssystem.Domain.csproj" />
+    <ProjectReference Include="..\Overlapssystem.Infrastructure\Overlapssystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\Overlapssystem.Shared\Overlapssystem.Shared.csproj" />
   </ItemGroup>
 
 </Project>

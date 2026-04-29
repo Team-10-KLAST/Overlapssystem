@@ -1,7 +1,10 @@
 ﻿@page "/choose-shift"
 @using System.Globalization
+@using Overlapssystem.Domain.Enums
 @using Overlapssystem.Shared.DTOs
+@using Overlapssystem.BlazorClient.Services
 @inject HttpClient Http
+@inject SaveShiftService SaveShiftService
 
 <h3>Vælg vagt</h3>
 
@@ -15,7 +18,7 @@
 <div>
     <label>Vagt type:</label>
     <select @bind="model.ShiftType">
-        @foreach (var type in Enum.GetValues(typeof(Overlapssystem.Shared.ShiftType)))
+        @foreach (var type in Enum.GetValues(typeof(ShiftType)))
         {
             <option value="@type">@type</option>
         }
@@ -24,9 +27,26 @@
 
 <br />
 
+<div>
+    <label>Afdeling:</label>
+    <select @bind="model.Department">
+        <option value="0" disabled selected>Vælg afdeling</option>
+        @foreach (var dept in Enum.GetValues(typeof(DepartmentType)))
+        {
+            if ((DepartmentType)dept != DepartmentType.None)
+            {
+                <option value="@dept">@dept</option>
+            }
+        }
+    </select>
+</div>
+
+<br />
+
 <button @onclick="SaveShift">Gem</button>
 
-<br /><br />
+<br />
+<br />
 
 <p>@message</p>
 
@@ -42,20 +62,6 @@
 
     private async Task SaveShift()
     {
-        if (model.Date.Date > DateTime.Today)
-        {
-            message = "Du kan ikke vælge en dato i fremtiden.";
-            return;
-        }
-
-        var response = await Http.PostAsJsonAsync("api/shift", model);
-        if (response.IsSuccessStatusCode)
-        {
-            message = $"Vagt gemt: {model.Date:yyyy-MM-dd} - {model.ShiftType}";
-        }
-        else
-        {
-            message = "Der skete en fejl, da vagten skulle gemmes.";
-        }
+        message = await SaveShiftService.SaveShiftAsync(model);
     }
 }
