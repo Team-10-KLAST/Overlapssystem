@@ -1,79 +1,61 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Overlapssystem.Domain.Entities;
-using Overlapssystem.Shared.DTOs;
 using Overlapssystem.Application.Interfaces;
-using Overlapssystem.Infrastructure.Repositories.Data;
+using Overlapssystem.Domain.Entities;
 using Overlapssystem.Domain.Enums;
+using static System.Net.WebRequestMethods;
 
 namespace Overlapssystem.Application.Services;
 
 public class ShiftService : IShiftService
 {
     //DbContext til databaseadgang
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    //Dependency injection af AppDbContext  
-    public ShiftService(AppDbContext context)
+    //Dependency injection af IAppDbContext  
+    public ShiftService(IAppDbContext context)
     {
         _context = context;
     }
 
-    public async Task<ShiftDto> CreateShiftAsync(CreateShiftDto dto)
+    public async Task<Shift> CreateShiftAsync(DateTime date, ShiftType shiftType, int departmentId)
     {
         //Validering af dato
-        if (dto.Date > DateTime.Today)
+        if (date > DateTime.Today)
             throw new ArgumentException("Dato må ikke være i fremtiden.");
 
-        if (!Enum.IsDefined(typeof(DepartmentType), dto.Department) || dto.Department == DepartmentType.None)
+        if (!Enum.IsDefined(typeof(ShiftType), shiftType) || shiftType == ShiftType.None)
+            throw new ArgumentException("Husk at vælge vagttype.");
+
+        if (departmentId == 0)
             throw new ArgumentException("Husk at vælge afdeling.");
 
         //Opretter Shift-objekt
         var shift = new Shift
         {
-            Date = dto.Date,
-            Type = dto.ShiftType,
-            Department = dto.Department
+            Date = date,
+            Type = shiftType,
+            DepartmentId = departmentId
         };
 
         //Gemmer i database
         _context.Shifts.Add(shift);
         await _context.SaveChangesAsync();
 
-        return new ShiftDto
-        {
-            Id = shift.Id,
-            DateTime = shift.Date,
-            ShiftType = shift.Type,
-            Department = shift.Department
-        };
+        return shift;
     }
 
-    public async Task<IEnumerable<ShiftDto>> GetShiftsAsync()
+    public async Task<IEnumerable<Shift>> GetAllShiftsAsync()
     {
-        //Henter alle vagter og mapper til ShiftDto (asynkron databaseforespørgsel)
-        return await _context.Shifts
-            .Select(s => new ShiftDto
-            {
-                Id = s.Id,
-                DateTime = s.Date,
-                ShiftType = s.Type,
-                Department = s.Department
-            })
-            .ToListAsync();
+        //Henter alle vagter
+        return await _context.Shifts.ToListAsync();
     }
 
-    public async Task<ShiftDto?> GetShiftByIdAsync(int id)
+    public async Task<Shift> GetShiftByIdAsync(int id)
     {
-        //Henter vagt efter id og mapper til ShiftDto (asynkron databaseforespørgsel)
+        //Henter vagt efter id
         var shift = await _context.Shifts.FindAsync(id);
         if (shift == null) return null;
 
-        return new ShiftDto
-        {
-            Id = shift.Id,
-            DateTime = shift.Date,
-            ShiftType = shift.Type,
-            Department = shift.Department
-        };
+        return shift;
     }
 }

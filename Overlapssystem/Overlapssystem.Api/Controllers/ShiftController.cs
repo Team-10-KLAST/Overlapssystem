@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Overlapssystem.Shared.DTOs;
-using Overlapssystem.Domain.Entities;
 using Overlapssystem.Application.Interfaces;
+using Overlapssystem.Domain.Enums;
 
 namespace Overlapssystem.Api.Controllers;
 
@@ -21,23 +21,45 @@ public class ShiftController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateShift(CreateShiftDto dto)
     {
-        var result = await _shiftService.CreateShiftAsync(dto);
-        return Ok(result);
+        var shift = await _shiftService.CreateShiftAsync(
+        dto.Date,
+        (ShiftType)dto.ShiftType,
+        dto.DepartmentId
+        );
+        return Ok(shift);
+
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetShiftById(int id)
     {
-        //Hent vagt via id
-        var result = await _shiftService.GetShiftByIdAsync(id);
-        if (result == null) return NotFound();
-        return Ok(result);
+        //Hent vagt via id  
+        var shift = await _shiftService.GetShiftByIdAsync(id);
+
+        var shiftDto = new ShiftDto
+        {
+            Id = shift.Id.ToString(),
+            DateTime = shift.Date.ToString("o"), //ISO 8601 format
+            ShiftType = shift.Type.ToString(),
+            DepartmentId = shift.DepartmentId.ToString()
+        };
+        return Ok(shiftDto);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllShifts()
     {
-        var shifts = await _shiftService.GetShiftsAsync();
-        return Ok(shifts);
+        var shifts = await _shiftService.GetAllShiftsAsync();
+
+        // Mapping fra Shift-entity til ShiftDto
+        var dtos = shifts.Select(shift => new ShiftDto
+        {
+            Id = shift.Id.ToString(),
+            DateTime = shift.Date.ToString("o"), // ISO 8601 format
+            ShiftType = shift.Type.ToString(),
+            DepartmentId = shift.DepartmentId.ToString()
+        });
+
+        return Ok(dtos);
     }
 }

@@ -2,7 +2,6 @@
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Overlapssystem.Shared.DTOs;
-using Overlapssystem.Domain.Enums;
 
 namespace Overlapssystem.BlazorClient.Services
 {
@@ -20,7 +19,7 @@ namespace Overlapssystem.BlazorClient.Services
             if (model.Date.Date > DateTime.Today)
                 return "Du kan ikke vælge en dato i fremtiden.";
 
-            if (model.Department == DepartmentType.None)
+            if (model.DepartmentId == 0)
                 return "Husk at vælge afdeling.";
 
             try
@@ -28,7 +27,7 @@ namespace Overlapssystem.BlazorClient.Services
                 var response = await _http.PostAsJsonAsync("api/shift", model);
                 if (response.IsSuccessStatusCode)
                 {
-                    return $"Vagt gemt: {model.Date:yyyy-MM-dd} - {model.ShiftType} - {model.Department}";
+                    return $"Vagt gemt: {model.Date:yyyy-MM-dd} - {model.ShiftType} - {model.DepartmentId}";
                 }
                 else
                 {

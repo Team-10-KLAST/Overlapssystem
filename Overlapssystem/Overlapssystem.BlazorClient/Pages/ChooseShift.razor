@@ -1,6 +1,5 @@
 ﻿@page "/choose-shift"
 @using System.Globalization
-@using Overlapssystem.Domain.Enums
 @using Overlapssystem.Shared.DTOs
 @using Overlapssystem.BlazorClient.Services
 @inject HttpClient Http
@@ -18,10 +17,10 @@
 <div>
     <label>Vagt type:</label>
     <select @bind="model.ShiftType">
-        @foreach (var type in Enum.GetValues(typeof(ShiftType)))
-        {
-            <option value="@type">@type</option>
-        }
+        <option value=0 disabled selected>Vælg vagt type</option>
+        <option value="1">Dagvagt</option>
+        <option value="2">Aftenvagt</option>
+        <option value="3">Nattevagt</option>
     </select>
 </div>
 
@@ -29,15 +28,10 @@
 
 <div>
     <label>Afdeling:</label>
-    <select @bind="model.Department">
+    <select @bind="model.DepartmentId">
         <option value="0" disabled selected>Vælg afdeling</option>
-        @foreach (var dept in Enum.GetValues(typeof(DepartmentType)))
-        {
-            if ((DepartmentType)dept != DepartmentType.None)
-            {
-                <option value="@dept">@dept</option>
-            }
-        }
+        <option value="1">Skoven</option>
+        <option value="2">Slottet</option>
     </select>
 </div>
 
