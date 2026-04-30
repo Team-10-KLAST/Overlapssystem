@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
-using Overlapssystem.BlazorClient;
 using Overlapssystem.BlazorClient.Services;
+using Overlapssystem.BlazorClient;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -37,5 +37,6 @@ builder.Services.AddScoped(sp =>
 // Register Blazor-side services for Dependency Injection 
 builder.Services.AddScoped<IResidentSchemaDataService, ResidentSchemaDataService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<SaveShiftService>();
 
 await builder.Build().RunAsync();

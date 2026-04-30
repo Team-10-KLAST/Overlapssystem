@@ -1,12 +1,12 @@
 ﻿using Overlapssystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Overlapssystem.Shared.DTOs;
+using Overlapssystem.Domain.Enums;
 
 namespace Overlapssystem.Application.Interfaces;
 
 public interface IShiftService
 {
-    Task<ShiftDto> CreateShiftAsync(CreateShiftDto dto);
-    Task<IEnumerable<ShiftDto>> GetShiftsAsync();
-    Task<ShiftDto?> GetShiftByIdAsync(int id);
+    Task<Shift> CreateShiftAsync(DateTime date, ShiftType shiftType, int departmentId);
+    Task<IEnumerable<Shift>> GetAllShiftsAsync();
+    Task<Shift?> GetShiftByIdAsync(int id);
 }
