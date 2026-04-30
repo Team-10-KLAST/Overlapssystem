@@ -39,7 +39,7 @@ public class ShiftController : ControllerBase
         var shiftDto = new ShiftDto
         {
             Id = shift.Id.ToString(),
-            DateTime = shift.Date.ToString("o"), // ISO 8601 format
+            DateTime = shift.Date.ToString("o"), //ISO 8601 format
             ShiftType = shift.Type.ToString(),
             DepartmentId = shift.DepartmentId.ToString()
         };
