@@ -22,11 +22,11 @@ public class ResidentSchemaController : ControllerBase
 
     // GET api/residentschema
     // Returns all resident schemas as DTOs. 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ResidentSchemaDto>>> GetAll()
+    [HttpGet("shift/{shiftId}")]
+    public async Task<ActionResult<IEnumerable<ResidentSchemaDto>>> GetByShift(int shiftId)
     {
         // Fetch entities from the service 
-        var schemas = await _service.GetAllAsync();
+        var schemas = await _service.GetByShiftAsync(shiftId);
 
         // Map entities to DTOs 
         var dtos = schemas.Select(s => new ResidentSchemaDto
