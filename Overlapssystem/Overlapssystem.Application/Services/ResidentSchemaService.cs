@@ -17,12 +17,12 @@ public class ResidentSchemaService : IResidentSchemaService
     }
 
 
-    // Fetches all resident schemas from the database. 
-    // NOTE: Currently returns ALL schemas (mock data) 
-    // When Shift feature is ready, add filtering by department/shift. 
-    public async Task<IEnumerable<ResidentSchema>> GetAllAsync()
+    // Fetches all resident schemas for a specifik shift. 
+    // iincludes related Resident to read initials etc. 
+    public async Task<IEnumerable<ResidentSchema>> GetByShiftAsync(int shiftId)
     {
         return await _context.ResidentSchemas
+            .Where(s=>s.ShiftId == shiftId)
             .Include(s => s.Resident)
             .ToListAsync();
     }
