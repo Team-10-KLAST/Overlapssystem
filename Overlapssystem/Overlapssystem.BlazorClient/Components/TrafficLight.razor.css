@@ -1,0 +1,37 @@
+﻿/* This only applies to the TrafficLight component */
+.traffic-light-interactive {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+}
+
+.light {
+    width: 100%;
+    height: 22px;
+    opacity: 0.15;
+    border: 1px solid rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 2px; /* Optional: matches your resident card style */
+}
+
+    .light:hover {
+        opacity: 0.4;
+    }
+
+    .light.active {
+        opacity: 1.0;
+        box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    }
+
+    .light.green {
+        background-color: #4caf50;
+    }
+
+    .light.yellow {
+        background-color: #ffc107;
+    }
+
+    .light.red {
+        background-color: #f44336;
+    }

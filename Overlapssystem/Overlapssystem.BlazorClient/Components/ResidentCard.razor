@@ -18,11 +18,23 @@
     <div class="card-section risk-section">
         <span class="section-label">Risiko</span>
         <div class="traffic-light-placeholder">
-            <span class="light green @(Schema.TrafficLight == "Green" ? "active" : "")"></span>
-            <span class="light yellow @(Schema.TrafficLight == "Yellow" ? "active" : "")"></span>
-            <span class="light red @(Schema.TrafficLight == "Red" ? "active" : "")"></span>
+            @* <span class="light green @(Schema.TrafficLight == "Green" ? "active" : "")"></span> *@
+            @* <span class="light yellow @(Schema.TrafficLight == "Yellow" ? "active" : "")"></span> *@
+            @* <span class="light red @(Schema.TrafficLight == "Red" ? "active" : "")"></span> *@
+            <TrafficLight CurrentColor="@Schema.TrafficLight" OnColorChanged="HandleChange" />
         </div>
     </div>
+
+    @code {
+        // 1. Create a variable to hold the actual "chosen" state
+        private string _currentColor = "";
+
+        private void HandleChange(string newColor)
+        {
+            // 2. Update the variable so when Blazor re-renders, it passes the NEW color back down
+            Schema.TrafficLight = newColor;
+        }
+        }
 
     @* MEDICATION  *@
     <div class="card-section">
