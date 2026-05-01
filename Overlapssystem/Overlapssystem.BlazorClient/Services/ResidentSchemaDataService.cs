@@ -14,9 +14,10 @@ public class ResidentSchemaDataService : IResidentSchemaDataService
         _http = http;
     }
 
-    public async Task<IEnumerable<ResidentSchemaDto>> GetAllAsync()
+    // Calls GET/api/residentschema/shift/{shiftId}
+    public async Task<IEnumerable<ResidentSchemaDto>> GetByShiftAsync(int shiftId)
     {
-        var result = await _http.GetFromJsonAsync<List<ResidentSchemaDto>>("api/residentschema");
+        var result = await _http.GetFromJsonAsync<List<ResidentSchemaDto>>($"api/residentschema/shift/{shiftId}");
 
         // return empty list if the API returns null 
         return result ?? new List<ResidentSchemaDto>();

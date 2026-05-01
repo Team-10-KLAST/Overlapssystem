@@ -2,27 +2,29 @@
 using Overlapssystem.BlazorClient.Services;
 using Overlapssystem.Shared.DTOs;
 
-namespace Overlapssystem.BlazorClient.Pages
+namespace Overlapssystem.BlazorClient.Pages;
+
+// Code-behind for the OverlapsSystem.razor page.
+public partial class OverlapsSystem
 {
-    // Code-behind for the OverlapsSystem.razor page.
-    public partial class OverlapsSystem
+    [Inject] private AuthService AuthService { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    [Inject] private IResidentSchemaDataService SchemaService { get; set; } = default!;
+
+    [Parameter]
+    public int ShiftId { get; set; }
+
+    private IEnumerable<ResidentSchemaDto>? schemas;
+
+    protected override async Task OnInitializedAsync()
     {
-        [Inject] private AuthService AuthService { get; set; } = default!;
-        [Inject] private NavigationManager Navigation { get; set; } = default!;
-        [Inject] private IResidentSchemaDataService SchemaService { get; set; } = default!;
+        schemas = await SchemaService.GetByShiftAsync(ShiftId);
+    }
 
-        private IEnumerable<ResidentSchemaDto>? schemas;
-
-        protected override async Task OnInitializedAsync()
-        {
-            schemas = await SchemaService.GetAllAsync();
-        }
-
-        // Called when the user clicks the logout button
-        private async Task HandleLogout()
-        {
-            await AuthService.LogoutAsync();
-            Navigation.NavigateTo("/login");
-        }
+    // Called when the user clicks the logout button
+    private async Task HandleLogout()
+    {
+        await AuthService.LogoutAsync();
+        Navigation.NavigateTo("/login");
     }
 }

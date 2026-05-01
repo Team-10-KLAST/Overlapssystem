@@ -62,7 +62,8 @@ public class ResidentSchemaServiceTests
                 ResidentId = 1,
                 RelativeContact = "Mor ringede",
                 Status = "god dag",
-                TrafficLight = TrafficLight.Green
+                TrafficLight = TrafficLight.Green,
+                ShiftId = 1
             },
             new ResidentSchema
             {
@@ -70,7 +71,8 @@ public class ResidentSchemaServiceTests
                 ResidentId = 2,
                 RelativeContact = "Ingen kontakt",
                 Status = "Urolig",
-                TrafficLight = TrafficLight.Red
+                TrafficLight = TrafficLight.Red,
+                ShiftId = 1
             }
         );
 
@@ -78,35 +80,35 @@ public class ResidentSchemaServiceTests
     }
 
     [TestMethod]
-    // Tests that GetAllAsync returns all schemas from database
+    // Tests that GetByShiftAsync returns all schemas from database
     // This verifies basic "happy path" - data exists and is returned. 
-    public async Task GetAllAsync_ReturnsAllSchemas()
+    public async Task GetByShiftAsync_ReturnsAllSchemasForShift()
     {
-        // ARRANGE - Set up test database and seed data. 
-        var context = CreateContext("GetAllAsync_ReturnsAll");
+        // ARRANGE
+        var context = CreateContext("GetByShiftAsync_ReturnsAll");
         SeedTestData(context);
         var service = new ResidentSchemaService(context);
 
-        // ACT - Call GetAllAsync
-        var result = await service.GetAllAsync();
+        // ACT 
+        var result = await service.GetByShiftAsync(1);
 
-        // ASSERT - verify the result. 
+        // ASSERT 
         var schemas = result.ToList();
         Assert.AreEqual(2, schemas.Count);
     }
 
     [TestMethod]
-    // Tests that GetAllAsync includes the related Resident data. 
+    // Tests that GetByShiftAsync includes the related Resident data. 
     // This verifies that .Include(s => s.Resident) works correcly. 
-    public async Task GetAllAsync_IncludesResidentData()
+    public async Task GetByShiftAsync_IncludesResidentData()
     {
         // ARRANGE 
-        var context = CreateContext("GetAllAsync_IncludesResident");
+        var context = CreateContext("GetByShiftAsync_IncludesResident");
         SeedTestData(context);
         var service = new ResidentSchemaService(context);
 
         // ACT 
-        var result = await service.GetAllAsync();
+        var result = await service.GetByShiftAsync(1);
 
         // ASSERT - Check that the correct ResidentIds are present.
         var schemas = result.ToList();
@@ -116,16 +118,16 @@ public class ResidentSchemaServiceTests
     }
 
     [TestMethod]
-    //Tests that GetAllAsync returns an empty list when no data exists.
+    //Tests that GetByShiftAsync returns an empty list when no data exists.
     // This verifies that the service handles "no data " gracefully instead of throwing exception. 
     public async Task GetTaskAsync_EmptyDatabase_ReturnsEmptyList()
     {
-        // ARRANGE - create context without seeding any data. 
-        var context = CreateContext("GetAllAsync_Empty");
+        // ARRANGE 
+        var context = CreateContext("GetByShift_WrongID");
         var service = new ResidentSchemaService(context);
 
         // ACT
-        var result = await service.GetAllAsync();
+        var result = await service.GetByShiftAsync(999);
 
         // ASSERT
         Assert.AreEqual(0, result.Count());
@@ -155,14 +157,15 @@ public class ResidentSchemaServiceTests
                 ResidentId = 1,
                 RelativeContact = "Mor ringede",
                 Status = "God dag",
-                TrafficLight = null
+                TrafficLight = null,
+                ShiftId = 1
             }
         );
         context.SaveChanges();
         var service = new ResidentSchemaService(context);
 
         // ACT
-        var result = await service.GetAllAsync();
+        var result = await service.GetByShiftAsync(1);
 
         // ASSERT
         var schema = result.FirstOrDefault();
