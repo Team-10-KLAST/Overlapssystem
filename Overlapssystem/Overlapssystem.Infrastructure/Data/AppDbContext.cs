@@ -25,6 +25,7 @@ namespace Overlapssystem.Infrastructure.Data
         public DbSet<Resident> Residents => Set<Resident>();
         public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
         public DbSet<Department> Departments => Set<Department>();
+        public DbSet<Shift> Shifts => Set<Shift>();
 
         /// OnModelCreating is EF Core's hook for configuring the model. 
         /// We use it here to seed mock data so every developer
@@ -52,6 +53,7 @@ namespace Overlapssystem.Infrastructure.Data
                 employee.Property(e => e.LastName).IsRequired().HasMaxLength(100);
             });
 
+    
             //Seed Residents - 8 mock residents 
             // Structure from excisting Exce-bases system.
             // Seed departments 

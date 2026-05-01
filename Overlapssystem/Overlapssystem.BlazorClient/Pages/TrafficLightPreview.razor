@@ -1,0 +1,27 @@
+﻿@page "/trafficlight"
+
+<div style="padding: 40px; background-color: #f5f5f5; min-height: 100vh;">
+    <h2 style="margin-bottom: 20px; font-family: sans-serif;">TrafficLight Component Design</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 30px; width: 300px;">
+
+        <div>
+            @* Pass the variable _currentColor instead of a hardcoded string *@
+            <TrafficLight CurrentColor="@_currentColor" OnColorChanged="HandleChange" />
+        </div>
+        
+    </div>
+</div>
+
+@code {
+    // 1. Create a variable to hold the actual "chosen" state
+    private string _currentColor = "Green";
+    private string _lastColor = "None";
+
+    private void HandleChange(string newColor)
+    {
+        // 2. Update the variable so when Blazor re-renders, it passes the NEW color back down
+        _currentColor = newColor;
+        _lastColor = newColor;
+    }
+}

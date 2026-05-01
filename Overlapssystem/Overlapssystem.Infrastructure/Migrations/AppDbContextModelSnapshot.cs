@@ -542,6 +542,28 @@ namespace Overlapssystem.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Shift", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Shifts");
+                });
+
             modelBuilder.Entity("Overlapssystem.Infrastructure.Identity.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
