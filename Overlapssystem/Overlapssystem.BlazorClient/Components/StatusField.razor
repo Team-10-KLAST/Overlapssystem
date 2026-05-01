@@ -1,0 +1,29 @@
+﻿@* ============================================================
+   STATUS FIELD COMPONENT
+   Editable text field for a resident's status during a shift.
+   Shows current status, allows editing, and saves via API.
+   Uses ConfirmDialog before saving changes.
+   ============================================================ *@
+
+<div class="status-field">
+    @* Text area for editing status *@
+    <textarea class="status-input"
+              @bind="currentStatus"
+              @bind:event="oninput"
+              placeholder="Skriv status her..." />
+
+    @* Save button - only visible when text has changed *@
+    @if (HasChanges)
+    {
+        <button class="btn-save-status" @onclick="ShowConfirmDialog">
+            Gem
+        </button>
+    }
+
+    @* Confirm dialog before saving *@
+    <ConfirmDialog IsVisible="showConfirm"
+                   Message="Vil du gemme status?"
+                   SubMessage="@currentStatus"
+                   OnConfirm="SaveStatus"
+                   OnCancel="CancelSave" />
+</div>

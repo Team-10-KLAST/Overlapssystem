@@ -23,4 +23,6 @@ public class ResidentSchemaDataService : IResidentSchemaDataService
         return result ?? new List<ResidentSchemaDto>();
     }
 
+  
+
 }
