@@ -37,6 +37,7 @@ builder.Services.AddScoped(sp =>
 // Register Blazor-side services for Dependency Injection 
 builder.Services.AddScoped<IResidentSchemaDataService, ResidentSchemaDataService>();
 builder.Services.AddScoped<ITrafficLightDataService, TrafficLightDataService>();
+builder.Services.AddScoped<IResidentStatusDataService, ResidentStatusDataService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<SaveShiftService>();
 

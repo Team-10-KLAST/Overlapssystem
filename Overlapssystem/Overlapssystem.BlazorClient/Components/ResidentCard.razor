@@ -6,6 +6,7 @@
    ============================================================ *@
 
 @inject ITrafficLightDataService TrafficLightService
+@inject IResidentStatusDataService StatusService
 
 <div class="resident-card">
 
@@ -54,10 +55,12 @@
         <span class="section-value">@Schema.RelativeContact</span>
     </div>
 
-    @* STATUS - (placeholder - will become editable). *@
+    @* STATUS - Editable status field with save and confirm dialog. *@
     <div class="card-section status-section">
         <span class="section-label">Status</span>
-        <span class="section-value">@Schema.Status</span>
+        <StatusField Status="@Schema.Status"
+                     ResidentSchemaId="@Schema.ResidentSchemaId"
+                     OnStatusSaved="HandleStatusSaved" />
     </div>
 
 </div>
@@ -82,6 +85,23 @@
         catch (Exception)
         {
             // TODO: Tilføj fejlhåndtering til brugeren på et senere tidspunkt
+        }
+    }
+
+    // When status is saved, call the Status API to persist.
+    private async Task HandleStatusSaved(string newStatus)
+    {
+        try
+        {
+            var success = await StatusService.UpdateStatusAsync(Schema.ResidentSchemaId, newStatus);
+            if (success)
+            {
+                Schema.Status = newStatus;
+            }
+        }
+        catch (Exception)
+        {
+            // TODO: Show error message to user
         }
     }
 }
