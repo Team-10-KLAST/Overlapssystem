@@ -15,4 +15,6 @@ public class Resident
     // Foreign key to the department this resident lives in.
     // Navigation is uni-directional: Resident -> Department only. 
     public int DepartmentId { get; set; }
+
+
 }

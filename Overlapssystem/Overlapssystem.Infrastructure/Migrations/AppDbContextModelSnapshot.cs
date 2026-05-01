@@ -398,6 +398,9 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Property<int>("ResidentId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ShiftId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -409,6 +412,8 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ResidentId");
 
+                    b.HasIndex("ShiftId");
+
                     b.ToTable("ResidentSchemas");
 
                     b.HasData(
@@ -417,6 +422,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 1,
                             RelativeContact = "Mor ringede, kommer på besøg torsdag eftermiddag.",
                             ResidentId = 1,
+                            ShiftId = 1,
                             Status = "Stabil dag, ingen bemærkninger.",
                             TrafficLight = 0
                         },
@@ -425,6 +431,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 2,
                             RelativeContact = "Ingen kontakt i dag.",
                             ResidentId = 2,
+                            ShiftId = 1,
                             Status = "Lidt urolig om morgenen, faldt til ro efter morgenmad.",
                             TrafficLight = 1
                         },
@@ -433,6 +440,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 3,
                             RelativeContact = "Søster hentede til frokost, aftale om næste besøg fredag.",
                             ResidentId = 3,
+                            ShiftId = 1,
                             Status = "God dag, deltog i fællesaktiviteter.",
                             TrafficLight = 0
                         },
@@ -441,6 +449,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 4,
                             RelativeContact = "Far besøgte kl. 14, gik godt.",
                             ResidentId = 4,
+                            ShiftId = 1,
                             Status = "Skal have ekstra opsyn ved badning.",
                             TrafficLight = 1
                         },
@@ -449,6 +458,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 5,
                             RelativeContact = "Mor ringede, beboer ville ikke tale i telefon.",
                             ResidentId = 5,
+                            ShiftId = 1,
                             Status = "Anspændt, har brug for ro.",
                             TrafficLight = 2
                         },
@@ -457,6 +467,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 6,
                             RelativeContact = "Ingen kontakt i dag.",
                             ResidentId = 6,
+                            ShiftId = 1,
                             Status = "Glad og energisk hele dagen.",
                             TrafficLight = 0
                         },
@@ -465,6 +476,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 7,
                             RelativeContact = "Plejefar afleverede tøj, kort besøg.",
                             ResidentId = 7,
+                            ShiftId = 1,
                             Status = "Lidt træt, sov middagslur.",
                             TrafficLight = 0
                         },
@@ -473,6 +485,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 8,
                             RelativeContact = "Aftalt med mor at hun ringer i morgen kl. 10.",
                             ResidentId = 8,
+                            ShiftId = 1,
                             Status = "Konflikt med medbeboer, kræver opfølgning.",
                             TrafficLight = 2
                         },
@@ -481,6 +494,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 9,
                             RelativeContact = "Mor kom forbi med kage, hyggeligt besøg.",
                             ResidentId = 9,
+                            ShiftId = 2,
                             Status = "Rolig dag, god stemning.",
                             TrafficLight = 0
                         },
@@ -489,6 +503,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 10,
                             RelativeContact = "Ingen kontakt i dag.",
                             ResidentId = 10,
+                            ShiftId = 2,
                             Status = "Nægtede morgenmad, spiste lidt til frokost.",
                             TrafficLight = 1
                         },
@@ -497,6 +512,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 11,
                             RelativeContact = "Bror ringede, vil besøge i weekenden.",
                             ResidentId = 11,
+                            ShiftId = 2,
                             Status = "Deltog i musik-aktivitet, sang med.",
                             TrafficLight = 0
                         },
@@ -505,6 +521,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 12,
                             RelativeContact = "Plejemor hentede til tandlæge kl. 10.",
                             ResidentId = 12,
+                            ShiftId = 2,
                             Status = "Træt efter tandlægebesøg, hvilede sig.",
                             TrafficLight = 1
                         },
@@ -513,6 +530,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 13,
                             RelativeContact = "Far ringede, beboer glad for samtalen.",
                             ResidentId = 13,
+                            ShiftId = 2,
                             Status = "God dag, hjalp med at dække bord.",
                             TrafficLight = 0
                         },
@@ -521,6 +539,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 14,
                             RelativeContact = "Ingen kontakt i dag.",
                             ResidentId = 14,
+                            ShiftId = 2,
                             Status = "Urolig, havde svært ved at falde til ro.",
                             TrafficLight = 2
                         },
@@ -529,6 +548,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 15,
                             RelativeContact = "Mor og søster besøgte, gik en tur sammen.",
                             ResidentId = 15,
+                            ShiftId = 2,
                             Status = "Glad efter besøg, snakkede om det hele aftenen.",
                             TrafficLight = 0
                         },
@@ -537,6 +557,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentSchemaId = 16,
                             RelativeContact = "Aftalt med far at han kommer lørdag.",
                             ResidentId = 16,
+                            ShiftId = 2,
                             Status = "Stille dag, så film om eftermiddagen.",
                             TrafficLight = 0
                         });
@@ -562,6 +583,22 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Shifts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Date = new DateTime(2026, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Date = new DateTime(2026, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 2,
+                            Type = 1
+                        });
                 });
 
             modelBuilder.Entity("Overlapssystem.Infrastructure.Identity.ApplicationUser", b =>
@@ -695,7 +732,15 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Overlapssystem.Domain.Entities.Shift", "Shift")
+                        .WithMany()
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Resident");
+
+                    b.Navigation("Shift");
                 });
 
             modelBuilder.Entity("Overlapssystem.Infrastructure.Identity.ApplicationUser", b =>

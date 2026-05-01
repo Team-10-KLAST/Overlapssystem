@@ -8,11 +8,12 @@ public class ResidentSchema
     public string RelativeContact { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public TrafficLight? TrafficLight { get; set; }
-    public int ResidentId { get; set; }
 
-    // Navigation property - lets us access the actual Resident object
+    public int ResidentId { get; set; }
     public Resident Resident { get; set; } = null!;
 
+    public int ShiftId { get; set; }
+    public Shift Shift { get; set; } = null!;
 
-    //NOTE: ShiftId will be added later then Shift feature is ready.
+
 }
