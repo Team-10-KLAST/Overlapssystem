@@ -19,6 +19,9 @@ namespace Overlapssystem.BlazorClient.Services
             if (model.Date.Date > DateTime.Today)
                 return "Du kan ikke vælge en dato i fremtiden.";
 
+            if (model.ShiftType == 0)
+                return "Husk at vælge vagt type.";
+
             if (model.DepartmentId == 0)
                 return "Husk at vælge afdeling.";
 
