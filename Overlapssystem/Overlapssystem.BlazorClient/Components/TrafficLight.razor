@@ -1,4 +1,9 @@
-﻿<div class="traffic-light-interactive">
+﻿@* ============================================================
+   TRAFFIC LIGHT COMPONENT
+   Handles the display and interaction for the traffic light risk assessment.
+   ============================================================ *@
+
+<div class="traffic-light-interactive">
     <span class="light green @(CurrentColor == "Green" ? "active" : "")" 
           @onclick='() => HandleClick("Green")'></span>
     <span class="light yellow @(CurrentColor == "Yellow" ? "active" : "")" 
@@ -7,18 +12,56 @@
           @onclick='() => HandleClick("Red")'></span>
 </div>
 
+<ConfirmDialog IsVisible="showConfirm"
+               Message="@($"Er du sikker på at du vil ændre risikovurderingen for {Initials}?")"
+               SubMessage="@($"{TranslateColor(CurrentColor)} → {TranslateColor(pendingColor)}")"
+               OnConfirm="ConfirmChange"
+               OnCancel="CancelChange" />
+
 @code {
-    [Parameter] public string CurrentColor { get; set; } = "Green";
+    [Parameter] public string? CurrentColor { get; set; }
+	[Parameter] public string? Initials { get; set; }
 
     // This allows the parent (ResidentCard) to respond to the change
     [Parameter] public EventCallback<string> OnColorChanged { get; set; }
 
-    private async Task HandleClick(string newColor)
+    private bool showConfirm = false;
+    private string? pendingColor;
+
+
+	// Method to handle clicks on the traffic light. 
+    // It sets the pending color and shows the confirmation dialog.
+    private void HandleClick(string newColor)
     {
         if (CurrentColor != newColor)
         {
-            CurrentColor = newColor;
-            await OnColorChanged.InvokeAsync(newColor);
+            pendingColor = newColor;
+            showConfirm = true;
         }
     }
+
+	// If the user confirms, we invoke the callback to notify the parent of the change.
+    private async Task ConfirmChange()
+    {
+        await OnColorChanged.InvokeAsync(pendingColor);
+        showConfirm = false;
+        pendingColor = null;
+    }
+
+	// If the user cancels, we hide the confirmation dialog and clear the pending color.
+    private void CancelChange()
+    {
+        showConfirm = false;
+        pendingColor = null;
+    }
+
+	// This method translates the internal color values to user-friendly text.
+    private string TranslateColor(string? color) => color switch
+    {
+        "Green" => "Grøn",
+        "Yellow" => "Gul",
+        "Red" => "Rød",
+        null => "Ikke vurderet",
+        _ => color
+    };
 }

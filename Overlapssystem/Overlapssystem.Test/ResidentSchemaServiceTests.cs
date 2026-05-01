@@ -130,4 +130,43 @@ public class ResidentSchemaServiceTests
         // ASSERT
         Assert.AreEqual(0, result.Count());
     }
+
+    [TestMethod]
+    // Tests that GetAllAsync correctly handles schemas where TrafficLight is null.
+    public async Task GetAllAsync_NullTrafficLight_ReturnsSchema()
+    {
+        // ARRANGE
+        var context = CreateContext("GetAllAsync_NullTrafficLight");
+        context.Residents.Add(
+            new Resident
+            {
+             ResidentId = 1,
+             Initials = "AB",
+             ShoppingDay = "Mandag",
+             MedicinTime = new TimeOnly(8, 0),
+             PaymentMethod = PaymentMethod.OwnCard,
+             DepartmentId = 1
+            }
+        );
+        context.ResidentSchemas.Add(
+            new ResidentSchema
+            {
+                ResidentSchemaId = 1,
+                ResidentId = 1,
+                RelativeContact = "Mor ringede",
+                Status = "God dag",
+                TrafficLight = null
+            }
+        );
+        context.SaveChanges();
+        var service = new ResidentSchemaService(context);
+
+        // ACT
+        var result = await service.GetAllAsync();
+
+        // ASSERT
+        var schema = result.FirstOrDefault();
+        Assert.IsNotNull(schema);
+        Assert.IsNull(schema.TrafficLight);
+    }
 }
