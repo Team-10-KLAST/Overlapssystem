@@ -22,7 +22,7 @@ public class ResidentSchemaController : ControllerBase
 
     // GET api/residentschema
     // Returns all resident schemas as DTOs. 
-    [HttpGet]
+    [HttpGet("shift/{shiftId}")]
     public async Task<ActionResult<IEnumerable<ResidentSchemaDto>>> GetByShift(int shiftId)
     {
         // Fetch entities from the service 
