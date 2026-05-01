@@ -402,7 +402,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TrafficLight")
+                    b.Property<int?>("TrafficLight")
                         .HasColumnType("int");
 
                     b.HasKey("ResidentSchemaId");
@@ -540,6 +540,28 @@ namespace Overlapssystem.Infrastructure.Migrations
                             Status = "Stille dag, så film om eftermiddagen.",
                             TrafficLight = 0
                         });
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Shift", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Shifts");
                 });
 
             modelBuilder.Entity("Overlapssystem.Infrastructure.Identity.ApplicationUser", b =>
