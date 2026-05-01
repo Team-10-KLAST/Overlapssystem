@@ -1,0 +1,24 @@
+﻿<div class="traffic-light-interactive">
+    <span class="light green @(CurrentColor == "Green" ? "active" : "")" 
+          @onclick='() => HandleClick("Green")'></span>
+    <span class="light yellow @(CurrentColor == "Yellow" ? "active" : "")" 
+          @onclick='() => HandleClick("Yellow")'></span>
+    <span class="light red @(CurrentColor == "Red" ? "active" : "")" 
+          @onclick='() => HandleClick("Red")'></span>
+</div>
+
+@code {
+    [Parameter] public string CurrentColor { get; set; } = "Green";
+
+    // This allows the parent (ResidentCard) to respond to the change
+    [Parameter] public EventCallback<string> OnColorChanged { get; set; }
+
+    private async Task HandleClick(string newColor)
+    {
+        if (CurrentColor != newColor)
+        {
+            CurrentColor = newColor;
+            await OnColorChanged.InvokeAsync(newColor);
+        }
+    }
+}
