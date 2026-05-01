@@ -18,7 +18,9 @@
     <div class="card-section risk-section">
         <span class="section-label">Risiko</span>
         <div class="traffic-light-placeholder">
-            <TrafficLight CurrentColor="@Schema.TrafficLight" OnColorChanged="HandleTrafficLightChanged" />
+            <TrafficLight CurrentColor="@Schema.TrafficLight"
+                          OnColorChanged="HandleTrafficLightChanged"
+                          Initials="@Schema.Initials" />
         </div>
     </div>
 

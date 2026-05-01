@@ -1,4 +1,9 @@
-﻿<div class="traffic-light-interactive">
+﻿@* ============================================================
+   TRAFFIC LIGHT COMPONENT
+   Handles the display and interaction for the traffic light risk assessment.
+   ============================================================ *@
+
+<div class="traffic-light-interactive">
     <span class="light green @(CurrentColor == "Green" ? "active" : "")" 
           @onclick='() => HandleClick("Green")'></span>
     <span class="light yellow @(CurrentColor == "Yellow" ? "active" : "")" 
@@ -7,17 +12,15 @@
           @onclick='() => HandleClick("Red")'></span>
 </div>
 
-@if (showConfirm)
-{
-    <div class="confirm-dialog">
-        <p>Er du sikker på at du vil ændre risikovurderingen?</p>
-        <button @onclick="ConfirmChange">Ja</button>
-        <button @onclick="CancelChange">Annuller</button>
-    </div>
-}
+<ConfirmDialog IsVisible="showConfirm"
+               Message="@($"Er du sikker på at du vil ændre risikovurderingen for {Initials}?")"
+               SubMessage="@($"{TranslateColor(CurrentColor)} → {TranslateColor(pendingColor)}")"
+               OnConfirm="ConfirmChange"
+               OnCancel="CancelChange" />
 
 @code {
     [Parameter] public string? CurrentColor { get; set; }
+	[Parameter] public string? Initials { get; set; }
 
     // This allows the parent (ResidentCard) to respond to the change
     [Parameter] public EventCallback<string> OnColorChanged { get; set; }
@@ -51,4 +54,14 @@
         showConfirm = false;
         pendingColor = null;
     }
+
+	// This method translates the internal color values to user-friendly text.
+    private string TranslateColor(string? color) => color switch
+    {
+        "Green" => "Grøn",
+        "Yellow" => "Gul",
+        "Red" => "Rød",
+        null => "Ikke vurderet",
+        _ => color
+    };
 }

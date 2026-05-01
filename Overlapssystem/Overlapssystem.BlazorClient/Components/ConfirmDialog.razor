@@ -1,0 +1,26 @@
+﻿@* ============================================================
+   CONFIRM DIALOG COMPONENT
+   Handles the display and interaction for confirmation dialogs across the application.
+   ============================================================ *@
+
+@if (IsVisible)
+{
+    <div class="modal-overlay">
+        <div class="modal-box">
+            <p>@Message</p>
+            <p class="color-change">@SubMessage</p>
+            <div class="modal-buttons">
+                <button class="btn-confirm" @onclick="OnConfirm">Ja</button>
+                <button class="btn-cancel" @onclick="OnCancel">Annuller</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public string Message { get; set; } = string.Empty;
+    [Parameter] public string SubMessage { get; set; } = string.Empty;
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+}
