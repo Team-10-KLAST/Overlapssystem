@@ -7,18 +7,48 @@
           @onclick='() => HandleClick("Red")'></span>
 </div>
 
+@if (showConfirm)
+{
+    <div class="confirm-dialog">
+        <p>Er du sikker på at du vil ændre risikovurderingen?</p>
+        <button @onclick="ConfirmChange">Ja</button>
+        <button @onclick="CancelChange">Annuller</button>
+    </div>
+}
+
 @code {
-    [Parameter] public string CurrentColor { get; set; } = "Green";
+    [Parameter] public string? CurrentColor { get; set; }
 
     // This allows the parent (ResidentCard) to respond to the change
     [Parameter] public EventCallback<string> OnColorChanged { get; set; }
 
-    private async Task HandleClick(string newColor)
+    private bool showConfirm = false;
+    private string? pendingColor;
+
+
+	// Method to handle clicks on the traffic light. 
+    // It sets the pending color and shows the confirmation dialog.
+    private void HandleClick(string newColor)
     {
         if (CurrentColor != newColor)
         {
-            CurrentColor = newColor;
-            await OnColorChanged.InvokeAsync(newColor);
+            pendingColor = newColor;
+            showConfirm = true;
         }
+    }
+
+	// If the user confirms, we invoke the callback to notify the parent of the change.
+    private async Task ConfirmChange()
+    {
+        await OnColorChanged.InvokeAsync(pendingColor);
+        showConfirm = false;
+        pendingColor = null;
+    }
+
+	// If the user cancels, we hide the confirmation dialog and clear the pending color.
+    private void CancelChange()
+    {
+        showConfirm = false;
+        pendingColor = null;
     }
 }

@@ -5,7 +5,7 @@
    Sections marked as "placeholder" will be replaced by other features.
    ============================================================ *@
 
-@using Overlapssystem.Shared.DTOs
+@inject ITrafficLightDataService TrafficLightService
 
 <div class="resident-card">
 
@@ -18,23 +18,9 @@
     <div class="card-section risk-section">
         <span class="section-label">Risiko</span>
         <div class="traffic-light-placeholder">
-            @* <span class="light green @(Schema.TrafficLight == "Green" ? "active" : "")"></span> *@
-            @* <span class="light yellow @(Schema.TrafficLight == "Yellow" ? "active" : "")"></span> *@
-            @* <span class="light red @(Schema.TrafficLight == "Red" ? "active" : "")"></span> *@
-            <TrafficLight CurrentColor="@Schema.TrafficLight" OnColorChanged="HandleChange" />
+            <TrafficLight CurrentColor="@Schema.TrafficLight" OnColorChanged="HandleTrafficLightChanged" />
         </div>
     </div>
-
-    @code {
-        // 1. Create a variable to hold the actual "chosen" state
-        private string _currentColor = "";
-
-        private void HandleChange(string newColor)
-        {
-            // 2. Update the variable so when Blazor re-renders, it passes the NEW color back down
-            Schema.TrafficLight = newColor;
-        }
-        }
 
     @* MEDICATION  *@
     <div class="card-section">
@@ -74,10 +60,26 @@
 
 </div>
 
+
+
 @code {
     // The schema data passed in from the parent page.
     // [Parameter] means the parent provides this value:
     // <ResidentCard Schema="@schema" />
     [Parameter]
     public ResidentSchemaDto Schema { get; set; } = default!;
+
+	// When the traffic light changes, we update the local schema and call the service to persist it.
+    private async Task HandleTrafficLightChanged(string newColor)
+    {
+        try
+        {
+            await TrafficLightService.UpdateTrafficLightAsync(Schema.ResidentSchemaId, newColor);
+            Schema.TrafficLight = newColor; // opdater kun lokalt hvis API-kaldet lykkedes
+        }
+        catch (Exception)
+        {
+            // TODO: Tilføj fejlhåndtering til brugeren på et senere tidspunkt
+        }
+    }
 }
