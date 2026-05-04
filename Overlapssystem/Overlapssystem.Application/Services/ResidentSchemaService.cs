@@ -18,12 +18,14 @@ public class ResidentSchemaService : IResidentSchemaService
 
 
     // Fetches all resident schemas for a specifik shift. 
-    // iincludes related Resident to read initials etc. 
+    // includes related Resident, MedicationTimes and MedicationRegistrations for each schema. 
     public async Task<IEnumerable<ResidentSchema>> GetByShiftAsync(int shiftId)
     {
         return await _context.ResidentSchemas
-            .Where(s=>s.ShiftId == shiftId)
+            .Where(s => s.ShiftId == shiftId)
             .Include(s => s.Resident)
+                .ThenInclude(r => r.MedicationTimes)
+            .Include(s => s.MedicationRegistrations)
             .ToListAsync();
     }
 

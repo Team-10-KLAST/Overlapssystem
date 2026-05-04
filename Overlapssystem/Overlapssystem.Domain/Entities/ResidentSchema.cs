@@ -15,5 +15,6 @@ public class ResidentSchema
     public int ShiftId { get; set; }
     public Shift Shift { get; set; } = null!;
 
-
+    // Navigation property to MedicationRegistrations. A resident schema can have multiple medication registrations.
+    public ICollection<MedicationRegistration> MedicationRegistrations { get; set; } = new List<MedicationRegistration>();
 }

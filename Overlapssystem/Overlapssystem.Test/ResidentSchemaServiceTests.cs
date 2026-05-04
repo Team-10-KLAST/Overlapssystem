@@ -40,7 +40,6 @@ public class ResidentSchemaServiceTests
                 ResidentId = 1,
                 Initials = "AB",
                 ShoppingDay = "Mandag",
-                MedicinTime = new TimeOnly(8, 0),
                 PaymentMethod = PaymentMethod.OwnCard,
                 DepartmentId = 1
             },
@@ -49,7 +48,6 @@ public class ResidentSchemaServiceTests
                 ResidentId = 2,
                 Initials = "CD",
                 ShoppingDay = "Onsdag",
-                MedicinTime = new TimeOnly(10, 0),
                 PaymentMethod = PaymentMethod.PCard,
                 DepartmentId = 1
             }
@@ -145,7 +143,6 @@ public class ResidentSchemaServiceTests
              ResidentId = 1,
              Initials = "AB",
              ShoppingDay = "Mandag",
-             MedicinTime = new TimeOnly(8, 0),
              PaymentMethod = PaymentMethod.OwnCard,
              DepartmentId = 1
             }

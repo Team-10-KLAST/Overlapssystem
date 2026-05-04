@@ -16,11 +16,10 @@ namespace Overlapssystem.Application
             {
             services.AddScoped<IEmployeeCreationService, EmployeeCreationService>();
             services.AddScoped<IResidentSchemaService, ResidentSchemaService>();
-
             services.AddScoped<IResidentStatusService, ResidentStatusService>();
-
             services.AddScoped<IShiftService, ShiftService>();
             services.AddScoped<ITrafficLightService, TrafficLightService>();
+            services.AddScoped<IMedicationService, MedicationService>();
 
             // If there are more services, register them here. 
 
