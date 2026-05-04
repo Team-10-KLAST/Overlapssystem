@@ -19,11 +19,20 @@ namespace Overlapssystem.Application.Services
         }
 
         // Updates the traffic light status for a specific resident schema.
-        public async Task UpdateTrafficLightAsync(int residentSchemaId, TrafficLight? trafficLight)
+        public async Task UpdateTrafficLightAsync(int residentSchemaId, string? trafficLight)
         {
+            TrafficLight? parsedTrafficLight = null;
+
+            if (trafficLight != null)
+            {
+                if (!Enum.TryParse<TrafficLight>(trafficLight, out var value))
+                    throw new ArgumentException("Ugyldigt trafiklys-niveau");
+                parsedTrafficLight = value;
+            }
+
             var schema = await _context.ResidentSchemas.FindAsync(residentSchemaId);
             if (schema == null) throw new KeyNotFoundException();
-            schema.TrafficLight = trafficLight;
+            schema.TrafficLight = parsedTrafficLight;
             await _context.SaveChangesAsync();
         }
     }

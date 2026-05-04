@@ -57,7 +57,7 @@ namespace Overlapssystem.Test
             var service = new TrafficLightService(context);
 
             // ACT
-            await service.UpdateTrafficLightAsync(1, TrafficLight.Red);
+            await service.UpdateTrafficLightAsync(1, "Red");
 
             // ASSERT
             var schema = await context.ResidentSchemas.FindAsync(1);
@@ -77,7 +77,22 @@ namespace Overlapssystem.Test
 
             // ACT & ASSERT
             await Assert.ThrowsExceptionAsync<KeyNotFoundException>(
-                () => service.UpdateTrafficLightAsync(999, TrafficLight.Red)
+                () => service.UpdateTrafficLightAsync(999, "Red")
+            );
+        }
+
+        [TestMethod]
+        // Tests that UpdateTrafficLightAsync throws ArgumentException when an invalid string is passed.
+        public async Task UpdateTrafficLightAsync_InvalidString_ThrowsArgumentException()
+        {
+            // ARRANGE
+            var context = CreateContext("UpdateTrafficLight_InvalidString");
+            SeedTestData(context);
+            var service = new TrafficLightService(context);
+
+            // ACT & ASSERT
+            await Assert.ThrowsExceptionAsync<ArgumentException>(
+                () => service.UpdateTrafficLightAsync(1, "Blå")
             );
         }
 
