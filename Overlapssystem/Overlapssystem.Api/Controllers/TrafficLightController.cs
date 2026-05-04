@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Overlapssystem.Application.Interfaces;
-using Overlapssystem.Domain.Enums;
 using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.Api.Controllers
@@ -22,19 +21,14 @@ namespace Overlapssystem.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTrafficLight(int id, UpdateTrafficLightDto dto)
         {
-            TrafficLight? trafficLight = null;
-
-            if (dto.TrafficLight != null)
-            {
-                if (!Enum.TryParse<TrafficLight>(dto.TrafficLight, out var trafficLightValue))
-                    return BadRequest("Ugyldigt trafiklys-niveau");
-                trafficLight = trafficLightValue;
-            }
-
             try
             {
-                await _trafficLightService.UpdateTrafficLightAsync(id, trafficLight);
+                await _trafficLightService.UpdateTrafficLightAsync(id, dto.TrafficLight);
                 return NoContent();
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest("Ugyldigt trafiklys-niveau");
             }
             catch (KeyNotFoundException)
             {
