@@ -1,0 +1,23 @@
+﻿@* ============================================================
+   FIXED MEDICATION COMPONENT
+   Displays the fixed medication time with a checkbox to mark as given.
+   ============================================================ *@
+@using Overlapssystem.Shared.DTOs
+
+<span style="font-weight: bold; min-width: 70px; flex-shrink: 0; color: #333;">Medicin</span>
+<span class="section-value" style="display: flex; align-items: center; gap: 4px;">
+    @Schema.MedicinTime
+    <input type="checkbox"
+           @bind="IsGiven"
+           title="Markér som givet"
+           style="width: 11px; height: 11px; margin: 0; cursor: pointer; display: block;" />
+</span>
+
+@code {
+    // The fixed medication time and initials, passed in from ResidentCard.
+    [Parameter]
+    public ResidentSchemaDto Schema { get; set; } = default!;
+
+    // Tracks whether the medication has been marked as given.
+    private bool IsGiven { get; set; } = false;
+}

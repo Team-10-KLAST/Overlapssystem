@@ -1,0 +1,129 @@
+﻿@* ============================================================
+   PN MEDICATION COMPONENT
+   Clickable field — shows a time input on click, closes on change or Enter/Escape.
+   Multiple PN times are supported and shown separated by ", ".
+   ============================================================ *@
+@using Overlapssystem.Shared.DTOs
+
+<span style="font-weight: bold; min-width: 70px; flex-shrink: 0; color: #333;">PN</span>
+<span class="section-value">
+    @if (PNTimes.Count == 0 && !IsAddingNew)
+    {
+        // Shows a dash when no PN times are registered.
+        <span class="pn-time" @onclick="StartAddNew">—</span>
+    }
+    else
+    {
+        @for (int i = 0; i < PNTimes.Count; i++)
+        {
+            var index = i;
+            @if (EditingIndex == index)
+            {
+                // Shows a time input when editing an existing time.
+                <input class="pn-input"
+                       type="time"
+                       value="@PNTimes[index]"
+                       @onchange="e => OnEditTimeChanged(e, index)"
+                       @onkeydown="OnKeyDown" />
+            }
+            else
+            {
+                // Shows the time — click to edit it.
+                <span class="pn-time" @onclick="() => StartEdit(index)">@FormatTime(PNTimes[index])</span>
+            }
+
+            @if (index < PNTimes.Count - 1)
+            {
+                <span>, </span>
+            }
+        }
+
+        @if (IsAddingNew)
+        {
+            // Shows a time input for adding a new PN time.
+            @if (PNTimes.Count > 0)
+            {
+                <span>, </span>
+            }
+            <input class="pn-input"
+                   type="time"
+                   value=""
+                   @onchange="OnNewTimeChanged"
+                   @onkeydown="OnKeyDown" />
+        }
+        else
+        {
+            // Button to add a new PN time.
+            <span class="pn-add" @onclick="StartAddNew"> +</span>
+        }
+    }
+</span>
+
+@code {
+    // The schema data passed in from ResidentCard.
+    [Parameter]
+    public ResidentSchemaDto Schema { get; set; } = default!;
+
+    // Tracks all registered PN times.
+    private List<string> PNTimes { get; set; } = new();
+
+    // Tracks which time is being edited.
+    private int EditingIndex { get; set; } = -1;
+
+    // Tracks whether a new time is being added.
+    private bool IsAddingNew { get; set; } = false;
+
+    // Opens input for editing an existing time.
+    private void StartEdit(int index)
+    {
+        EditingIndex = index;
+        IsAddingNew = false;
+    }
+
+    // Opens input for adding a new time.
+    private void StartAddNew()
+    {
+        IsAddingNew = true;
+        EditingIndex = -1;
+    }
+
+    // Formats time to HH:mm.
+    private string FormatTime(string time)
+    {
+        if (time.Length >= 5)
+            return time.Substring(0, 5);
+        return time;
+    }
+
+    // Updates an existing time and closes the input field.
+    private void OnEditTimeChanged(ChangeEventArgs e, int index)
+    {
+        var time = e.Value?.ToString() ?? string.Empty;
+        if (!string.IsNullOrEmpty(time))
+        {
+            PNTimes[index] = time;
+        }
+        EditingIndex = -1;
+    }
+
+    // Adds a new time to the list and closes the input field.
+    private void OnNewTimeChanged(ChangeEventArgs e)
+    {
+        var time = e.Value?.ToString() ?? string.Empty;
+        if (!string.IsNullOrEmpty(time))
+        {
+            PNTimes.Add(time);
+        }
+        IsAddingNew = false;
+    }
+
+    // Closes the input field when Enter or Escape is pressed.
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" || e.Key == "Escape")
+        {
+            EditingIndex = -1;
+            IsAddingNew = false;
+        }
+    }
+}

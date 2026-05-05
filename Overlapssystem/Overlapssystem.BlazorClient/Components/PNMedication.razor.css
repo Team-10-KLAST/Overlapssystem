@@ -1,0 +1,19 @@
+﻿.pn-time {
+    cursor: pointer;
+    color: #555;
+}
+
+.pn-add {
+    cursor: pointer;
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.pn-input {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-size: 0.8rem;
+    font-family: inherit;
+    color: #555;
+}
