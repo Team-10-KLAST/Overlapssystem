@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
 
@@ -22,6 +23,14 @@ namespace Overlapssystem.Application.Services
         // Creates a new MedicationRegistration when a staff member marks a medication as given.
         public async Task MarkAsGivenAsync(int residentSchemaId, int medicationTimeId)
         {
+            var alreadyRegistered = await _context.MedicationRegistrations
+                .AnyAsync(mr => mr.ResidentSchemaId == residentSchemaId
+                    && mr.MedicationTimeId == medicationTimeId
+                    && mr.Given);
+
+            if (alreadyRegistered)
+                return;
+
             var registration = new MedicationRegistration
             {
                 ResidentSchemaId = residentSchemaId,

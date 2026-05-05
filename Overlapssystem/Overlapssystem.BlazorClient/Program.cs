@@ -40,5 +40,6 @@ builder.Services.AddScoped<ITrafficLightDataService, TrafficLightDataService>();
 builder.Services.AddScoped<IResidentStatusDataService, ResidentStatusDataService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<SaveShiftService>();
+builder.Services.AddScoped<IMedicationDataService, MedicationDataService>();
 
 await builder.Build().RunAsync();
