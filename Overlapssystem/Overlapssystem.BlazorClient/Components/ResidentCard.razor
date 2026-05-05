@@ -25,16 +25,14 @@
         </div>
     </div>
 
-    @* MEDICATION  *@
+    @* FIXED MEDICATION *@
     <div class="card-section">
-        <span class="section-label">Medicin</span>
-        <span class="section-value">@Schema.MedicinTime</span>
+        <FixedMedication Schema="@Schema" />
     </div>
 
-    @* PN MEDICATION  *@
+    @* PN MEDICATION *@
     <div class="card-section">
-        <span class="section-label">PN-tid</span>
-        <span class="section-value placeholder-text">—</span>
+        <PNMedication Schema="@Schema" />
     </div>
 
     @* SHOPPING DAY *@
