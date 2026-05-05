@@ -16,16 +16,44 @@ public class ResidentSchemaService : IResidentSchemaService
         _context = context;
     }
 
-
-    // Fetches all resident schemas for a specifik shift. 
-    // includes related Resident, MedicationTimes and MedicationRegistrations for each schema. 
+    // Fetches all resident schemas for a given shift, including related resident and medication data.
     public async Task<IEnumerable<ResidentSchema>> GetByShiftAsync(int shiftId)
     {
-        return await _context.ResidentSchemas
+        var shift = await _context.Shifts.FindAsync(shiftId);
+        if (shift == null) return Enumerable.Empty<ResidentSchema>();
+
+        var schemas = await _context.ResidentSchemas
             .Where(s => s.ShiftId == shiftId)
             .Include(s => s.Resident)
                 .ThenInclude(r => r.MedicationTimes)
-            .Include(s => s.MedicationRegistrations)
+            .ToListAsync();
+
+        var shiftIdsOnSameDay = await GetShiftIdsOnSameDayAsync(shift);
+
+        foreach (var schema in schemas)
+            schema.MedicationRegistrations = await GetMedicationRegistrationsForResidentAsync(schema.ResidentId, shiftIdsOnSameDay);
+
+        return schemas;
+    }
+
+    // Finds all shift IDs on the same date and department as the given shift.
+    // Used to fetch medication registrations across all shifts in the same day.
+    private async Task<List<int>> GetShiftIdsOnSameDayAsync(Shift shift)
+    {
+        return await _context.Shifts
+            .Where(s => s.Date.Date == shift.Date.Date && s.DepartmentId == shift.DepartmentId)
+            .Select(s => s.Id)
+            .ToListAsync();
+    }
+
+    // Fetches all given medication registrations for a resident across a set of shifts.
+    // Includes registrations from all shifts on the same day, not just the current shift.
+    private async Task<List<MedicationRegistration>> GetMedicationRegistrationsForResidentAsync(int residentId, List<int> shiftIds)
+    {
+        return await _context.MedicationRegistrations
+            .Where(mr => shiftIds.Contains(mr.ResidentSchema.ShiftId)
+                      && mr.ResidentSchema.ResidentId == residentId
+                      && mr.Given)
             .ToListAsync();
     }
 
@@ -68,60 +96,13 @@ public class ResidentSchemaService : IResidentSchemaService
                 RelativeContact = previousSchema?.RelativeContact ?? string.Empty
             };
 
-            newSchemas.Add(newSchema);
-
-            // TODO: Uncomment when MedicationRegistration entity is available.
-            // Copies medication records so the new team can see what was given earlier.
-            //
-            // if (previousSchema != null)
-            // {
-            //     var previousMedications = await _context.MedicationRegistrations
-            //         .Where(m => m.ResidentSchemaId == previousSchema.ResidentSchemaId)
-            //         .ToListAsync();
-            //
-            //     foreach (var med in previousMedications)
-            //     {
-            //         _context.MedicationRegistrations.Add(new MedicationRegistration
-            //         {
-            //             ResidentSchemaId = newSchema.ResidentSchemaId,
-            //             GivenTime = med.GivenTime,
-            //             GivenBy = med.GivenBy,
-            //             Given = med.Given
-            //         });
-            //     }
-            // }
-
-            // TODO: Uncomment when PN entity is available.
-            // Copies PN records so the new team can see what was given.
-            //
-            // if (previousSchema != null)
-            // {
-            //     var previousPNs = await _context.PNs
-            //         .Where(p => p.ResidentSchemaId == previousSchema.ResidentSchemaId)
-            //         .ToListAsync();
-            //
-            //     foreach (var pn in previousPNs)
-            //     {
-            //         _context.PNs.Add(new PN
-            //         {
-            //             ResidentSchemaId = newSchema.ResidentSchemaId,
-            //             GivenTime = pn.GivenTime,
-            //             GivenBy = pn.GivenBy
-            //         });
-            //     }
-            // }
-
-           
-
+            newSchemas.Add(newSchema);          
         }
 
-        // Save all new schemas to databsae
+        // Save all new schemas to database
         _context.ResidentSchemas.AddRange(newSchemas);
         await _context.SaveChangesAsync();
 
         return newSchemas;
-
-    }
-
-    
+    }    
 }
