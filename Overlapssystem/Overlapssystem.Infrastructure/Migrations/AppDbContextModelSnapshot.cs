@@ -352,6 +352,12 @@ namespace Overlapssystem.Infrastructure.Migrations
                             MedicationTimeId = 16,
                             PlannedTime = new TimeOnly(8, 0, 0),
                             ResidentId = 16
+                        },
+                        new
+                        {
+                            MedicationTimeId = 17,
+                            PlannedTime = new TimeOnly(20, 0, 0),
+                            ResidentId = 1
                         });
                 });
 
