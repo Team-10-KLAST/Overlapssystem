@@ -16,7 +16,7 @@ public class ResidentSchemaService : IResidentSchemaService
         _context = context;
     }
 
-    // Fetches all resident schemas for a given shift, including related resident and medication data.
+    // Fetches all resident schemas for a given shift, including related resident and medication data for that day.
     public async Task<IEnumerable<ResidentSchema>> GetByShiftAsync(int shiftId)
     {
         var shift = await _context.Shifts.FindAsync(shiftId);

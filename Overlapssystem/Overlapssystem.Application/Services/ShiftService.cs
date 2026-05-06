@@ -19,17 +19,21 @@ public class ShiftService : IShiftService
 
     public async Task<Shift> CreateShiftAsync(DateTime date, ShiftType shiftType, int departmentId)
     {
-        //Validering af dato
         if (date > DateTime.Today)
             throw new ArgumentException("Dato må ikke være i fremtiden.");
-
         if (!Enum.IsDefined(typeof(ShiftType), shiftType) || shiftType == ShiftType.None)
             throw new ArgumentException("Husk at vælge vagttype.");
-
         if (departmentId == 0)
             throw new ArgumentException("Husk at vælge afdeling.");
 
-        //Opretter Shift-objekt
+        var existingShift = await _context.Shifts
+            .FirstOrDefaultAsync(s => s.Date.Date == date.Date
+                                   && s.Type == shiftType
+                                   && s.DepartmentId == departmentId);
+
+        if (existingShift != null)
+            return existingShift;
+
         var shift = new Shift
         {
             Date = date,
@@ -37,10 +41,8 @@ public class ShiftService : IShiftService
             DepartmentId = departmentId
         };
 
-        //Gemmer i database
         _context.Shifts.Add(shift);
         await _context.SaveChangesAsync();
-
         return shift;
     }
 

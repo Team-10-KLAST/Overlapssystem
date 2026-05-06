@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Application.Services;
+using Overlapssystem.Application.UseCases;
 
 namespace Overlapssystem.Application
 {
@@ -20,6 +21,7 @@ namespace Overlapssystem.Application
             services.AddScoped<IShiftService, ShiftService>();
             services.AddScoped<ITrafficLightService, TrafficLightService>();
             services.AddScoped<IMedicationService, MedicationService>();
+            services.AddScoped<ICreateShiftUseCase, CreateShiftUseCase>();
 
             // If there are more services, register them here. 
 
