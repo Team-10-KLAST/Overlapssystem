@@ -26,6 +26,7 @@ namespace Overlapssystem.Infrastructure.Data
         public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
         public DbSet<Department> Departments => Set<Department>();
         public DbSet<Shift> Shifts => Set<Shift>();
+        public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
 
         /// OnModelCreating is EF Core's hook for configuring the model. 
         /// We use it here to seed mock data so every developer
