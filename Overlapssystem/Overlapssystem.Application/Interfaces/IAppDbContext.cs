@@ -16,6 +16,8 @@ namespace Overlapssystem.Application.Interfaces
         DbSet<ResidentSchema> ResidentSchemas { get; }
         DbSet<Department> Departments { get; }
         DbSet<Shift> Shifts { get; }
+        DbSet<MedicationTime> MedicationTimes { get; }
+        DbSet<MedicationRegistration> MedicationRegistrations { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

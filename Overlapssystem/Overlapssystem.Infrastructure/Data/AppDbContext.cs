@@ -26,6 +26,8 @@ namespace Overlapssystem.Infrastructure.Data
         public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
         public DbSet<Department> Departments => Set<Department>();
         public DbSet<Shift> Shifts => Set<Shift>();
+        public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
+        public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
 
         /// OnModelCreating is EF Core's hook for configuring the model. 
         /// We use it here to seed mock data so every developer
@@ -53,13 +55,27 @@ namespace Overlapssystem.Infrastructure.Data
                 employee.Property(e => e.LastName).IsRequired().HasMaxLength(100);
             });
 
-    
+            //Configure the relationships for Resident, ResidentSchema,
+            //MedicationTime, and MedicationRegistration
+            modelBuilder.Entity<MedicationRegistration>()
+                .HasOne(mr => mr.ResidentSchema)
+                .WithMany(rs => rs.MedicationRegistrations)
+                .HasForeignKey(mr => mr.ResidentSchemaId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
+            modelBuilder.Entity<MedicationRegistration>()
+                .HasOne(mr => mr.MedicationTime)
+                .WithMany()
+                .HasForeignKey(mr => mr.MedicationTimeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             //Seed Residents - 8 mock residents 
             // Structure from excisting Exce-bases system.
             // Seed departments 
             modelBuilder.Entity<Department>().HasData(
                 new Department { DepartmentId = 1, DepartmentName = "Skoven" },
-                new Department {  DepartmentId = 2, DepartmentName = "Slottet"}
+                new Department { DepartmentId = 2, DepartmentName = "Slottet" }
                 );
 
             // Seed a default shift for mock data purposes.
@@ -73,24 +89,46 @@ namespace Overlapssystem.Infrastructure.Data
             // Skoven (DepartmentId = 1): L, T, S, SH, A, B, J, D
             // Slottet (DepartmentId = 2): M, K, P, R, N, F, E, H
             modelBuilder.Entity<Resident>().HasData(
+               // Skoven
+               new Resident { ResidentId = 1, Initials = "L", ShoppingDay = "Tirsdag", PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 1 },
+               new Resident { ResidentId = 2, Initials = "T", ShoppingDay = "Onsdag", PaymentMethod = PaymentMethod.PCard, DepartmentId = 1 },
+               new Resident { ResidentId = 3, Initials = "S", ShoppingDay = "Torsdag", PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 1 },
+               new Resident { ResidentId = 4, Initials = "SH", ShoppingDay = "Mandag", PaymentMethod = PaymentMethod.PCard, DepartmentId = 1 },
+               new Resident { ResidentId = 5, Initials = "A", ShoppingDay = "Fredag", PaymentMethod = PaymentMethod.Cash, DepartmentId = 1 },
+               new Resident { ResidentId = 6, Initials = "B", ShoppingDay = "Tirsdag", PaymentMethod = PaymentMethod.PCard, DepartmentId = 1 },
+               new Resident { ResidentId = 7, Initials = "J", ShoppingDay = "Onsdag", PaymentMethod = PaymentMethod.Cash, DepartmentId = 1 },
+               new Resident { ResidentId = 8, Initials = "D", ShoppingDay = "Torsdag", PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 1 },
+               // Slottet
+               new Resident { ResidentId = 9, Initials = "M", ShoppingDay = "Mandag", PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 2 },
+               new Resident { ResidentId = 10, Initials = "K", ShoppingDay = "Tirsdag", PaymentMethod = PaymentMethod.PCard, DepartmentId = 2 },
+               new Resident { ResidentId = 11, Initials = "P", ShoppingDay = "Onsdag", PaymentMethod = PaymentMethod.Cash, DepartmentId = 2 },
+               new Resident { ResidentId = 12, Initials = "R", ShoppingDay = "Torsdag", PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 2 },
+               new Resident { ResidentId = 13, Initials = "N", ShoppingDay = "Fredag", PaymentMethod = PaymentMethod.PCard, DepartmentId = 2 },
+               new Resident { ResidentId = 14, Initials = "F", ShoppingDay = "Mandag", PaymentMethod = PaymentMethod.Cash, DepartmentId = 2 },
+               new Resident { ResidentId = 15, Initials = "E", ShoppingDay = "Onsdag", PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 2 },
+               new Resident { ResidentId = 16, Initials = "H", ShoppingDay = "Fredag", PaymentMethod = PaymentMethod.PCard, DepartmentId = 2 }
+           );
+
+            // Seed MedicationTimes - each resident gets one or two planned medication times.
+            modelBuilder.Entity<MedicationTime>().HasData(
                 // Skoven
-                new Resident { ResidentId = 1, Initials = "L", ShoppingDay = "Tirsdag", MedicinTime = new TimeOnly(8, 0), PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 1 },
-                new Resident { ResidentId = 2, Initials = "T", ShoppingDay = "Onsdag", MedicinTime = new TimeOnly(8, 0), PaymentMethod = PaymentMethod.PCard, DepartmentId = 1 },
-                new Resident { ResidentId = 3, Initials = "S", ShoppingDay = "Torsdag", MedicinTime = new TimeOnly(18, 0), PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 1 },
-                new Resident { ResidentId = 4, Initials = "SH", ShoppingDay = "Mandag", MedicinTime = new TimeOnly(8, 0), PaymentMethod = PaymentMethod.PCard, DepartmentId = 1 },
-                new Resident { ResidentId = 5, Initials = "A", ShoppingDay = "Fredag", MedicinTime = new TimeOnly(10, 0), PaymentMethod = PaymentMethod.Cash, DepartmentId = 1 },
-                new Resident { ResidentId = 6, Initials = "B", ShoppingDay = "Tirsdag", MedicinTime = new TimeOnly(7, 45), PaymentMethod = PaymentMethod.PCard, DepartmentId = 1 },
-                new Resident { ResidentId = 7, Initials = "J", ShoppingDay = "Onsdag", MedicinTime = new TimeOnly(8, 0), PaymentMethod = PaymentMethod.Cash, DepartmentId = 1 },
-                new Resident { ResidentId = 8, Initials = "D", ShoppingDay = "Torsdag", MedicinTime = new TimeOnly(8, 0), PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 1 },
+                new MedicationTime { MedicationTimeId = 1, ResidentId = 1, PlannedTime = new TimeOnly(8, 0) },
+                new MedicationTime { MedicationTimeId = 2, ResidentId = 2, PlannedTime = new TimeOnly(8, 0) },
+                new MedicationTime { MedicationTimeId = 3, ResidentId = 3, PlannedTime = new TimeOnly(18, 0) },
+                new MedicationTime { MedicationTimeId = 4, ResidentId = 4, PlannedTime = new TimeOnly(8, 0) },
+                new MedicationTime { MedicationTimeId = 5, ResidentId = 5, PlannedTime = new TimeOnly(10, 0) },
+                new MedicationTime { MedicationTimeId = 6, ResidentId = 6, PlannedTime = new TimeOnly(7, 45) },
+                new MedicationTime { MedicationTimeId = 7, ResidentId = 7, PlannedTime = new TimeOnly(8, 0) },
+                new MedicationTime { MedicationTimeId = 8, ResidentId = 8, PlannedTime = new TimeOnly(8, 0) },
                 // Slottet
-                new Resident { ResidentId = 9, Initials = "M", ShoppingDay = "Mandag", MedicinTime = new TimeOnly(9, 0), PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 2 },
-                new Resident { ResidentId = 10, Initials = "K", ShoppingDay = "Tirsdag", MedicinTime = new TimeOnly(8, 0), PaymentMethod = PaymentMethod.PCard, DepartmentId = 2 },
-                new Resident { ResidentId = 11, Initials = "P", ShoppingDay = "Onsdag", MedicinTime = new TimeOnly(12, 0), PaymentMethod = PaymentMethod.Cash, DepartmentId = 2 },
-                new Resident { ResidentId = 12, Initials = "R", ShoppingDay = "Torsdag", MedicinTime = new TimeOnly(8, 0), PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 2 },
-                new Resident { ResidentId = 13, Initials = "N", ShoppingDay = "Fredag", MedicinTime = new TimeOnly(17, 0), PaymentMethod = PaymentMethod.PCard, DepartmentId = 2 },
-                new Resident { ResidentId = 14, Initials = "F", ShoppingDay = "Mandag", MedicinTime = new TimeOnly(8, 0), PaymentMethod = PaymentMethod.Cash, DepartmentId = 2 },
-                new Resident { ResidentId = 15, Initials = "E", ShoppingDay = "Onsdag", MedicinTime = new TimeOnly(20, 0), PaymentMethod = PaymentMethod.OwnCard, DepartmentId = 2 },
-                new Resident { ResidentId = 16, Initials = "H", ShoppingDay = "Fredag", MedicinTime = new TimeOnly(8, 0), PaymentMethod = PaymentMethod.PCard, DepartmentId = 2 }
+                new MedicationTime { MedicationTimeId = 9, ResidentId = 9, PlannedTime = new TimeOnly(9, 0) },
+                new MedicationTime { MedicationTimeId = 10, ResidentId = 10, PlannedTime = new TimeOnly(8, 0) },
+                new MedicationTime { MedicationTimeId = 11, ResidentId = 11, PlannedTime = new TimeOnly(12, 0) },
+                new MedicationTime { MedicationTimeId = 12, ResidentId = 12, PlannedTime = new TimeOnly(8, 0) },
+                new MedicationTime { MedicationTimeId = 13, ResidentId = 13, PlannedTime = new TimeOnly(17, 0) },
+                new MedicationTime { MedicationTimeId = 14, ResidentId = 14, PlannedTime = new TimeOnly(8, 0) },
+                new MedicationTime { MedicationTimeId = 15, ResidentId = 15, PlannedTime = new TimeOnly(20, 0) },
+                new MedicationTime { MedicationTimeId = 16, ResidentId = 16, PlannedTime = new TimeOnly(8, 0) }
             );
 
             // Seed ResidentSchemas - one per resident (16 total).
