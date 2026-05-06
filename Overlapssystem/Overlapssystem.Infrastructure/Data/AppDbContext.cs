@@ -128,7 +128,8 @@ namespace Overlapssystem.Infrastructure.Data
                 new MedicationTime { MedicationTimeId = 13, ResidentId = 13, PlannedTime = new TimeOnly(17, 0) },
                 new MedicationTime { MedicationTimeId = 14, ResidentId = 14, PlannedTime = new TimeOnly(8, 0) },
                 new MedicationTime { MedicationTimeId = 15, ResidentId = 15, PlannedTime = new TimeOnly(20, 0) },
-                new MedicationTime { MedicationTimeId = 16, ResidentId = 16, PlannedTime = new TimeOnly(8, 0) }
+                new MedicationTime { MedicationTimeId = 16, ResidentId = 16, PlannedTime = new TimeOnly(8, 0) },
+                new MedicationTime { MedicationTimeId = 17, ResidentId = 1, PlannedTime = new TimeOnly(20, 0) }
             );
 
             // Seed ResidentSchemas - one per resident (16 total).
