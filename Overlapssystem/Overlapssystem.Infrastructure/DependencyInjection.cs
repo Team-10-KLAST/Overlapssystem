@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Infrastructure.Data;
 using Overlapssystem.Infrastructure.Identity;
+using Overlapssystem.Infrastructure.Services;
 
 namespace Overlapssystem.Infrastructure
 {
@@ -19,6 +20,7 @@ namespace Overlapssystem.Infrastructure
                     configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IAppDbContext, AppDbContext>();
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddIdentityCore<ApplicationUser>(options =>
             {
