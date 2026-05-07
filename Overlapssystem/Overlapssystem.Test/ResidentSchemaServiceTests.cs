@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Overlapssystem.Infrastructure.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Overlapssystem.Application.Services;
 using Overlapssystem.Domain.Entities;
 using Overlapssystem.Domain.Enums;
-using Overlapssystem.Application.Services;
-using System.Runtime.CompilerServices;
+using Overlapssystem.Infrastructure.Data;
 
 namespace Overlapssystem.Test;
 
@@ -34,6 +28,16 @@ public class ResidentSchemaServiceTests
     // Helper method that seeds data into the in-memory database. 
     private void SeedTestData(AppDbContext context)
     {
+        // Seed a shift so GetByShiftAsync can find it 
+        context.Shifts.Add(new Shift
+        {
+            Id = 1,
+            Date = new DateTime(2026, 5, 5),
+            Type = ShiftType.Dagvagt,
+            DepartmentId = 1
+        });
+        
+        
         context.Residents.AddRange(
             new Resident
             {
@@ -137,6 +141,15 @@ public class ResidentSchemaServiceTests
     {
         // ARRANGE
         var context = CreateContext("GetAllAsync_NullTrafficLight");
+
+        context.Shifts.Add(new Shift
+        {
+            Id = 1,
+            Date = new DateTime(2026, 5, 5),
+            Type = ShiftType.Dagvagt,
+            DepartmentId = 1
+        });
+
         context.Residents.Add(
             new Resident
             {
