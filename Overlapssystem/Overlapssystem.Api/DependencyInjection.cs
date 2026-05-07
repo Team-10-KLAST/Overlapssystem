@@ -1,5 +1,7 @@
 ﻿using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Overlapssystem.Api
@@ -45,6 +47,19 @@ namespace Overlapssystem.Api
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
+            });
+
+            services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("login", limiter =>
+                {
+                    limiter.Window = TimeSpan.FromMinutes(1);
+                    limiter.PermitLimit = 10;
+                    limiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    limiter.QueueLimit = 0;
+                });
+
+                options.RejectionStatusCode = 429;
             });
 
             return services;

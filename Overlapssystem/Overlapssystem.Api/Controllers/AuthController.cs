@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Infrastructure.Identity;
 using Overlapssystem.Shared.DTOs;
@@ -14,27 +15,35 @@ public class AuthController : ControllerBase
 {
     // Dependencies injected via constructor
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IEmployeeCreationService _employeeCreationService;
     private readonly ITokenService _tokenService;
 
-    public AuthController(UserManager<ApplicationUser> userManager,
+    public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
         IEmployeeCreationService employeeCreationService, ITokenService tokenService)
     {
         _userManager = userManager;
+        _signInManager = signInManager;
         _employeeCreationService = employeeCreationService;
         _tokenService = tokenService;
     }
 
     // Login-endpoint
     [HttpPost("login")]
+    [EnableRateLimiting("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
         var user = await _userManager.FindByEmailAsync(loginDto.Email);
         if (user == null)
             return Unauthorized("Forkert email eller adgangskode.");
 
-        var passwordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
-        if (!passwordValid)
+        var result = await _signInManager.CheckPasswordSignInAsync(
+            user, loginDto.Password, lockoutOnFailure: true);
+
+        if (result.IsLockedOut)
+            return Unauthorized("Forkert email eller adgangskode.");
+
+        if (!result.Succeeded)
             return Unauthorized("Forkert email eller adgangskode.");
 
         var roles = await _userManager.GetRolesAsync(user);
