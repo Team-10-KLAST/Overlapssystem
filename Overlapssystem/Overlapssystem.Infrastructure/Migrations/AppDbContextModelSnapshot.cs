@@ -526,11 +526,17 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResidentSchemaId"));
 
+                    b.Property<int?>("PrimaryEmployeeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("RelativeContact")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ResidentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SecondaryEmployeeId")
                         .HasColumnType("int");
 
                     b.Property<int>("ShiftId")
@@ -545,7 +551,11 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("ResidentSchemaId");
 
+                    b.HasIndex("PrimaryEmployeeId");
+
                     b.HasIndex("ResidentId");
+
+                    b.HasIndex("SecondaryEmployeeId");
 
                     b.HasIndex("ShiftId");
 
@@ -891,11 +901,19 @@ namespace Overlapssystem.Infrastructure.Migrations
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.ResidentSchema", b =>
                 {
+                    b.HasOne("Overlapssystem.Domain.Entities.Employee", "PrimaryEmployee")
+                        .WithMany()
+                        .HasForeignKey("PrimaryEmployeeId");
+
                     b.HasOne("Overlapssystem.Domain.Entities.Resident", "Resident")
                         .WithMany()
                         .HasForeignKey("ResidentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Overlapssystem.Domain.Entities.Employee", "SecondaryEmployee")
+                        .WithMany()
+                        .HasForeignKey("SecondaryEmployeeId");
 
                     b.HasOne("Overlapssystem.Domain.Entities.Shift", "Shift")
                         .WithMany()
@@ -903,7 +921,11 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("PrimaryEmployee");
+
                     b.Navigation("Resident");
+
+                    b.Navigation("SecondaryEmployee");
 
                     b.Navigation("Shift");
                 });

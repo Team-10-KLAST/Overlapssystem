@@ -1,0 +1,75 @@
+﻿@using Overlapssystem.Shared.DTOs
+@using Overlapssystem.BlazorClient.Services
+@inject IEmployeeAssignmentDataService AssignService
+
+<div class="employee-section">
+    <span class="section-label">Medarbejder</span>
+
+    <div class="employee-controls">
+        @* Dropdown 1: Primær medarbejder *@
+        <select class="employee-select" 
+                value="@SelectedPrimaryId" 
+                @onchange="@(e => OnEmployeeSelected(e, 1))">
+            <option value="">tilføj</option>
+            @foreach (var emp in GetAvailableEmployees(1))
+            {
+                        <option value="@emp.EmployeeId">@emp.Initials</option>
+            }
+        </select>
+
+        @* Dropdown 2: Sekundær medarbejder *@
+        <select class="employee-select" 
+                value="@SelectedSecondaryId" 
+                @onchange="@(e => OnEmployeeSelected(e, 2))">
+            <option value="">tilføj</option>
+            @foreach (var emp in GetAvailableEmployees(2))
+            {
+                        <option value="@emp.EmployeeId">@emp.Initials</option>
+            }
+        </select>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int ResidentSchemaId { get; set; }
+    [Parameter] public List<EmployeeDto> AllEmployees { get; set; } = new();
+
+    // Disse bindes til data fra ResidentSchema
+    [Parameter] public int? SelectedPrimaryId { get; set; }
+    [Parameter] public int? SelectedSecondaryId { get; set; }
+
+    // Filtrerer listen så den valgte medarbejder ikke vises i den anden dropdown
+    private IEnumerable<EmployeeDto> GetAvailableEmployees(int position)
+    {
+        if (position == 1)
+        {
+            return AllEmployees.Where(e => e.EmployeeId != SelectedSecondaryId);
+        }
+        else
+        {
+            return AllEmployees.Where(e => e.EmployeeId != SelectedPrimaryId);
+        }
+    }
+
+    private async Task OnEmployeeSelected(ChangeEventArgs e, int position)
+    {
+        string? stringValue = e.Value?.ToString();
+
+        if (int.TryParse(stringValue, out var employeeId))
+        {
+            // Gem tildeling i databasen
+            var success = await AssignService.AssignEmployeeAsync(ResidentSchemaId, employeeId, position);
+
+            if (success)
+            {
+                if (position == 1) SelectedPrimaryId = employeeId;
+                else SelectedSecondaryId = employeeId;
+            }
+        }
+        else
+        {
+            if (position == 1) SelectedPrimaryId = null;
+            else SelectedSecondaryId = null;
+        }
+    }
+}

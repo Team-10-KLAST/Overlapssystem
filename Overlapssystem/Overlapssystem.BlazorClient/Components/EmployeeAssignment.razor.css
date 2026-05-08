@@ -1,0 +1,48 @@
+﻿.employee-section {
+    display: flex;
+    align-items: flex-start;
+    padding: 4px 8px;
+    border-bottom: 1px solid #ddd;
+    min-height: 28px;
+    gap: 8px;
+}
+
+.section-label {
+    font-weight: bold;
+    min-width: 70px;
+    flex-shrink: 0;
+    color: #333;
+}
+
+.employee-controls {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+}
+
+/* Styling af dropdown så den ligner en diskret knap */
+.employee-select {
+    display: inline-flex;
+    padding: 1px 4px;
+    background-color: #fcfcfc;
+    border: 1px solid #999;
+    border-radius: 2px;
+    color: #007bff;
+    font-size: 0.75rem;
+    text-transform: lowercase;
+    cursor: pointer;
+    outline: none;
+    min-width: 60px;
+}
+
+    .employee-select:hover {
+        background-color: #e8e8e8;
+        border-color: #666;
+    }
+
+    /* Styling af det valgte navn så det ser mere permanent ud */
+    .employee-select:not([value=""]) {
+        color: #333;
+        font-weight: bold;
+        border-style: solid;
+    }
