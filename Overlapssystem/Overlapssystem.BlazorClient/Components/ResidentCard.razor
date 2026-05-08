@@ -7,6 +7,8 @@
 
 @inject ITrafficLightDataService TrafficLightService
 @inject IResidentStatusDataService StatusService
+@inject IMedicationDataService MedicationService
+@inject IEmployeeDataService EmployeeDataService
 
 <div class="resident-card">
 
@@ -27,7 +29,8 @@
 
     @* FIXED MEDICATION *@
     <div class="card-section">
-        <FixedMedication Schema="@Schema" />
+        <FixedMedication Schema="@Schema"
+                         OnMedicationGiven="HandleMedicationGiven" />
     </div>
 
     @* PN MEDICATION *@
@@ -53,6 +56,11 @@
         <span class="section-value">@Schema.RelativeContact</span>
     </div>
 
+    <EmployeeAssignment ResidentSchemaId="@Schema.ResidentSchemaId" 
+                     AllEmployees="@allEmployees"
+                     SelectedPrimaryId="@Schema.SelectedPrimaryId"
+                     SelectedSecondaryId="@Schema.SelectedSecondaryId" />
+
     @* STATUS - Editable status field with save and confirm dialog. *@
     <div class="card-section status-section">
         <span class="section-label">Status</span>
@@ -71,7 +79,14 @@
     // <ResidentCard Schema="@schema" />
     [Parameter]
     public ResidentSchemaDto Schema { get; set; } = default!;
+    private List<EmployeeDto> allEmployees = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        // Hent alle medarbejdere én gang når kortet indlæses
+        var employees = await EmployeeDataService.GetEmployeesAsync();
+        allEmployees = employees.ToList();
+    }
 	// When the traffic light changes, we update the local schema and call the service to persist it.
     private async Task HandleTrafficLightChanged(string newColor)
     {
@@ -100,6 +115,20 @@
         catch (Exception)
         {
             // TODO: Show error message to user
+        }
+    }
+
+    // When a medication time is marked as given, we call the API and update the local state.
+    private async Task HandleMedicationGiven(MedicationTimeDto med)
+    {
+        try
+        {
+            await MedicationService.MarkAsGivenAsync(Schema.ResidentSchemaId, med.MedicationTimeId);
+            med.IsGiven = true;
+        }
+        catch (Exception)
+        {
+            // TODO: Tilføj fejlhåndtering til brugeren på et senere tidspunkt
         }
     }
 }

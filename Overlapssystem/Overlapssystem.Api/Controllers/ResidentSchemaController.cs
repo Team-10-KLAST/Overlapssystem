@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Overlapssystem.Api.Mappers;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Shared.DTOs;
 
@@ -10,14 +11,14 @@ namespace Overlapssystem.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class ResidentSchemaController : ControllerBase
-{
-
-    
+{   
     private readonly IResidentSchemaService _service;
+    private readonly IAssignEmployeeService _assignService;
 
-    public ResidentSchemaController(IResidentSchemaService service)
+    public ResidentSchemaController(IResidentSchemaService service, IAssignEmployeeService assignService)
     {
         _service = service;
+        _assignService = assignService;
     }
 
     // GET api/residentschema
@@ -25,23 +26,26 @@ public class ResidentSchemaController : ControllerBase
     [HttpGet("shift/{shiftId}")]
     public async Task<ActionResult<IEnumerable<ResidentSchemaDto>>> GetByShift(int shiftId)
     {
-        // Fetch entities from the service 
         var schemas = await _service.GetByShiftAsync(shiftId);
-
-        // Map entities to DTOs 
-        var dtos = schemas.Select(s => new ResidentSchemaDto
-        {
-            ResidentSchemaId = s.ResidentSchemaId,
-            Initials = s.Resident.Initials,
-            RelativeContact = s.RelativeContact,
-            Status = s.Status,
-            TrafficLight = s.TrafficLight?.ToString(),
-            ShoppingDay = s.Resident.ShoppingDay,
-            MedicinTime = s.Resident.MedicinTime.ToString("HH:mm"),
-            PaymentMethod = s.Resident.PaymentMethod.ToString()
-        });
-
-        // Return with HTTP 200 OK
+        var dtos = schemas.Select(ResidentSchemaMapper.ToDto);
         return Ok(dtos);
+    }
+
+    [HttpPost("assign")]
+    public async Task<IActionResult> AssignEmployee([FromBody] AssignEmployeeDto dto)
+    {
+        if (dto == null) return BadRequest("Data mangler.");
+
+        var success = await _assignService.AssignEmployeeAsync(
+            dto.ResidentSchemaId,
+            dto.EmployeeId,
+            dto.Position);
+
+        if (!success)
+        {
+            return BadRequest("Kunne ikke udføre tildelingen i databasen.");
+        }
+
+        return Ok();
     }
 }

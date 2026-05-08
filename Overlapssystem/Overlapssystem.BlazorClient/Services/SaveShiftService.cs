@@ -5,7 +5,7 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services
 {
-    public class SaveShiftService
+    public class SaveShiftService : ISaveShiftService
     {
         private readonly HttpClient _http;
 
@@ -14,34 +14,38 @@ namespace Overlapssystem.BlazorClient.Services
             _http = http;
         }
 
-        public async Task<string> SaveShiftAsync(CreateShiftDto model)
+        // Returns the created shift's ID on success, or null on failure.
+        // Error message is set via the out parameter.
+        public async Task<(int? ShiftId, string Message)> SaveShiftAsync(CreateShiftDto model)
         {
             if (model.Date.Date > DateTime.Today)
-                return "Du kan ikke vælge en dato i fremtiden.";
-
+                return (null, "Du kan ikke vælge en dato i fremtiden.");
             if (model.ShiftType == 0)
-                return "Husk at vælge vagt type.";
-
+                return (null, "Husk at vælge vagt type.");
             if (model.DepartmentId == 0)
-                return "Husk at vælge afdeling.";
+                return (null, "Husk at vælge afdeling.");
 
             try
             {
                 var response = await _http.PostAsJsonAsync("api/shift", model);
                 if (response.IsSuccessStatusCode)
                 {
-                    return $"Vagt gemt: {model.Date:yyyy-MM-dd} - {model.ShiftType} - {model.DepartmentId}";
+                    var shift = await response.Content.ReadFromJsonAsync<ShiftDto>();
+                    if (int.TryParse(shift?.Id, out var shiftId))
+                        return (shiftId, string.Empty);
+                    return (null, "Kunne ikke læse vagt-id fra serveren.");
                 }
                 else
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    return $"Der skete en fejl, da vagten skulle gemmes: {error}";
+                    return (null, $"Der skete en fejl, da vagten skulle gemmes: {error}");
                 }
             }
             catch (Exception ex)
             {
-                return $"Uventet fejl: {ex.Message}";
+                return (null, $"Uventet fejl: {ex.Message}");
             }
         }
     }
 }
+

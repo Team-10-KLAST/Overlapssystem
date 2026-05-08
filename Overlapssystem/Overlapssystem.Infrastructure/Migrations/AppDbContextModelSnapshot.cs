@@ -207,6 +207,160 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.MedicationRegistration", b =>
+                {
+                    b.Property<int>("MedicationRegistrationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicationRegistrationId"));
+
+                    b.Property<bool>("Given")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("GivenTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MedicationTimeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResidentSchemaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MedicationRegistrationId");
+
+                    b.HasIndex("MedicationTimeId");
+
+                    b.HasIndex("ResidentSchemaId");
+
+                    b.ToTable("MedicationRegistrations");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.MedicationTime", b =>
+                {
+                    b.Property<int>("MedicationTimeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicationTimeId"));
+
+                    b.Property<TimeOnly>("PlannedTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("ResidentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MedicationTimeId");
+
+                    b.HasIndex("ResidentId");
+
+                    b.ToTable("MedicationTimes");
+
+                    b.HasData(
+                        new
+                        {
+                            MedicationTimeId = 1,
+                            PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 1
+                        },
+                        new
+                        {
+                            MedicationTimeId = 2,
+                            PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 2
+                        },
+                        new
+                        {
+                            MedicationTimeId = 3,
+                            PlannedTime = new TimeOnly(18, 0, 0),
+                            ResidentId = 3
+                        },
+                        new
+                        {
+                            MedicationTimeId = 4,
+                            PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 4
+                        },
+                        new
+                        {
+                            MedicationTimeId = 5,
+                            PlannedTime = new TimeOnly(10, 0, 0),
+                            ResidentId = 5
+                        },
+                        new
+                        {
+                            MedicationTimeId = 6,
+                            PlannedTime = new TimeOnly(7, 45, 0),
+                            ResidentId = 6
+                        },
+                        new
+                        {
+                            MedicationTimeId = 7,
+                            PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 7
+                        },
+                        new
+                        {
+                            MedicationTimeId = 8,
+                            PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 8
+                        },
+                        new
+                        {
+                            MedicationTimeId = 9,
+                            PlannedTime = new TimeOnly(9, 0, 0),
+                            ResidentId = 9
+                        },
+                        new
+                        {
+                            MedicationTimeId = 10,
+                            PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 10
+                        },
+                        new
+                        {
+                            MedicationTimeId = 11,
+                            PlannedTime = new TimeOnly(12, 0, 0),
+                            ResidentId = 11
+                        },
+                        new
+                        {
+                            MedicationTimeId = 12,
+                            PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 12
+                        },
+                        new
+                        {
+                            MedicationTimeId = 13,
+                            PlannedTime = new TimeOnly(17, 0, 0),
+                            ResidentId = 13
+                        },
+                        new
+                        {
+                            MedicationTimeId = 14,
+                            PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 14
+                        },
+                        new
+                        {
+                            MedicationTimeId = 15,
+                            PlannedTime = new TimeOnly(20, 0, 0),
+                            ResidentId = 15
+                        },
+                        new
+                        {
+                            MedicationTimeId = 16,
+                            PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 16
+                        },
+                        new
+                        {
+                            MedicationTimeId = 17,
+                            PlannedTime = new TimeOnly(20, 0, 0),
+                            ResidentId = 1
+                        });
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
                 {
                     b.Property<int>("ResidentId")
@@ -221,9 +375,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Property<string>("Initials")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeOnly>("MedicinTime")
-                        .HasColumnType("time");
 
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int");
@@ -242,7 +393,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 1,
                             DepartmentId = 1,
                             Initials = "L",
-                            MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 0,
                             ShoppingDay = "Tirsdag"
                         },
@@ -251,7 +401,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 2,
                             DepartmentId = 1,
                             Initials = "T",
-                            MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 1,
                             ShoppingDay = "Onsdag"
                         },
@@ -260,7 +409,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 3,
                             DepartmentId = 1,
                             Initials = "S",
-                            MedicinTime = new TimeOnly(18, 0, 0),
                             PaymentMethod = 0,
                             ShoppingDay = "Torsdag"
                         },
@@ -269,7 +417,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 4,
                             DepartmentId = 1,
                             Initials = "SH",
-                            MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 1,
                             ShoppingDay = "Mandag"
                         },
@@ -278,7 +425,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 5,
                             DepartmentId = 1,
                             Initials = "A",
-                            MedicinTime = new TimeOnly(10, 0, 0),
                             PaymentMethod = 2,
                             ShoppingDay = "Fredag"
                         },
@@ -287,7 +433,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 6,
                             DepartmentId = 1,
                             Initials = "B",
-                            MedicinTime = new TimeOnly(7, 45, 0),
                             PaymentMethod = 1,
                             ShoppingDay = "Tirsdag"
                         },
@@ -296,7 +441,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 7,
                             DepartmentId = 1,
                             Initials = "J",
-                            MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 2,
                             ShoppingDay = "Onsdag"
                         },
@@ -305,7 +449,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 8,
                             DepartmentId = 1,
                             Initials = "D",
-                            MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 0,
                             ShoppingDay = "Torsdag"
                         },
@@ -314,7 +457,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 9,
                             DepartmentId = 2,
                             Initials = "M",
-                            MedicinTime = new TimeOnly(9, 0, 0),
                             PaymentMethod = 0,
                             ShoppingDay = "Mandag"
                         },
@@ -323,7 +465,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 10,
                             DepartmentId = 2,
                             Initials = "K",
-                            MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 1,
                             ShoppingDay = "Tirsdag"
                         },
@@ -332,7 +473,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 11,
                             DepartmentId = 2,
                             Initials = "P",
-                            MedicinTime = new TimeOnly(12, 0, 0),
                             PaymentMethod = 2,
                             ShoppingDay = "Onsdag"
                         },
@@ -341,7 +481,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 12,
                             DepartmentId = 2,
                             Initials = "R",
-                            MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 0,
                             ShoppingDay = "Torsdag"
                         },
@@ -350,7 +489,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 13,
                             DepartmentId = 2,
                             Initials = "N",
-                            MedicinTime = new TimeOnly(17, 0, 0),
                             PaymentMethod = 1,
                             ShoppingDay = "Fredag"
                         },
@@ -359,7 +497,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 14,
                             DepartmentId = 2,
                             Initials = "F",
-                            MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 2,
                             ShoppingDay = "Mandag"
                         },
@@ -368,7 +505,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 15,
                             DepartmentId = 2,
                             Initials = "E",
-                            MedicinTime = new TimeOnly(20, 0, 0),
                             PaymentMethod = 0,
                             ShoppingDay = "Onsdag"
                         },
@@ -377,7 +513,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             ResidentId = 16,
                             DepartmentId = 2,
                             Initials = "H",
-                            MedicinTime = new TimeOnly(8, 0, 0),
                             PaymentMethod = 1,
                             ShoppingDay = "Fredag"
                         });
@@ -391,11 +526,17 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResidentSchemaId"));
 
+                    b.Property<int?>("PrimaryEmployeeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("RelativeContact")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ResidentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SecondaryEmployeeId")
                         .HasColumnType("int");
 
                     b.Property<int>("ShiftId")
@@ -410,7 +551,11 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("ResidentSchemaId");
 
+                    b.HasIndex("PrimaryEmployeeId");
+
                     b.HasIndex("ResidentId");
+
+                    b.HasIndex("SecondaryEmployeeId");
 
                     b.HasIndex("ShiftId");
 
@@ -724,13 +869,51 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.MedicationRegistration", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.MedicationTime", "MedicationTime")
+                        .WithMany()
+                        .HasForeignKey("MedicationTimeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Overlapssystem.Domain.Entities.ResidentSchema", "ResidentSchema")
+                        .WithMany("MedicationRegistrations")
+                        .HasForeignKey("ResidentSchemaId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("MedicationTime");
+
+                    b.Navigation("ResidentSchema");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.MedicationTime", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.Resident", "Resident")
+                        .WithMany("MedicationTimes")
+                        .HasForeignKey("ResidentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Resident");
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.ResidentSchema", b =>
                 {
+                    b.HasOne("Overlapssystem.Domain.Entities.Employee", "PrimaryEmployee")
+                        .WithMany()
+                        .HasForeignKey("PrimaryEmployeeId");
+
                     b.HasOne("Overlapssystem.Domain.Entities.Resident", "Resident")
                         .WithMany()
                         .HasForeignKey("ResidentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Overlapssystem.Domain.Entities.Employee", "SecondaryEmployee")
+                        .WithMany()
+                        .HasForeignKey("SecondaryEmployeeId");
 
                     b.HasOne("Overlapssystem.Domain.Entities.Shift", "Shift")
                         .WithMany()
@@ -738,7 +921,11 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("PrimaryEmployee");
+
                     b.Navigation("Resident");
+
+                    b.Navigation("SecondaryEmployee");
 
                     b.Navigation("Shift");
                 });
@@ -751,6 +938,16 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
+                {
+                    b.Navigation("MedicationTimes");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.ResidentSchema", b =>
+                {
+                    b.Navigation("MedicationRegistrations");
                 });
 #pragma warning restore 612, 618
         }

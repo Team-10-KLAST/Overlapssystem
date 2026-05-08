@@ -1,7 +1,8 @@
 ﻿@page "/choose-shift"
 @using System.Globalization
 @inject HttpClient Http
-@inject SaveShiftService SaveShiftService
+@inject ISaveShiftService SaveShiftService
+@inject NavigationManager Navigation
 
 <h3>Vælg vagt</h3>
 
@@ -54,6 +55,15 @@
 
     private async Task SaveShift()
     {
-        message = await SaveShiftService.SaveShiftAsync(model);
+        var (shiftId, error) = await SaveShiftService.SaveShiftAsync(model);
+
+        if (shiftId.HasValue)
+        {
+            Navigation.NavigateTo($"/overlapssystem/{shiftId.Value}");
+        }
+        else
+        {
+            message = error;
+        }
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Overlapssystem.Shared.DTOs;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Enums;
+using Overlapssystem.Application.UseCases;
 
 namespace Overlapssystem.Api.Controllers;
 
@@ -11,23 +12,37 @@ public class ShiftController : ControllerBase
 {
     //Service til håndtering af shift-logik
     private readonly IShiftService _shiftService;
+    private readonly ICreateShiftUseCase _createShiftUseCase;
 
     //Dependency injection af ShiftService
-    public ShiftController(IShiftService shiftService)
+    public ShiftController(IShiftService shiftService, ICreateShiftUseCase createShiftUseCase)
     {
         _shiftService = shiftService;
+        _createShiftUseCase = createShiftUseCase;
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateShift(CreateShiftDto dto)
     {
-        var shift = await _shiftService.CreateShiftAsync(
-        dto.Date,
-        (ShiftType)dto.ShiftType,
-        dto.DepartmentId
-        );
-        return Ok(shift);
-
+        try
+        {
+            var shift = await _createShiftUseCase.ExecuteAsync(
+                dto.Date,
+                (ShiftType)dto.ShiftType,
+                dto.DepartmentId
+            );
+            return Ok(new ShiftDto
+            {
+                Id = shift.Id.ToString(),
+                DateTime = shift.Date.ToString("o"),
+                ShiftType = shift.Type.ToString(),
+                DepartmentId = shift.DepartmentId.ToString()
+            });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("{id}")]
