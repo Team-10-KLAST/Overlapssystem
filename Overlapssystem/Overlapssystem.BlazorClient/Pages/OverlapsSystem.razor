@@ -3,16 +3,13 @@
 <PageTitle>Overlapssystem</PageTitle>
 
 <div class="overlap-page">
-
-    @* TOP SECTION - Shift info placeholder *@
     <div class="overlap-top">
-        <p>Vagtinfo: dato og vagttype kommer her</p>
+        <p>Vagtinfo: @shiftDate - @shiftType - @departmentName</p>
         <button class="btn btn-outline-danger btn-sm" @onclick="HandleLogout">
             Log ud
         </button>
     </div>
 
-    @* MIDDLE SECTION - Resident schema cards *@
     <div class="overlap-middle">
         @if (schemas == null)
         {
@@ -33,23 +30,28 @@
         }
     </div>
 
-    @* BOTTOM SECTION *@  
     <div class="overlap-bottom container-fluid mt-3">
         <div class="row">
-            @* Venstre side (2/3 af pladsen) *@
-            <div class="col-md-8">
+            @* Venstre side - Telefonliste *@
+            <div class="col-md-4">
+                <div class="p-3 border rounded bg-light" style="min-height: 200px;">
+                    <h5 class="fw-bold">Telefonliste</h5>
+                    <p class="text-muted">Her kommer telefonlisten...</p>
+                    @* Til ny komponent med telefonliste *@
+                </div>
+            </div>
+            @* Midten - Afdelingsopgaver *@
+            <div class="col-md-4">
                 <div class="p-3 border rounded bg-light" style="min-height: 200px;">
                     <h5 class="fw-bold">Afdelingsopgaver</h5>
                     <p class="text-muted">Her kommer listen over opgaver...</p>
                     @* Til ny komponent med opgaver *@
                 </div>
             </div>
-
-            @* Højre side (1/3 af pladsen) *@
+            @* Højre side - Huskeseddel *@
             <div class="col-md-4">
                 <NoteSection DepartmentId="@currentDepartment" />
             </div>
         </div>
     </div>
 </div>
-}
