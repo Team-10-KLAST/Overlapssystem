@@ -13,10 +13,12 @@ namespace Overlapssystem.Api.Controllers;
 public class ResidentSchemaController : ControllerBase
 {   
     private readonly IResidentSchemaService _service;
+    private readonly IAssignEmployeeService _assignService;
 
-    public ResidentSchemaController(IResidentSchemaService service)
+    public ResidentSchemaController(IResidentSchemaService service, IAssignEmployeeService assignService)
     {
         _service = service;
+        _assignService = assignService;
     }
 
     // GET api/residentschema
@@ -27,5 +29,23 @@ public class ResidentSchemaController : ControllerBase
         var schemas = await _service.GetByShiftAsync(shiftId);
         var dtos = schemas.Select(ResidentSchemaMapper.ToDto);
         return Ok(dtos);
+    }
+
+    [HttpPost("assign")]
+    public async Task<IActionResult> AssignEmployee([FromBody] AssignEmployeeDto dto)
+    {
+        if (dto == null) return BadRequest("Data mangler.");
+
+        var success = await _assignService.AssignEmployeeAsync(
+            dto.ResidentSchemaId,
+            dto.EmployeeId,
+            dto.Position);
+
+        if (!success)
+        {
+            return BadRequest("Kunne ikke udføre tildelingen i databasen.");
+        }
+
+        return Ok();
     }
 }

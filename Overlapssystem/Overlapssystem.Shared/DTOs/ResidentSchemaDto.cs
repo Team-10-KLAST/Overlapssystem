@@ -15,5 +15,6 @@ public class ResidentSchemaDto
     public string ShoppingDay { get; set; } = string.Empty;
     public string PaymentMethod { get; set; } = string.Empty;
     public List<MedicationTimeDto> MedicationTimes { get; set; } = new();
-
+    public int? SelectedPrimaryId { get; set; }
+    public int? SelectedSecondaryId { get; set; }
 }
