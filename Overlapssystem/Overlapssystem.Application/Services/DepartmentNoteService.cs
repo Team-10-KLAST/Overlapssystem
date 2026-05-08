@@ -17,28 +17,28 @@ namespace Overlapssystem.Application.Services
             _context = context;
         }
 
-        public async Task<string> GetNoteByDepartmentIdAsync(int departmentId)
+        public async Task<DepartmentNote> GetNoteAsync(int departmentId)
         {
             var note = await _context.DepartmentNotes.FindAsync(departmentId);
-            return note?.Content ?? string.Empty;
+            return note ?? new DepartmentNote { DepartmentId = departmentId, Content = string.Empty };
         }
 
-        public async Task SaveNoteAsync(int departmentId, string content)
+        public async Task SaveNoteAsync(DepartmentNote note)
         {
-            var existingNote = await _context.DepartmentNotes.FindAsync(departmentId);
+            var existingNote = await _context.DepartmentNotes.FindAsync(note.DepartmentId);
 
             if (existingNote == null)
             {
                 _context.DepartmentNotes.Add(new DepartmentNote
                 {
-                    DepartmentId = departmentId,
-                    Content = content,
+                    DepartmentId = note.DepartmentId,
+                    Content = note.Content,
                     LastUpdated = DateTime.Now
                 });
             }
             else
             {
-                existingNote.Content = content;
+                existingNote.Content = note.Content;
                 existingNote.LastUpdated = DateTime.Now;
             }
 

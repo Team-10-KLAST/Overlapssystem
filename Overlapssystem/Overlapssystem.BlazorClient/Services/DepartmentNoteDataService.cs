@@ -13,17 +13,16 @@ namespace Overlapssystem.BlazorClient.Services
         }
 
         // Hent noten fra API'en
-        public async Task<string> GetNoteByDepartmentIdAsync(int id)
+        public async Task<IEnumerable<DepartmentNoteDto>> GetNoteByDepartmentIdAsync(int departmentId)
         {
             // Vi henter hele DTO'en i stedet for bare en streng
-            var dto = await _http.GetFromJsonAsync<DepartmentNoteDto>($"api/departmentnote/{id}");
-            return dto?.Content ?? string.Empty;
+            var dto = await _http.GetFromJsonAsync<DepartmentNoteDto>($"api/departmentnote/{departmentId}");
+            return (IEnumerable<DepartmentNoteDto>)(dto ?? new DepartmentNoteDto { DepartmentId = departmentId, Content = string.Empty });
         }
 
-        public async Task SaveNoteAsync(int id, string content)
+        public async Task UpdateNoteAsync(DepartmentNoteDto dto)
         {
-            var dto = new DepartmentNoteDto { DepartmentId = id, Content = content };
-            await _http.PostAsJsonAsync($"api/departmentnote", dto);
+            await _http.PutAsJsonAsync($"api/departmentnote", dto);
         }
     }
 }

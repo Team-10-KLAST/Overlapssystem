@@ -26,20 +26,19 @@
     private string? Content { get; set; }
     private bool isSaving = false;
 
-    // 2. Hent noten når komponenten modtager DepartmentId
     protected override async Task OnParametersSetAsync()
     {
         if (DepartmentId > 0)
         {
-            Content = await NoteService.GetNoteByDepartmentIdAsync(DepartmentId);
+            var notes = await NoteService.GetNoteByDepartmentIdAsync(DepartmentId);
+            Content = notes.FirstOrDefault()?.Content ?? string.Empty;
         }
     }
 
-    // 3. Gem noten selvstændigt
     private async Task SaveInternal()
     {
         isSaving = true;
-        await NoteService.SaveNoteAsync(DepartmentId, Content ?? "");
+        await NoteService.UpdateNoteAsync(new DepartmentNoteDto { DepartmentId = DepartmentId, Content = Content ?? "" });
         await Task.Delay(500);
         isSaving = false;
     }

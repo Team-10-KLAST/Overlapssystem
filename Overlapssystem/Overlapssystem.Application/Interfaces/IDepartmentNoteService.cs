@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Overlapssystem.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,9 @@ namespace Overlapssystem.Application.Interfaces
     public interface IDepartmentNoteService
     {
         // Henter noten baseret på afdelings-ID
-        Task<string> GetNoteByDepartmentIdAsync(int departmentId);
+        Task<DepartmentNote> GetNoteAsync(int departmentId);
 
         // Gemmer eller opdaterer noten for afdelingen
-        Task SaveNoteAsync(int departmentId, string content);
+        Task SaveNoteAsync(DepartmentNote note);
     }
 }
