@@ -55,7 +55,7 @@
 
     private async Task SaveShift()
     {
-        var (shiftId, error) = await SaveShiftService.SaveShiftAsync(model);
+        (int? shiftId, string error) = await SaveShiftService.SaveShiftAsync(model);
 
         if (shiftId.HasValue)
         {

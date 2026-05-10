@@ -184,6 +184,26 @@ namespace Overlapssystem.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.DepartmentNote", b =>
+                {
+                    b.Property<int>("DepartmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("DepartmentId");
+
+                    b.ToTable("DepartmentNotes");
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Employee", b =>
                 {
                     b.Property<int>("EmployeeId")
