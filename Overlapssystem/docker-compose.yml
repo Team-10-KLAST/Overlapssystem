@@ -1,0 +1,16 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: overlapssystem-db
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Team10pr0jekt!
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    restart: unless-stopped
+
+volumes:
+  sqlserver-data:
