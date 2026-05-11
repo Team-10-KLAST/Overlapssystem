@@ -21,6 +21,9 @@ public class AuthController : ControllerBase
         _registerUserUseCase = registerUserUseCase;
     }
 
+    // POST api/auth/login
+    // Authenticates a user and returns a JWT token if successful.
+    // This endpoint is rate-limited to prevent brute-force attacks.
     [HttpPost("login")]
     [AllowAnonymous]
     [EnableRateLimiting("login")]
@@ -39,6 +42,8 @@ public class AuthController : ControllerBase
         });
     }
 
+    // POST api/auth/register
+    // Registers a new user. Only accessible by users with the "Admin" role.
     [HttpPost("register")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Register([FromBody] RegisterUserDto registerDto)
