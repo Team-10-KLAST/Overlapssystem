@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Overlapssystem.Application.Interfaces;
+using Overlapssystem.Application.Models;
 using Overlapssystem.Infrastructure.Identity;
 
 namespace Overlapssystem.Infrastructure.Services;
@@ -42,9 +43,14 @@ public class AuthService : IAuthService
         var roles = await _userManager.GetRolesAsync(user);
         var role = roles.FirstOrDefault() ?? "Employee";
 
-        var token = _tokenService.GenerateToken(user.Id, user.Email!, role);
+        var token = _tokenService.GenerateToken(new TokenRequest(
+            UserId: user.Id,
+            Email: user.Email!,
+            Role: role,
+            EmployeeId: user.EmployeeId?.ToString() ?? "0"
+        ));
 
-        return (true, token, user.Email, role);
+        return (true, token, user.Email!, role);
     }
 
     // Registers a new user with the specified email, password, and employee ID
