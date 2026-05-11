@@ -17,25 +17,15 @@ namespace Overlapssystem.Api.Controllers
         }
 
         // GET: api/employees
-        // Henter alle medarbejdere til brug i dropdowns o.lign.
+        // Gets a list of all employees
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAll()
         {
-            try
-            {
-                // Hent entiteter fra din Application-service
-                var employees = await _employeeService.GetAllEmployeesAsync();
+            var employees = await _employeeService.GetAllEmployeesAsync();
 
-                // Map entiteter til DTOs vha. din nye EmployeeMapper
-                var dtos = employees.Select(EmployeeMapper.ToDto);
+            var dtos = employees.Select(EmployeeMapper.ToDto);
 
-                return Ok(dtos);
-            }
-            catch (Exception ex)
-            {
-                // Log eventuel fejl her
-                return StatusCode(500, "Der opstod en fejl ved hentning af medarbejdere.");
-            }
+            return Ok(dtos);
         }
     }
 }
