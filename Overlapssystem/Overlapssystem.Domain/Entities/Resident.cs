@@ -14,7 +14,7 @@ public class Resident
     // Foreign key to the department this resident lives in.
     // Navigation is uni-directional: Resident -> Department only. 
     public int DepartmentId { get; set; }
-
+    public Department Department { get; set; } = null!;
     // Navigation property to MedicationTimes. A resident can have multiple medication times.
     public ICollection<MedicationTime> MedicationTimes { get; set; } = new List<MedicationTime>();
 }
