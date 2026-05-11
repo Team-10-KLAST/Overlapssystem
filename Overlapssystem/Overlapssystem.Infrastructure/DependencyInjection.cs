@@ -21,6 +21,7 @@ namespace Overlapssystem.Infrastructure
 
             services.AddScoped<IAppDbContext, AppDbContext>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddIdentityCore<ApplicationUser>(options =>
             {

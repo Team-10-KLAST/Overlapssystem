@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Overlapssystem.Application.Interfaces;
+using Overlapssystem.Application.UseCases;
 using Overlapssystem.Infrastructure.Identity;
 using Overlapssystem.Shared.DTOs;
 
@@ -13,75 +14,45 @@ namespace Overlapssystem.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    // Dependencies injected via constructor
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly IEmployeeCreationService _employeeCreationService;
-    private readonly ITokenService _tokenService;
+    private readonly IAuthService _authService;
+    private readonly IRegisterUserUseCase _registerUserUseCase;
 
-    public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-        IEmployeeCreationService employeeCreationService, ITokenService tokenService)
+    public AuthController(IAuthService authService, IRegisterUserUseCase registerUserUseCase)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _employeeCreationService = employeeCreationService;
-        _tokenService = tokenService;
+        _authService = authService;
+        _registerUserUseCase = registerUserUseCase;
     }
 
-    // Login-endpoint
     [HttpPost("login")]
     [EnableRateLimiting("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        var user = await _userManager.FindByEmailAsync(loginDto.Email);
-        if (user == null)
+        var result = await _authService.LoginAsync(loginDto.Email, loginDto.Password);
+
+        if (!result.Success)
             return Unauthorized("Forkert email eller adgangskode.");
-
-        var result = await _signInManager.CheckPasswordSignInAsync(
-            user, loginDto.Password, lockoutOnFailure: true);
-
-        if (result.IsLockedOut)
-            return Unauthorized("Forkert email eller adgangskode.");
-
-        if (!result.Succeeded)
-            return Unauthorized("Forkert email eller adgangskode.");
-
-        var roles = await _userManager.GetRolesAsync(user);
-        var role = roles.FirstOrDefault() ?? "Employee";
-
-        var token = _tokenService.GenerateToken(user.Id, user.Email!, role);
 
         return Ok(new AuthResponseDto
         {
-            Token = token,
-            Email = user.Email!,
-            Role = role
+            Token = result.Token!,
+            Email = result.Email!,
+            Role = result.Role!
         });
     }
 
-    // Register new user endpoint - only for admins
     [HttpPost("register")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Register([FromBody] RegisterUserDto registerDto)
     {
-        var employeeId = await _employeeCreationService.CreateEmployeeAsync(
-            registerDto.FirstName, registerDto.LastName);
+        var success = await _registerUserUseCase.ExecuteAsync(
+            registerDto.Email,
+            registerDto.Password,
+            registerDto.FirstName,
+            registerDto.LastName);
 
-        var user = new ApplicationUser
-        {
-            UserName = registerDto.Email,
-            Email = registerDto.Email,
-            EmployeeId = employeeId
-        };
+        if (!success)
+            return BadRequest("Brugeren kunne ikke oprettes.");
 
-        var result = await _userManager.CreateAsync(user, registerDto.Password);
-        if (!result.Succeeded)
-        {
-            var errors = result.Errors.Select(e => e.Description);
-            return BadRequest(errors);
-        }
-
-        await _userManager.AddToRoleAsync(user, "Employee");
         return Ok($"Bruger {registerDto.Email} oprettet.");
     }
 }
