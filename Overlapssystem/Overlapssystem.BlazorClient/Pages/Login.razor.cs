@@ -29,7 +29,7 @@ namespace Overlapssystem.BlazorClient.Pages
             var success = await AuthService.LoginAsync(_loginDto);
 
             if (success)
-                Navigation.NavigateTo("/");
+                Navigation.NavigateTo("/choose-shift");
             else
                 _errorMessage = "Forkert email eller adgangskode.";
 

@@ -16,6 +16,15 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
     // DbContextOptions are provided via dependency injection (configured in Program.cs)
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
+        // DbSets for EF Core so it can create tables and manage data for these entities
+        public DbSet<Employee> Employees => Set<Employee>();
+        public DbSet<Resident> Residents => Set<Resident>();
+        public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
+        public DbSet<Department> Departments => Set<Department>();
+        public DbSet<Shift> Shifts => Set<Shift>();
+        public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
+        public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
+        public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
     // DbSets for EF Core so it can create tables and manage data for these entities
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Resident> Residents => Set<Resident>();

@@ -16,12 +16,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-shrink: 0;
 }
 
 .overlap-middle {
-    flex: 3;
+    flex: 1;
     overflow-y: auto;
     padding: 8px;
+    min-height: 0;
 }
 
 .resident-grid {
@@ -32,13 +34,9 @@
 }
 
 .overlap-bottom {
-    flex: 1;
+    flex-shrink: 0;
     background-color: #dff0d8;
     padding: 8px 16px;
     border-radius: 4px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100px;
+    min-height: 250px;
 }
