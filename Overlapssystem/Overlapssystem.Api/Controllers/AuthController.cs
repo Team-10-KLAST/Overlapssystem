@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Application.UseCases;
-using Overlapssystem.Infrastructure.Identity;
 using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.Api.Controllers;
@@ -24,6 +22,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     [EnableRateLimiting("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
