@@ -35,13 +35,15 @@ namespace Overlapssystem.Api
                 };
             });
 
-            services.AddControllers(options =>
+            // By default, all API endpoints require authentication.
+            // You can override this with [AllowAnonymous] on specific controllers or actions.
+            services.AddControllers(/*options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
-            });
+            }*/);
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 

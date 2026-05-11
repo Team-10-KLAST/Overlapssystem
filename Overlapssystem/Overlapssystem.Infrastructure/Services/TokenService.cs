@@ -11,6 +11,7 @@ using Overlapssystem.Application.Interfaces;
 
 namespace Overlapssystem.Infrastructure.Services;
 
+// Service responsible for generating JWT tokens for authenticated users
 public class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;
@@ -20,6 +21,7 @@ public class TokenService : ITokenService
         _configuration = configuration;
     }
 
+    // Generates a JWT token containing the user's ID, email, and role as claims
     public string GenerateToken(string userId, string email, string role)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
