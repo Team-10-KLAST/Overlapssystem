@@ -28,6 +28,7 @@ namespace Overlapssystem.Infrastructure.Data
         public DbSet<Shift> Shifts => Set<Shift>();
         public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
         public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
+        public DbSet<PN> PNs => Set<PN>();
 
         /// OnModelCreating is EF Core's hook for configuring the model. 
         /// We use it here to seed mock data so every developer
@@ -68,6 +69,12 @@ namespace Overlapssystem.Infrastructure.Data
                 .HasOne(mr => mr.MedicationTime)
                 .WithMany()
                 .HasForeignKey(mr => mr.MedicationTimeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<PN>()
+                .HasOne(p => p.ResidentSchema)
+                .WithMany()
+                .HasForeignKey(p => p.ResidentSchemaId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //Seed Residents - 8 mock residents 
