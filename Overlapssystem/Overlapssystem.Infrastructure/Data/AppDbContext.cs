@@ -28,6 +28,7 @@ namespace Overlapssystem.Infrastructure.Data
         public DbSet<Shift> Shifts => Set<Shift>();
         public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
         public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
+        public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
 
         /// OnModelCreating is EF Core's hook for configuring the model. 
         /// We use it here to seed mock data so every developer

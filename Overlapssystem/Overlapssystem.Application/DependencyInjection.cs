@@ -22,6 +22,9 @@ namespace Overlapssystem.Application
             services.AddScoped<ITrafficLightService, TrafficLightService>();
             services.AddScoped<IMedicationService, MedicationService>();
             services.AddScoped<ICreateShiftUseCase, CreateShiftUseCase>();
+            services.AddScoped<IAssignEmployeeService, AssignEmployeeService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IDepartmentNoteService, DepartmentNoteService>();
 
             // If there are more services, register them here. 
 

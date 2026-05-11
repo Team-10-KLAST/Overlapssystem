@@ -17,7 +17,9 @@ public static class ResidentSchemaMapper
             TrafficLight = s.TrafficLight?.ToString(),
             ShoppingDay = s.Resident.ShoppingDay,
             PaymentMethod = s.Resident.PaymentMethod.ToString(),
-            MedicationTimes = MapMedicationTimes(s)
+            MedicationTimes = MapMedicationTimes(s),
+            SelectedPrimaryId = s.PrimaryEmployeeId,
+            SelectedSecondaryId = s.SecondaryEmployeeId,
         };
     }
 
