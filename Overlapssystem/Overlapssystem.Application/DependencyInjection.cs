@@ -24,7 +24,7 @@ namespace Overlapssystem.Application
             services.AddScoped<ICreateShiftUseCase, CreateShiftUseCase>();
             services.AddScoped<IAssignEmployeeService, AssignEmployeeService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
-
+            services.AddScoped<IActivityLogService, ActivityLogService>();
             // If there are more services, register them here. 
 
             return services;

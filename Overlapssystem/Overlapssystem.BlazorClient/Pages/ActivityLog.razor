@@ -1,0 +1,69 @@
+﻿@page "/activitylog"
+@attribute [Authorize(Roles = "Admin")]
+
+<h2>Aktivitetslog</h2>
+
+<div class="filters">
+    <div class="filter-group">
+        <label>Medarbejder</label>
+        <select @onchange="OnEmployeeChanged">
+            <option value="">Vælg medarbejder</option>
+            @if (employees != null)
+            {
+                @foreach (var emp in employees)
+                {
+                    <option value="@emp.EmployeeId">@emp.FirstName @emp.LastName</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label>Fra dato</label>
+        <input type="date" @bind="fromDate" />
+    </div>
+
+    <div class="filter-group">
+        <label>Til dato</label>
+        <input type="date" @bind="toDate" />
+    </div>
+
+    <button class="search-btn" @onclick="Search" disabled="@(!CanSearch)">Vis log</button>
+</div>
+
+@if (isLoading)
+{
+    <p>Henter data...</p>
+}
+else if (logEntries != null && logEntries.Any())
+{
+    <table class="log-table">
+        <thead>
+            <tr>
+                <th>Tidspunkt</th>
+                <th>Medarbejder</th>
+                <th>Handling</th>
+                <th>Beskrivelse</th>
+                <th>Borger</th>
+                <th>Afdeling</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in logEntries)
+            {
+                <tr>
+                    <td>@entry.Timestamp.ToString("dd/MM-yyyy HH:mm")</td>
+                    <td>@entry.EmployeeName</td>
+                    <td>@entry.ActionType</td>
+                    <td>@entry.Description</td>
+                    <td>@entry.ResidentInitials</td>
+                    <td>@entry.DepartmentName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (logEntries != null && !logEntries.Any())
+{
+    <p>Ingen aktivitet fundet for den valgte periode.</p>
+}

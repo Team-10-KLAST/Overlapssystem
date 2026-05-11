@@ -215,6 +215,9 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicationRegistrationId"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("Given")
                         .HasColumnType("bit");
 
@@ -224,12 +227,20 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Property<int>("MedicationTimeId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ModifiedByEmployeeId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ResidentSchemaId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("MedicationRegistrationId");
 
                     b.HasIndex("MedicationTimeId");
+
+                    b.HasIndex("ModifiedByEmployeeId");
 
                     b.HasIndex("ResidentSchemaId");
 
@@ -526,6 +537,12 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResidentSchemaId"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ModifiedByEmployeeId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("PrimaryEmployeeId")
                         .HasColumnType("int");
 
@@ -549,7 +566,12 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Property<int?>("TrafficLight")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("ResidentSchemaId");
+
+                    b.HasIndex("ModifiedByEmployeeId");
 
                     b.HasIndex("PrimaryEmployeeId");
 
@@ -565,6 +587,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Mor ringede, kommer på besøg torsdag eftermiddag.",
                             ResidentId = 1,
                             ShiftId = 1,
@@ -574,6 +597,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Ingen kontakt i dag.",
                             ResidentId = 2,
                             ShiftId = 1,
@@ -583,6 +607,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 3,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Søster hentede til frokost, aftale om næste besøg fredag.",
                             ResidentId = 3,
                             ShiftId = 1,
@@ -592,6 +617,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 4,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Far besøgte kl. 14, gik godt.",
                             ResidentId = 4,
                             ShiftId = 1,
@@ -601,6 +627,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 5,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Mor ringede, beboer ville ikke tale i telefon.",
                             ResidentId = 5,
                             ShiftId = 1,
@@ -610,6 +637,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 6,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Ingen kontakt i dag.",
                             ResidentId = 6,
                             ShiftId = 1,
@@ -619,6 +647,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 7,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Plejefar afleverede tøj, kort besøg.",
                             ResidentId = 7,
                             ShiftId = 1,
@@ -628,6 +657,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 8,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Aftalt med mor at hun ringer i morgen kl. 10.",
                             ResidentId = 8,
                             ShiftId = 1,
@@ -637,6 +667,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 9,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Mor kom forbi med kage, hyggeligt besøg.",
                             ResidentId = 9,
                             ShiftId = 2,
@@ -646,6 +677,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 10,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Ingen kontakt i dag.",
                             ResidentId = 10,
                             ShiftId = 2,
@@ -655,6 +687,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 11,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Bror ringede, vil besøge i weekenden.",
                             ResidentId = 11,
                             ShiftId = 2,
@@ -664,6 +697,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 12,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Plejemor hentede til tandlæge kl. 10.",
                             ResidentId = 12,
                             ShiftId = 2,
@@ -673,6 +707,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 13,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Far ringede, beboer glad for samtalen.",
                             ResidentId = 13,
                             ShiftId = 2,
@@ -682,6 +717,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 14,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Ingen kontakt i dag.",
                             ResidentId = 14,
                             ShiftId = 2,
@@ -691,6 +727,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 15,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Mor og søster besøgte, gik en tur sammen.",
                             ResidentId = 15,
                             ShiftId = 2,
@@ -700,6 +737,7 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             ResidentSchemaId = 16,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RelativeContact = "Aftalt med far at han kommer lørdag.",
                             ResidentId = 16,
                             ShiftId = 2,
@@ -877,6 +915,11 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Overlapssystem.Domain.Entities.Employee", "ModifiedByEmployee")
+                        .WithMany()
+                        .HasForeignKey("ModifiedByEmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Overlapssystem.Domain.Entities.ResidentSchema", "ResidentSchema")
                         .WithMany("MedicationRegistrations")
                         .HasForeignKey("ResidentSchemaId")
@@ -884,6 +927,8 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("MedicationTime");
+
+                    b.Navigation("ModifiedByEmployee");
 
                     b.Navigation("ResidentSchema");
                 });
@@ -901,9 +946,15 @@ namespace Overlapssystem.Infrastructure.Migrations
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.ResidentSchema", b =>
                 {
+                    b.HasOne("Overlapssystem.Domain.Entities.Employee", "ModifiedByEmployee")
+                        .WithMany()
+                        .HasForeignKey("ModifiedByEmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Overlapssystem.Domain.Entities.Employee", "PrimaryEmployee")
                         .WithMany()
-                        .HasForeignKey("PrimaryEmployeeId");
+                        .HasForeignKey("PrimaryEmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Overlapssystem.Domain.Entities.Resident", "Resident")
                         .WithMany()
@@ -913,13 +964,16 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasOne("Overlapssystem.Domain.Entities.Employee", "SecondaryEmployee")
                         .WithMany()
-                        .HasForeignKey("SecondaryEmployeeId");
+                        .HasForeignKey("SecondaryEmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Overlapssystem.Domain.Entities.Shift", "Shift")
                         .WithMany()
                         .HasForeignKey("ShiftId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ModifiedByEmployee");
 
                     b.Navigation("PrimaryEmployee");
 
