@@ -25,14 +25,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
         public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
         public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
         public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
-    // DbSets for EF Core so it can create tables and manage data for these entities
-    public DbSet<Employee> Employees => Set<Employee>();
-    public DbSet<Resident> Residents => Set<Resident>();
-    public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
-    public DbSet<Department> Departments => Set<Department>();
-    public DbSet<Shift> Shifts => Set<Shift>();
-    public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
-    public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
+   
 
     /// OnModelCreating is EF Core's hook for configuring the model. 
     /// We use it here to seed mock data so every developer
