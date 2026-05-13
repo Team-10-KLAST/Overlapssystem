@@ -1,0 +1,50 @@
+﻿@inject IDepartmentNoteDataService NoteService
+
+<div class="card shadow-sm">
+    <div class="card-header bg-warning text-dark fw-bold">Huskeseddel</div>
+    <div class="card-body p-0">
+        <textarea class="form-control border-0"
+                  style="height: 200px; background-color: #fffde7; resize: none;"
+                  @bind="Content"
+                  @bind:event="oninput"
+                  @bind:after="SaveInternal"
+                  placeholder="Skriv din note her...">
+        </textarea>
+    </div>
+    @if (isSaving)
+    {
+        <div class="card-footer py-1">
+            <small class="text-muted fst-italic">Gemmer ændringer...</small>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public int DepartmentId { get; set; }
+    private string Content = string.Empty;
+    private bool isSaving = false;
+    private int _loadedDepartmentId = 0;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (DepartmentId > 0 && DepartmentId != _loadedDepartmentId)
+        {
+            _loadedDepartmentId = DepartmentId;
+            var notes = await NoteService.GetNoteByDepartmentIdAsync(DepartmentId);
+            Content = notes.FirstOrDefault()?.Content ?? string.Empty;
+        }
+    }
+
+    private async Task SaveInternal()
+    {
+        isSaving = true;
+        await NoteService.UpdateNoteAsync(new DepartmentNoteDto
+        {
+            DepartmentId = DepartmentId,
+            Content = Content ?? ""
+        });
+        await Task.Delay(500);
+        isSaving = false;
+        StateHasChanged();
+    }
+}

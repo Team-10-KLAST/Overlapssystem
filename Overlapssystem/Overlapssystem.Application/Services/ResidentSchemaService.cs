@@ -26,6 +26,8 @@ public class ResidentSchemaService : IResidentSchemaService
             .Where(s => s.ShiftId == shiftId)
             .Include(s => s.Resident)
                 .ThenInclude(r => r.MedicationTimes)
+            .Include(s => s.PrimaryEmployee)   
+            .Include(s => s.SecondaryEmployee) 
             .ToListAsync();
 
         var shiftIdsOnSameDay = await GetShiftIdsOnSameDayAsync(shift);
