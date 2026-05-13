@@ -43,6 +43,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ISaveShiftService, SaveShiftService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
 builder.Services.AddScoped<IMedicationDataService, MedicationDataService>();
+builder.Services.AddScoped<IPNDataService, PNDataService>();
 builder.Services.AddScoped<IEmployeeAssignmentDataService, EmployeeAssignmentDataService>();
 builder.Services.AddScoped<IEmployeeDataService, EmployeeDataService>();
 builder.Services.AddScoped<IActivityLogDataService, ActivityLogDataService>();

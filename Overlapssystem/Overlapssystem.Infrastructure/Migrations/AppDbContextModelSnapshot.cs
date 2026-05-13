@@ -392,6 +392,27 @@ namespace Overlapssystem.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.PN", b =>
+                {
+                    b.Property<int>("PNId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PNId"));
+
+                    b.Property<TimeOnly>("GivenTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("ResidentSchemaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PNId");
+
+                    b.HasIndex("ResidentSchemaId");
+
+                    b.ToTable("PNs");
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
                 {
                     b.Property<int>("ResidentId")
@@ -962,6 +983,17 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Resident");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.PN", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.ResidentSchema", "ResidentSchema")
+                        .WithMany()
+                        .HasForeignKey("ResidentSchemaId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ResidentSchema");
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.ResidentSchema", b =>

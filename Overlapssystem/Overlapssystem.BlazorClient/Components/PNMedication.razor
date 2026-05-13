@@ -1,25 +1,31 @@
-﻿@* ============================================================
+@* ============================================================
    PN MEDICATION COMPONENT
    Clickable field — shows a time input on click, closes on change or Enter/Escape.
    Multiple PN times are supported and shown separated by ", ".
+   Persists PN registrations via IPNDataService.
    ============================================================ *@
 @using Overlapssystem.Shared.DTOs
+@inject IPNDataService PNDataService
 
+@* PN label *@
 <span style="font-weight: bold; min-width: 70px; flex-shrink: 0; color: #333;">PN</span>
+
+@* List of registered PN times with input support *@
 <span class="section-value">
+    @* Empty state — dash shown when no times are registered *@
     @if (PNTimes.Count == 0 && !IsAddingNew)
     {
-        // Shows a dash when no PN times are registered.
         <span class="pn-time" @onclick="StartAddNew">—</span>
     }
     else
     {
+        @* Loop over existing times — click a time to edit it *@
         @for (int i = 0; i < PNTimes.Count; i++)
         {
             var index = i;
             @if (EditingIndex == index)
             {
-                // Shows a time input when editing an existing time.
+                @* Time input shown when editing an existing entry *@
                 <input class="pn-input"
                        type="time"
                        value="@PNTimes[index]"
@@ -28,7 +34,6 @@
             }
             else
             {
-                // Shows the time — click to edit it.
                 <span class="pn-time" @onclick="() => StartEdit(index)">@FormatTime(PNTimes[index])</span>
             }
 
@@ -38,13 +43,14 @@
             }
         }
 
+        @* New time input or + button *@
         @if (IsAddingNew)
         {
-            // Shows a time input for adding a new PN time.
             @if (PNTimes.Count > 0)
             {
                 <span>, </span>
             }
+            @* Time input for registering a new PN time *@
             <input class="pn-input"
                    type="time"
                    value=""
@@ -53,7 +59,7 @@
         }
         else
         {
-            // Button to add a new PN time.
+            @* Button to add a new PN time *@
             <span class="pn-add" @onclick="StartAddNew"> +</span>
         }
     }
@@ -64,30 +70,34 @@
     [Parameter]
     public ResidentSchemaDto Schema { get; set; } = default!;
 
-    // Tracks all registered PN times.
+    // Tracks all registered PN times for this schema.
     private List<string> PNTimes { get; set; } = new();
 
-    // Tracks which time is being edited.
+    // Index of the time currently being edited, or -1 if none.
     private int EditingIndex { get; set; } = -1;
 
-    // Tracks whether a new time is being added.
+    // True when the new-time input field is visible.
     private bool IsAddingNew { get; set; } = false;
 
-    // Opens input for editing an existing time.
+    // Loads existing PN times from the API when the component initializes.
+    protected override async Task OnInitializedAsync()
+    {
+        var pns = await PNDataService.GetPNsBySchemaAsync(Schema.ResidentSchemaId);
+        PNTimes = pns.Select(p => p.GivenTime).ToList();
+    }
+
     private void StartEdit(int index)
     {
         EditingIndex = index;
         IsAddingNew = false;
     }
 
-    // Opens input for adding a new time.
     private void StartAddNew()
     {
         IsAddingNew = true;
         EditingIndex = -1;
     }
 
-    // Formats time to HH:mm.
     private string FormatTime(string time)
     {
         if (time.Length >= 5)
@@ -95,29 +105,26 @@
         return time;
     }
 
-    // Updates an existing time and closes the input field.
     private void OnEditTimeChanged(ChangeEventArgs e, int index)
     {
         var time = e.Value?.ToString() ?? string.Empty;
         if (!string.IsNullOrEmpty(time))
-        {
             PNTimes[index] = time;
-        }
         EditingIndex = -1;
     }
 
-    // Adds a new time to the list and closes the input field.
-    private void OnNewTimeChanged(ChangeEventArgs e)
+    private async Task OnNewTimeChanged(ChangeEventArgs e)
     {
         var time = e.Value?.ToString() ?? string.Empty;
         if (!string.IsNullOrEmpty(time))
         {
-            PNTimes.Add(time);
+            var dto = new PNDto { ResidentSchemaId = Schema.ResidentSchemaId, GivenTime = time };
+            var saved = await PNDataService.RegisterPNAsync(dto);
+            PNTimes.Add(saved.GivenTime);
         }
         IsAddingNew = false;
     }
 
-    // Closes the input field when Enter or Escape is pressed.
     private void OnKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "Enter" || e.Key == "Escape")
