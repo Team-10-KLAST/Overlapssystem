@@ -28,17 +28,17 @@ public class AuthService : IAuthService
     }
 
     // Validates user credentials and generates a JWT token if successful
-    public async Task<(bool Success, string? Token, string? Email, string? Role)> LoginAsync(string email, string password)
+    public async Task<LoginResult> LoginAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
-            return (false, null, null, null);
+            return new LoginResult(false, null, null, null);
 
         var result = await _signInManager.CheckPasswordSignInAsync(
             user, password, lockoutOnFailure: true);
 
         if (!result.Succeeded)
-            return (false, null, null, null);
+            return new LoginResult(false, null, null, null);
 
         var roles = await _userManager.GetRolesAsync(user);
         var role = roles.FirstOrDefault() ?? "Employee";
@@ -50,7 +50,7 @@ public class AuthService : IAuthService
             EmployeeId: user.EmployeeId?.ToString() ?? "0"
         ));
 
-        return (true, token, user.Email!, role);
+        return new LoginResult(true, token, user.Email!, role);
     }
 
     // Registers a new user with the specified email, password, and employee ID
