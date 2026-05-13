@@ -16,78 +16,51 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
     // DbContextOptions are provided via dependency injection (configured in Program.cs)
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // DbSets for EF Core so it can create tables and manage data for these entities
-        public DbSet<Employee> Employees => Set<Employee>();
-        public DbSet<Resident> Residents => Set<Resident>();
-        public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
-        public DbSet<Department> Departments => Set<Department>();
-        public DbSet<Shift> Shifts => Set<Shift>();
-        public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
-        public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
-        public DbSet<PN> PNs => Set<PN>();
-        public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
-   
+    // DbSets for EF Core so it can create tables and manage data for these entities
+    public DbSet<Employee> Employees => Set<Employee>();
+    public DbSet<Resident> Residents => Set<Resident>();
+    public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
+    public DbSet<Department> Departments => Set<Department>();
+    public DbSet<Shift> Shifts => Set<Shift>();
+    public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
+    public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
+    public DbSet<PN> PNs => Set<PN>();
+    public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
+
 
     /// OnModelCreating is EF Core's hook for configuring the model. 
     /// We use it here to seed mock data so every developer
     /// gets the same residents and schemas in their local database. 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-            // Always call base.OnModelCreating first
-            // - it lets EF Core apply its default conventions before we add our own
-            base.OnModelCreating(modelBuilder);
+        // Always call base.OnModelCreating first
+        // - it lets EF Core apply its default conventions before we add our own
+        base.OnModelCreating(modelBuilder);
 
-            //Configure the one-to-one relationship between ApplicationUser and Employee
-            modelBuilder.Entity<ApplicationUser>(user =>
-            {
-                user.HasOne(u => u.Employee)
-                    .WithOne()
-                    .HasForeignKey<ApplicationUser>(u => u.EmployeeId)
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
+        //Configure the one-to-one relationship between ApplicationUser and Employee
+        modelBuilder.Entity<ApplicationUser>(user =>
+        {
+            user.HasOne(u => u.Employee)
+                .WithOne()
+                .HasForeignKey<ApplicationUser>(u => u.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
 
-            //Configure Employee entity details
-            modelBuilder.Entity<Employee>(employee =>
-            {
-                employee.HasKey(e => e.EmployeeId);
-                employee.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
-                employee.Property(e => e.LastName).IsRequired().HasMaxLength(100);
-            });
-
-            //Configure the relationships for Resident, ResidentSchema,
-            //MedicationTime, and MedicationRegistration
-            modelBuilder.Entity<MedicationRegistration>()
-                .HasOne(mr => mr.ResidentSchema)
-                .WithMany(rs => rs.MedicationRegistrations)
-                .HasForeignKey(mr => mr.ResidentSchemaId)
-                .OnDelete(DeleteBehavior.NoAction);
+        //Configure Employee entity details
+        modelBuilder.Entity<Employee>(employee =>
+        {
+            employee.HasKey(e => e.EmployeeId);
+            employee.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
+            employee.Property(e => e.LastName).IsRequired().HasMaxLength(100);
+        });
 
 
-            modelBuilder.Entity<MedicationRegistration>()
-                .HasOne(mr => mr.MedicationTime)
-                .WithMany()
-                .HasForeignKey(mr => mr.MedicationTimeId)
-                .OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<PN>()
+            .HasOne(p => p.ResidentSchema)
+            .WithMany()
+            .HasForeignKey(p => p.ResidentSchemaId)
+            .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<PN>()
-                .HasOne(p => p.ResidentSchema)
-                .WithMany()
-                .HasForeignKey(p => p.ResidentSchemaId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            //Seed Residents - 8 mock residents 
-            // Structure from excisting Exce-bases system.
-            // Seed departments 
-            modelBuilder.Entity<Department>().HasData(
-                new Department { DepartmentId = 1, DepartmentName = "Skoven" },
-                new Department { DepartmentId = 2, DepartmentName = "Slottet" }
-                );
-
-            // Seed a default shift for mock data purposes.
-            modelBuilder.Entity<Shift>().HasData(
-                new Shift { Id = 1, Date = new DateTime(2026, 4, 28), Type = ShiftType.Dagvagt, DepartmentId = 1 },
-                new Shift { Id = 2, Date = new DateTime(2026, 4, 28), Type = ShiftType.Dagvagt, DepartmentId = 2 }
-            );
 
 
         //Configure the relationships for Resident, ResidentSchema,
