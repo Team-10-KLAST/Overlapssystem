@@ -45,6 +45,7 @@ builder.Services.AddScoped<IShiftService, ShiftService>();
 builder.Services.AddScoped<IMedicationDataService, MedicationDataService>();
 builder.Services.AddScoped<IEmployeeAssignmentDataService, EmployeeAssignmentDataService>();
 builder.Services.AddScoped<IEmployeeDataService, EmployeeDataService>();
+builder.Services.AddScoped<IDepartmentTaskDataService, DepartmentTaskDataService>();
 
 
 await builder.Build().RunAsync();

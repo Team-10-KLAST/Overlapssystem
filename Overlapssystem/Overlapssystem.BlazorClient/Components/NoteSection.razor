@@ -1,22 +1,23 @@
 ﻿@inject IDepartmentNoteDataService NoteService
 
-<div class="card shadow-sm">
-    <div class="card-header bg-warning text-dark fw-bold">Huskeseddel</div>
-    <div class="card-body p-0">
-        <textarea class="form-control border-0"
-                  style="height: 200px; background-color: #fffde7; resize: none;"
+<div style="border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+    <div style="background-color: #ffc107; padding: 8px 12px; font-weight: bold;">
+        Huskeseddel
+    </div>
+    <div style="background-color: #fffde7;">
+        <textarea style="width: 100%; height: 200px; background-color: #fffde7; resize: none; border: none; padding: 8px; outline: none;"
                   @bind="Content"
                   @bind:event="oninput"
                   @bind:after="SaveInternal"
                   placeholder="Skriv din note her...">
         </textarea>
-    </div>
-    @if (isSaving)
-    {
-        <div class="card-footer py-1">
-            <small class="text-muted fst-italic">Gemmer ændringer...</small>
+        <div style="height: 28px; padding: 4px 8px;">
+            @if (isSaving)
+            {
+                <small style="color: #6c757d; font-style: italic;">Gemmer ændringer...</small>
+            }
         </div>
-    }
+    </div>
 </div>
 
 @code {

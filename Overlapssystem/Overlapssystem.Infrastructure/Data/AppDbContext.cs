@@ -29,6 +29,8 @@ namespace Overlapssystem.Infrastructure.Data
         public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
         public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
         public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
+        public DbSet<DepartmentTask> DepartmentTasks => Set<DepartmentTask>();
+        public DbSet<ShiftTaskAssignment> ShiftTaskAssignments => Set<ShiftTaskAssignment>();
 
         /// OnModelCreating is EF Core's hook for configuring the model. 
         /// We use it here to seed mock data so every developer
@@ -154,6 +156,36 @@ namespace Overlapssystem.Infrastructure.Data
                 new ResidentSchema { ResidentSchemaId = 14, ResidentId = 14, ShiftId = 2, RelativeContact = "Ingen kontakt i dag.", Status = "Urolig, havde svært ved at falde til ro.", TrafficLight = TrafficLight.Red },
                 new ResidentSchema { ResidentSchemaId = 15, ResidentId = 15, ShiftId = 2, RelativeContact = "Mor og søster besøgte, gik en tur sammen.", Status = "Glad efter besøg, snakkede om det hele aftenen.", TrafficLight = TrafficLight.Green },
                 new ResidentSchema { ResidentSchemaId = 16, ResidentId = 16, ShiftId = 2, RelativeContact = "Aftalt med far at han kommer lørdag.", Status = "Stille dag, så film om eftermiddagen.", TrafficLight = TrafficLight.Green }
+            );
+
+            // Configure DepartmentTask
+            modelBuilder.Entity<DepartmentTask>()
+                .HasOne(dt => dt.Department)
+                .WithMany()
+                .HasForeignKey(dt => dt.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure ShiftTaskAssignment
+            modelBuilder.Entity<ShiftTaskAssignment>()
+                .HasOne(sta => sta.Shift)
+                .WithMany()
+                .HasForeignKey(sta => sta.ShiftId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ShiftTaskAssignment>()
+                .HasOne(sta => sta.DepartmentTask)
+                .WithMany()
+                .HasForeignKey(sta => sta.DepartmentTaskId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Seed fixed tasks for both departments
+            modelBuilder.Entity<DepartmentTask>().HasData(
+                new DepartmentTask { Id = 1, DepartmentId = 1, TaskName = "Medicinansvar" },
+                new DepartmentTask { Id = 2, DepartmentId = 1, TaskName = "Hygiejne" },
+                new DepartmentTask { Id = 3, DepartmentId = 1, TaskName = "Aftensmad" },
+                new DepartmentTask { Id = 4, DepartmentId = 2, TaskName = "Medicinansvar" },
+                new DepartmentTask { Id = 5, DepartmentId = 2, TaskName = "Hygiejne" },
+                new DepartmentTask { Id = 6, DepartmentId = 2, TaskName = "Aftensmad" }
             );
         }
     }
