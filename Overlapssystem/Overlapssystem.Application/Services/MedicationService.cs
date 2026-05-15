@@ -21,7 +21,8 @@ namespace Overlapssystem.Application.Services
         }
 
         // Creates a new MedicationRegistration when a staff member marks a medication as given.
-        public async Task MarkAsGivenAsync(int residentSchemaId, int medicationTimeId)
+        // and logs the action in the activity log
+        public async Task MarkAsGivenAsync(int residentSchemaId, int medicationTimeId, int employeeId)
         {
             var alreadyRegistered = await _context.MedicationRegistrations
                 .AnyAsync(mr => mr.ResidentSchemaId == residentSchemaId
@@ -30,6 +31,8 @@ namespace Overlapssystem.Application.Services
 
             if (alreadyRegistered)
                 return;
+
+            var medicationTime = await _context.MedicationTimes.FindAsync(medicationTimeId);
 
             var registration = new MedicationRegistration
             {
@@ -40,6 +43,15 @@ namespace Overlapssystem.Application.Services
             };
 
             _context.MedicationRegistrations.Add(registration);
+
+            _context.ActivityLogEntries.Add(new ActivityLogEntry
+            {
+                ActionType = "Medicin",
+                Description = $"Markerede medicin som givet kl. {medicationTime?.PlannedTime.ToString("HH:mm") ?? "ukendt"}",
+                Timestamp = DateTime.UtcNow,
+                EmployeeId = employeeId,
+                ResidentSchemaId = residentSchemaId
+            });
             await _context.SaveChangesAsync();
         }
     }
