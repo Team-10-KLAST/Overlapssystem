@@ -6,7 +6,7 @@ namespace Overlapssystem.Application.Interfaces;
 public interface IPNService
 {
     // Registers a new PN medication with a given time for a resident schema.
-    Task<int> RegisterPNAsync(int residentSchemaId, TimeOnly givenTime);
+    Task<int> RegisterPNAsync(int residentSchemaId, TimeOnly givenTime, int employeeId);
 
     // Returns all PN registrations for a specific resident schema.
     Task<IEnumerable<PN>> GetPNsBySchemaAsync(int residentSchemaId);

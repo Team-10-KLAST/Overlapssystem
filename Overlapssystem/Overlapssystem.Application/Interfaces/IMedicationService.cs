@@ -10,6 +10,6 @@ namespace Overlapssystem.Application.Interfaces
     // planned medication time as given for a specific resident schema.
     public interface IMedicationService
     {
-        Task MarkAsGivenAsync(int residentSchemaId, int medicationTimeId);
+        Task MarkAsGivenAsync(int residentSchemaId, int medicationTimeId, int employeeId);
     }
 }

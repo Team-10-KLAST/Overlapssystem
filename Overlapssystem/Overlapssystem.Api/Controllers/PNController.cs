@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Shared.DTOs;
@@ -24,7 +25,8 @@ public class PNController : ControllerBase
     {
         try
         {
-            var id = await _service.RegisterPNAsync(dto.ResidentSchemaId, TimeOnly.Parse(dto.GivenTime));
+            var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
+            var id = await _service.RegisterPNAsync(dto.ResidentSchemaId, TimeOnly.Parse(dto.GivenTime), employeeId);
             return Ok(new PNDto { PNId = id, ResidentSchemaId = dto.ResidentSchemaId, GivenTime = dto.GivenTime });
         }
         catch (FormatException)

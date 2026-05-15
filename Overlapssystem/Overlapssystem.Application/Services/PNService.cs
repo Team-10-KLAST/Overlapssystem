@@ -16,7 +16,7 @@ public class PNService : IPNService
     }
 
     // Registers a new PN medication with a given time for a resident schema.
-    public async Task<int> RegisterPNAsync(int residentSchemaId, TimeOnly givenTime)
+    public async Task<int> RegisterPNAsync(int residentSchemaId, TimeOnly givenTime, int employeeId)
     {
         // step 1: create new PN entity with the given time
         var pn = new PN
@@ -27,6 +27,18 @@ public class PNService : IPNService
 
         // step 2: add to database and save
         _context.PNs.Add(pn);
+
+
+        _context.ActivityLogEntries.Add(new ActivityLogEntry
+        {
+            ActionType = "PN",
+            Description = $"Markerede PN medicin kl. {givenTime.ToString("HH:mm")}",
+            Timestamp = DateTime.UtcNow,
+            EmployeeId = employeeId,
+            ResidentSchemaId = residentSchemaId
+        });
+
+
         await _context.SaveChangesAsync();
 
         // step 3: return the generated ID

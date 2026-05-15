@@ -68,6 +68,13 @@ namespace Overlapssystem.Test
                 ShiftId = 1
             });
 
+            context.Employees.Add(new Employee
+            {
+                EmployeeId = 1,
+                FirstName = "Test",
+                LastName = "User"
+            });
+
             context.SaveChanges();
         }
 
@@ -81,7 +88,7 @@ namespace Overlapssystem.Test
             var service = new MedicationService(context);
 
             // ACT
-            await service.MarkAsGivenAsync(1, 1);
+            await service.MarkAsGivenAsync(1, 1, 1);
 
             // ASSERT
             var registration = context.MedicationRegistrations.FirstOrDefault();
@@ -102,7 +109,7 @@ namespace Overlapssystem.Test
             var beforeCall = DateTime.UtcNow;
 
             // ACT
-            await service.MarkAsGivenAsync(1, 1);
+            await service.MarkAsGivenAsync(1, 1, 1);
 
             // ASSERT
             var registration = context.MedicationRegistrations.FirstOrDefault();
@@ -128,8 +135,8 @@ namespace Overlapssystem.Test
             var service = new MedicationService(context);
 
             // ACT
-            await service.MarkAsGivenAsync(1, 1);
-            await service.MarkAsGivenAsync(1, 2);
+            await service.MarkAsGivenAsync(1, 1, 1);
+            await service.MarkAsGivenAsync(1, 2, 1);
 
             // ASSERT
             var registrations = context.MedicationRegistrations.ToList();
@@ -149,8 +156,8 @@ namespace Overlapssystem.Test
             var service = new MedicationService(context);
 
             // ACT
-            await service.MarkAsGivenAsync(1, 1);
-            await service.MarkAsGivenAsync(1, 1);
+            await service.MarkAsGivenAsync(1, 1, 1);
+            await service.MarkAsGivenAsync(1, 1, 1);
 
             // ASSERT
             var registrations = context.MedicationRegistrations.ToList();
