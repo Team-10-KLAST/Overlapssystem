@@ -40,7 +40,7 @@ namespace Overlapssystem.Application.Services
             _context.ActivityLogEntries.Add(new ActivityLogEntry
             {
                 ActionType = "Trafiklys",
-                Description = $"Ændrede trafiklys til {parsedTrafficLight?.ToString() ?? "ingen"}",
+                Description = $"Ændrede trafiklys til {ToDanish(parsedTrafficLight)}",
                 Timestamp = DateTime.UtcNow,
                 EmployeeId = employeeId,
                 ResidentSchemaId = residentSchemaId
@@ -48,5 +48,14 @@ namespace Overlapssystem.Application.Services
 
             await _context.SaveChangesAsync();
         }
+
+        // Translates TrafficLight enum values to Danish for log descriptions. 
+        private static string ToDanish(TrafficLight? value) => value switch
+        {
+            TrafficLight.Red => "Rød",
+            TrafficLight.Yellow => "Gul",
+            TrafficLight.Green => "Grøn",
+            _ => "ingen"
+        };
     }
 }
