@@ -2,13 +2,14 @@
 
 namespace Overlapssystem.Application.Interfaces;
 
-// Service interface for fetching audit data used in the activity log.
-// Returns raw entities — mapping to DTOs happens in the API layer (Api/Mappers/).
+// Interface for the ActivityLogService.
+// Defines the contract for saving and retrieving activity log entries.
 public interface IActivityLogService
 {
-    Task<List<MedicationRegistration>> GetMedicationLogAsync(
-        int employeeId, DateTime from, DateTime to);
+    // Saves a new log entry to the database.
+    Task LogActionAsync(ActivityLogEntry entry);
 
-    Task<List<ResidentSchema>> GetResidentSchemaLogAsync(
+    // Returns all log entries for a specific employee within a date range.
+    Task<List<ActivityLogEntry>> GetByEmployeeAsync(
         int employeeId, DateTime from, DateTime to);
 }
