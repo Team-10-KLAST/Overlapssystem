@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Overlapssystem.Application.Interfaces;
+using Overlapssystem.Application.Models;
 
 namespace Overlapssystem.Application.UseCases;
 
@@ -25,15 +26,15 @@ public class RegisterUserUseCase : IRegisterUserUseCase
     // Method for executing the user registration process.
     // Creates an employee entity first, then creates the Identity user with the employee reference.
     // If the Identity user creation fails, it rolls back by deleting the created employee.
-    public async Task<bool> ExecuteAsync(string email, string password, string firstName, string lastName)
+    public async Task<RegisterResult> ExecuteAsync(string email, string password, string firstName, string lastName)
     {
         var employeeId = await _employeeService.CreateEmployeeAsync(firstName, lastName);
 
-        var success = await _authService.RegisterAsync(email, password, employeeId);
+        var result = await _authService.RegisterAsync(email, password, employeeId);
 
-        if (!success)
+        if (!result.Success)
             await _employeeService.DeleteEmployeeAsync(employeeId);
 
-        return success;
+        return result;
     }
 }

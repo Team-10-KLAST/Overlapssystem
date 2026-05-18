@@ -54,7 +54,7 @@ public class AuthService : IAuthService
     }
 
     // Registers a new user with the specified email, password, and employee ID
-    public async Task<bool> RegisterAsync(string email, string password, int employeeId)
+    public async Task<RegisterResult> RegisterAsync(string email, string password, int employeeId)
     {
         var user = new ApplicationUser
         {
@@ -65,9 +65,9 @@ public class AuthService : IAuthService
 
         var result = await _userManager.CreateAsync(user, password);
         if (!result.Succeeded)
-            return false;
+            return new RegisterResult(false, result.Errors.Select(error => error.Description));
 
         await _userManager.AddToRoleAsync(user, "Employee");
-        return true;
+        return new RegisterResult(true, Enumerable.Empty<string>());
     }
 }

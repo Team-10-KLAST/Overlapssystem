@@ -11,6 +11,6 @@ namespace Overlapssystem.Application.Interfaces;
 public interface IAuthService
 {
     Task<LoginResult> LoginAsync(string email, string password);
-    Task<bool> RegisterAsync(string email, string password, int employeeId);
+    Task<RegisterResult> RegisterAsync(string email, string password, int employeeId);
 }
 

@@ -48,14 +48,14 @@ public class AuthController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Register([FromBody] RegisterUserDto registerDto)
     {
-        var success = await _registerUserUseCase.ExecuteAsync(
+        var result = await _registerUserUseCase.ExecuteAsync(
             registerDto.Email,
             registerDto.Password,
             registerDto.FirstName,
             registerDto.LastName);
 
-        if (!success)
-            return BadRequest("Brugeren kunne ikke oprettes.");
+        if (!result.Success)
+            return BadRequest(result.Errors);
 
         return Ok($"Bruger {registerDto.Email} oprettet.");
     }
