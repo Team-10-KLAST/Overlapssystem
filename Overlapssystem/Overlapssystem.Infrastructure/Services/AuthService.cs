@@ -10,7 +10,8 @@ using Overlapssystem.Infrastructure.Identity;
 
 namespace Overlapssystem.Infrastructure.Services;
 
-// Implementation of the authentication service, handling user login and registration
+// Implementation of the authentication service, handling user login and registration 
+// using ASP.NET Core Identity for user management and a custom token service for JWT generation
 public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -28,17 +29,17 @@ public class AuthService : IAuthService
     }
 
     // Validates user credentials and generates a JWT token if successful
-    public async Task<(bool Success, string? Token, string? Email, string? Role)> LoginAsync(string email, string password)
+    public async Task<LoginResult> LoginAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
-            return (false, null, null, null);
+            return new LoginResult(false, null, null, null);
 
         var result = await _signInManager.CheckPasswordSignInAsync(
             user, password, lockoutOnFailure: true);
 
         if (!result.Succeeded)
-            return (false, null, null, null);
+            return new LoginResult(false, null, null, null);
 
         var roles = await _userManager.GetRolesAsync(user);
         var role = roles.FirstOrDefault() ?? "Employee";
@@ -50,11 +51,11 @@ public class AuthService : IAuthService
             EmployeeId: user.EmployeeId?.ToString() ?? "0"
         ));
 
-        return (true, token, user.Email!, role);
+        return new LoginResult(true, token, user.Email!, role);
     }
 
     // Registers a new user with the specified email, password, and employee ID
-    public async Task<bool> RegisterAsync(string email, string password, int employeeId)
+    public async Task<RegisterResult> RegisterAsync(string email, string password, int employeeId)
     {
         var user = new ApplicationUser
         {
@@ -65,9 +66,9 @@ public class AuthService : IAuthService
 
         var result = await _userManager.CreateAsync(user, password);
         if (!result.Succeeded)
-            return false;
+            return new RegisterResult(false, result.Errors.Select(error => error.Description));
 
         await _userManager.AddToRoleAsync(user, "Employee");
-        return true;
+        return new RegisterResult(true, Enumerable.Empty<string>());
     }
 }

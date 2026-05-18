@@ -13,7 +13,7 @@ public static class EmployeeSeeder
         using var scope = serviceProvider.CreateScope();
 
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        var employeeCreationService = scope.ServiceProvider.GetRequiredService<IEmployeeCreationService>();
+        var employeeService = scope.ServiceProvider.GetRequiredService<IEmployeeService>();
 
         // Mock employees to seed in development
         var employees = new[]
@@ -36,7 +36,7 @@ public static class EmployeeSeeder
             if (existing != null)
                 continue;
 
-            var employeeId = await employeeCreationService.CreateEmployeeAsync(
+            var employeeId = await employeeService.CreateEmployeeAsync(
                 emp.FirstName, emp.LastName);
 
             var user = new ApplicationUser
