@@ -15,7 +15,6 @@ namespace Overlapssystem.Application
             // Registers application services in the DI container. 
             public static IServiceCollection AddApplication(this IServiceCollection services)
             {
-            services.AddScoped<IEmployeeCreationService, EmployeeCreationService>();
             services.AddScoped<IResidentSchemaService, ResidentSchemaService>();
             services.AddScoped<IResidentStatusService, ResidentStatusService>();
             services.AddScoped<IShiftService, ShiftService>();
