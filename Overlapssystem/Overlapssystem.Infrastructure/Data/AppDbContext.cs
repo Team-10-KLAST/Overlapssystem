@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
 using Overlapssystem.Domain.Enums;
-using Overlapssystem.Domain.Interfaces;
 using Overlapssystem.Infrastructure.Identity;
 
 
@@ -26,6 +25,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
     public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
     public DbSet<PN> PNs => Set<PN>();
     public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
+    public DbSet<ActivityLogEntry> ActivityLogEntries => Set<ActivityLogEntry>();
 
 
     /// OnModelCreating is EF Core's hook for configuring the model. 
@@ -93,19 +93,18 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             .HasForeignKey(rs => rs.SecondaryEmployeeId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        modelBuilder.Entity<ResidentSchema>()
-            .HasOne(rs => rs.ModifiedByEmployee)
+        // Configure ActivityLogEntry relationships
+        modelBuilder.Entity<ActivityLogEntry>()
+            .HasOne(a => a.Employee)
             .WithMany()
-            .HasForeignKey(rs => rs.ModifiedByEmployeeId)
+            .HasForeignKey(a => a.EmployeeId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        // Configure Employee relationship on MedicationRegistration
-        modelBuilder.Entity<MedicationRegistration>()
-            .HasOne(mr => mr.ModifiedByEmployee)
+        modelBuilder.Entity<ActivityLogEntry>()
+            .HasOne(a => a.ResidentSchema)
             .WithMany()
-            .HasForeignKey(mr => mr.ModifiedByEmployeeId)
+            .HasForeignKey(a => a.ResidentSchemaId)
             .OnDelete(DeleteBehavior.NoAction);
-
 
         //Seed Residents - 8 mock residents 
         // Structure from excisting Exce-bases system.
@@ -193,17 +192,5 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
         );
     }
 
-    // Automatically sets CreatedAt and UpdatedAt on entities implementing IAuditable
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        foreach (var entry in ChangeTracker.Entries<IAuditable>())
-        {
-            if (entry.State == EntityState.Added)
-                entry.Entity.CreatedAt = DateTime.UtcNow;
-
-            if (entry.State == EntityState.Modified)
-                entry.Entity.UpdatedAt = DateTime.UtcNow;
-        }
-        return await base.SaveChangesAsync(cancellationToken);
-    }
+    
 }

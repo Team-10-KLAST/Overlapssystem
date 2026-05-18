@@ -21,6 +21,8 @@ namespace Overlapssystem.Application.Interfaces
         DbSet<PN> PNs { get; }
         DbSet<DepartmentNote> DepartmentNotes { get; }
 
+        DbSet<ActivityLogEntry> ActivityLogEntries { get; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

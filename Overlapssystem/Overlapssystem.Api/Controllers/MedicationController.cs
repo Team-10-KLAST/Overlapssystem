@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Shared.DTOs;
 
@@ -24,7 +25,8 @@ namespace Overlapssystem.Api.Controllers
         {
             try
             {
-                await _service.MarkAsGivenAsync(dto.ResidentSchemaId, dto.MedicationTimeId);
+                var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
+                await _service.MarkAsGivenAsync(dto.ResidentSchemaId, dto.MedicationTimeId, employeeId);
                 return NoContent();
             }
             catch (KeyNotFoundException)

@@ -44,6 +44,13 @@ namespace Overlapssystem.Test
                 }
             );
 
+            context.Employees.Add(new Employee
+            {
+                EmployeeId = 1,
+                FirstName = "Test",
+                LastName = "User"
+            });
+
             context.SaveChanges();
         }
 
@@ -57,7 +64,7 @@ namespace Overlapssystem.Test
             var service = new TrafficLightService(context);
 
             // ACT
-            await service.UpdateTrafficLightAsync(1, "Red");
+            await service.UpdateTrafficLightAsync(1, "Red", 1);
 
             // ASSERT
             var schema = await context.ResidentSchemas.FindAsync(1);
@@ -77,7 +84,7 @@ namespace Overlapssystem.Test
 
             // ACT & ASSERT
             await Assert.ThrowsExceptionAsync<KeyNotFoundException>(
-                () => service.UpdateTrafficLightAsync(999, "Red")
+                () => service.UpdateTrafficLightAsync(999, "Red", 1)
             );
         }
 
@@ -92,7 +99,7 @@ namespace Overlapssystem.Test
 
             // ACT & ASSERT
             await Assert.ThrowsExceptionAsync<ArgumentException>(
-                () => service.UpdateTrafficLightAsync(1, "Blå")
+                () => service.UpdateTrafficLightAsync(1, "Blå", 1)
             );
         }
 
@@ -106,7 +113,7 @@ namespace Overlapssystem.Test
             var service = new TrafficLightService(context);
 
             // ACT
-            await service.UpdateTrafficLightAsync(1, null);
+            await service.UpdateTrafficLightAsync(1, null, 1);
 
             // ASSERT
             var schema = await context.ResidentSchemas.FindAsync(1);
