@@ -10,7 +10,8 @@ using Overlapssystem.Infrastructure.Identity;
 
 namespace Overlapssystem.Infrastructure.Services;
 
-// Implementation of the authentication service, handling user login and registration
+// Implementation of the authentication service, handling user login and registration 
+// using ASP.NET Core Identity for user management and a custom token service for JWT generation
 public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;

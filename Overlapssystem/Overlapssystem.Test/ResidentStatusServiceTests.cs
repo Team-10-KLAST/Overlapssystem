@@ -4,7 +4,7 @@ using Overlapssystem.Domain.Entities;
 using Overlapssystem.Domain.Enums;
 using Overlapssystem.Infrastructure.Data;
 
-namespace Overlapssystem.Tests;
+namespace Overlapssystem.Test;
 
 [TestClass]
 public class ResidentStatusServiceTests
