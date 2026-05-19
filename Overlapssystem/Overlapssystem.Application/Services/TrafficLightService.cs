@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Overlapssystem.Application.Interfaces;
+using Overlapssystem.Domain.Entities;
 using Overlapssystem.Domain.Enums;
 
 namespace Overlapssystem.Application.Services
@@ -19,7 +20,8 @@ namespace Overlapssystem.Application.Services
         }
 
         // Updates the traffic light status for a specific resident schema.
-        public async Task UpdateTrafficLightAsync(int residentSchemaId, string? trafficLight)
+        // and logs the action in the activity log
+        public async Task UpdateTrafficLightAsync(int residentSchemaId, string? trafficLight, int employeeId)
         {
             TrafficLight? parsedTrafficLight = null;
 
@@ -32,8 +34,28 @@ namespace Overlapssystem.Application.Services
 
             var schema = await _context.ResidentSchemas.FindAsync(residentSchemaId);
             if (schema == null) throw new KeyNotFoundException();
+
             schema.TrafficLight = parsedTrafficLight;
+
+            _context.ActivityLogEntries.Add(new ActivityLogEntry
+            {
+                ActionType = "Trafiklys",
+                Description = $"Ændrede trafiklys til {ToDanish(parsedTrafficLight)}",
+                Timestamp = DateTime.UtcNow,
+                EmployeeId = employeeId,
+                ResidentSchemaId = residentSchemaId
+            });
+
             await _context.SaveChangesAsync();
         }
+
+        // Translates TrafficLight enum values to Danish for log descriptions. 
+        private static string ToDanish(TrafficLight? value) => value switch
+        {
+            TrafficLight.Red => "Rød",
+            TrafficLight.Yellow => "Gul",
+            TrafficLight.Green => "Grøn",
+            _ => "ingen"
+        };
     }
 }

@@ -23,4 +23,5 @@ public class ResidentSchema
 
     // Navigation property to MedicationRegistrations. A resident schema can have multiple medication registrations.
     public ICollection<MedicationRegistration> MedicationRegistrations { get; set; } = new List<MedicationRegistration>();
+
 }

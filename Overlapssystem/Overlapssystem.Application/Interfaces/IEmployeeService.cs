@@ -7,9 +7,11 @@ using Overlapssystem.Domain.Entities;
 
 namespace Overlapssystem.Application.Interfaces
 {
+    // This interface defines the contract for a service that manages employee-related operations,
     public interface IEmployeeService
     {
-        // Henter alle medarbejdere fra databasen som domæne-entiteter
         Task<IEnumerable<Employee>> GetAllEmployeesAsync();
+        Task<int> CreateEmployeeAsync(string firstName, string lastName);
+        Task DeleteEmployeeAsync(int employeeId);
     }
 }

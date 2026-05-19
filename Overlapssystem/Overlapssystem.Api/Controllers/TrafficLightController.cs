@@ -1,43 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Shared.DTOs;
 
-namespace Overlapssystem.Api.Controllers
+namespace Overlapssystem.Api.Controllers;
+
+// API controller for managing traffic light statuses for resident schemas.
+[ApiController]
+[Route("api/[controller]")]
+public class TrafficLightController : ControllerBase
 {
-    // API controller for managing traffic light statuses for resident schemas.
-    [ApiController]
-    [Route("api/[controller]")]
-    public class TrafficLightController : ControllerBase
+    private readonly ITrafficLightService _trafficLightService;
+
+    public TrafficLightController(ITrafficLightService trafficLightService)
     {
-        private readonly ITrafficLightService _trafficLightService;
+        _trafficLightService = trafficLightService;
+    }
 
-        public TrafficLightController(ITrafficLightService trafficLightService)
+    // PUT api/trafficlight/{id}
+    // Updates the traffic light status for a specific resident schema.
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateTrafficLight(int id, UpdateTrafficLightDto dto)
+    {
+        try
         {
-            _trafficLightService = trafficLightService;
+            var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
+            await _trafficLightService.UpdateTrafficLightAsync(id, dto.TrafficLight, employeeId);
+            return NoContent();
         }
-
-        // Endpoint to update the traffic light status for a specific resident schema.
-        // PUT api/trafficlight/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTrafficLight(int id, UpdateTrafficLightDto dto)
+        catch (ArgumentException)
         {
-            try
-            {
-                await _trafficLightService.UpdateTrafficLightAsync(id, dto.TrafficLight);
-                return NoContent();
-            }
-            catch (ArgumentException)
-            {
-                return BadRequest("Ugyldigt trafiklys-niveau");
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Noget gik galt");
-            }
+            return BadRequest("Ugyldigt trafiklys-niveau");
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Noget gik galt");
         }
     }
 }

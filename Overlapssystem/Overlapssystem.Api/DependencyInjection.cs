@@ -1,5 +1,9 @@
 ﻿using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Overlapssystem.Api
@@ -31,7 +35,15 @@ namespace Overlapssystem.Api
                 };
             });
 
-            services.AddControllers();
+            // By default, all API endpoints require authentication.
+            // You can override this with [AllowAnonymous] on specific controllers or actions.
+            services.AddControllers(/*options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            }*/);
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
@@ -45,6 +57,19 @@ namespace Overlapssystem.Api
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
+            });
+
+            services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("login", limiter =>
+                {
+                    limiter.Window = TimeSpan.FromMinutes(1);
+                    limiter.PermitLimit = 10;
+                    limiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    limiter.QueueLimit = 0;
+                });
+
+                options.RejectionStatusCode = 429;
             });
 
             return services;

@@ -19,5 +19,6 @@ public class MedicationRegistration
     // Navigation properties
     public ResidentSchema ResidentSchema { get; set; } = null!;
     public MedicationTime MedicationTime { get; set; } = null!;
+
 }
 

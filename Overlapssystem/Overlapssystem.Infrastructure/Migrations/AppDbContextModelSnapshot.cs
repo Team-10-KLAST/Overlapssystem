@@ -155,6 +155,40 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.ActivityLogEntry", b =>
+                {
+                    b.Property<int>("ActivityLogEntryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActivityLogEntryId"));
+
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResidentSchemaId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ActivityLogEntryId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("ResidentSchemaId");
+
+                    b.ToTable("ActivityLogEntries");
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Department", b =>
                 {
                     b.Property<int>("DepartmentId")
@@ -441,6 +475,27 @@ namespace Overlapssystem.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.PN", b =>
+                {
+                    b.Property<int>("PNId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PNId"));
+
+                    b.Property<TimeOnly>("GivenTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("ResidentSchemaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PNId");
+
+                    b.HasIndex("ResidentSchemaId");
+
+                    b.ToTable("PNs");
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
                 {
                     b.Property<int>("ResidentId")
@@ -464,6 +519,8 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ResidentId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Residents");
 
@@ -976,6 +1033,25 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.ActivityLogEntry", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Overlapssystem.Domain.Entities.ResidentSchema", "ResidentSchema")
+                        .WithMany()
+                        .HasForeignKey("ResidentSchemaId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("ResidentSchema");
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.DepartmentTask", b =>
                 {
                     b.HasOne("Overlapssystem.Domain.Entities.Department", "Department")
@@ -1017,11 +1093,34 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Navigation("Resident");
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.PN", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.ResidentSchema", "ResidentSchema")
+                        .WithMany()
+                        .HasForeignKey("ResidentSchemaId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ResidentSchema");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.ResidentSchema", b =>
                 {
                     b.HasOne("Overlapssystem.Domain.Entities.Employee", "PrimaryEmployee")
                         .WithMany()
-                        .HasForeignKey("PrimaryEmployeeId");
+                        .HasForeignKey("PrimaryEmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Overlapssystem.Domain.Entities.Resident", "Resident")
                         .WithMany()
@@ -1031,7 +1130,8 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasOne("Overlapssystem.Domain.Entities.Employee", "SecondaryEmployee")
                         .WithMany()
-                        .HasForeignKey("SecondaryEmployeeId");
+                        .HasForeignKey("SecondaryEmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Overlapssystem.Domain.Entities.Shift", "Shift")
                         .WithMany()

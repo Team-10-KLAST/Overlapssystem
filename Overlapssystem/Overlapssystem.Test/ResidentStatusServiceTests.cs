@@ -4,7 +4,7 @@ using Overlapssystem.Domain.Entities;
 using Overlapssystem.Domain.Enums;
 using Overlapssystem.Infrastructure.Data;
 
-namespace Overlapssystem.Tests;
+namespace Overlapssystem.Test;
 
 [TestClass]
 public class ResidentStatusServiceTests
@@ -41,6 +41,13 @@ public class ResidentStatusServiceTests
             ShiftId = 1
         });
 
+        context.Employees.Add(new Employee
+        {
+            EmployeeId = 1,
+            FirstName = "Test",
+            LastName = "User"
+        });
+
         context.SaveChanges();
     }
 
@@ -54,7 +61,7 @@ public class ResidentStatusServiceTests
         var service = new ResidentStatusService(context);
 
         // ACT
-        var result = await service.UpdateStatusAsync(1, "Ny status");
+        var result = await service.UpdateStatusAsync(1, "Ny status", 1);
 
         // ASSERT
         Assert.IsTrue(result);
@@ -70,7 +77,7 @@ public class ResidentStatusServiceTests
         var service = new ResidentStatusService(context);
 
         // ACT
-        await service.UpdateStatusAsync(1, "Ny status");
+        await service.UpdateStatusAsync(1, "Ny status", 1);
 
         // ASSERT - Read from database to verify the change was persisted.
         var schema = await context.ResidentSchemas.FindAsync(1);
@@ -87,7 +94,7 @@ public class ResidentStatusServiceTests
         var service = new ResidentStatusService(context);
 
         // ACT - use an ID that doesn't exist
-        var result = await service.UpdateStatusAsync(999, "Ny status");
+        var result = await service.UpdateStatusAsync(999, "Ny status", 1);
 
         // ASSERT
         Assert.IsFalse(result);
