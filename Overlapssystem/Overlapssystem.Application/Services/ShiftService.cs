@@ -19,13 +19,6 @@ public class ShiftService : IShiftService
 
     public async Task<Shift> CreateShiftAsync(DateTime date, ShiftType shiftType, int departmentId)
     {
-        if (date > DateTime.Today)
-            throw new ArgumentException("Dato må ikke være i fremtiden.");
-        if (!Enum.IsDefined(typeof(ShiftType), shiftType) || shiftType == ShiftType.None)
-            throw new ArgumentException("Husk at vælge vagttype.");
-        if (departmentId == 0)
-            throw new ArgumentException("Husk at vælge afdeling.");
-
         var existingShift = await _context.Shifts
             .FirstOrDefaultAsync(s => s.Date.Date == date.Date
                                    && s.Type == shiftType
