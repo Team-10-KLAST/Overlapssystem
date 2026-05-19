@@ -46,6 +46,7 @@ builder.Services.AddScoped<IMedicationDataService, MedicationDataService>();
 builder.Services.AddScoped<IPNDataService, PNDataService>();
 builder.Services.AddScoped<IEmployeeAssignmentDataService, EmployeeAssignmentDataService>();
 builder.Services.AddScoped<IEmployeeDataService, EmployeeDataService>();
+builder.Services.AddScoped<IDepartmentTaskDataService, DepartmentTaskDataService>();
 builder.Services.AddScoped<IActivityLogDataService, ActivityLogDataService>();
 
 

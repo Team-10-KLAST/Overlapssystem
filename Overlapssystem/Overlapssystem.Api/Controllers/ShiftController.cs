@@ -48,13 +48,14 @@ public class ShiftController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetShiftById(int id)
     {
-        //Hent vagt via id  
         var shift = await _shiftService.GetShiftByIdAsync(id);
+        if (shift == null)
+            return NotFound($"Vagt med id {id} blev ikke fundet.");
 
         var shiftDto = new ShiftDto
         {
             Id = shift.Id.ToString(),
-            DateTime = shift.Date.ToString("o"), //ISO 8601 format
+            DateTime = shift.Date.ToString("o"),
             ShiftType = shift.Type.ToString(),
             DepartmentId = shift.DepartmentId.ToString()
         };

@@ -26,6 +26,7 @@ namespace Overlapssystem.Application
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IDepartmentNoteService, DepartmentNoteService>();
             services.AddScoped<IRegisterUserUseCase, RegisterUserUseCase>();
+            services.AddScoped<IDepartmentTaskService, DepartmentTaskService>();
 
             services.AddScoped<IActivityLogService, ActivityLogService>();
             // If there are more services, register them here. 

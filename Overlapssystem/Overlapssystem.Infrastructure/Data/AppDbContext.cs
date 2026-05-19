@@ -26,7 +26,8 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
     public DbSet<PN> PNs => Set<PN>();
     public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
     public DbSet<ActivityLogEntry> ActivityLogEntries => Set<ActivityLogEntry>();
-
+    public DbSet<DepartmentTask> DepartmentTasks => Set<DepartmentTask>();
+    public DbSet<ShiftTaskAssignment> ShiftTaskAssignments => Set<ShiftTaskAssignment>();
 
     /// OnModelCreating is EF Core's hook for configuring the model. 
     /// We use it here to seed mock data so every developer
@@ -105,6 +106,27 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             .WithMany()
             .HasForeignKey(a => a.ResidentSchemaId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        // Configure DepartmentTask
+        modelBuilder.Entity<DepartmentTask>()
+            .HasOne(dt => dt.Department)
+            .WithMany()
+            .HasForeignKey(dt => dt.DepartmentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure ShiftTaskAssignment
+        modelBuilder.Entity<ShiftTaskAssignment>()
+            .HasOne(sta => sta.Shift)
+            .WithMany()
+            .HasForeignKey(sta => sta.ShiftId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ShiftTaskAssignment>()
+            .HasOne(sta => sta.DepartmentTask)
+            .WithMany()
+            .HasForeignKey(sta => sta.DepartmentTaskId)
+            .OnDelete(DeleteBehavior.Restrict);
+
 
         //Seed Residents - 8 mock residents 
         // Structure from excisting Exce-bases system.
@@ -190,7 +212,15 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             new ResidentSchema { ResidentSchemaId = 15, ResidentId = 15, ShiftId = 2, RelativeContact = "Mor og søster besøgte, gik en tur sammen.", Status = "Glad efter besøg, snakkede om det hele aftenen.", TrafficLight = TrafficLight.Green },
             new ResidentSchema { ResidentSchemaId = 16, ResidentId = 16, ShiftId = 2, RelativeContact = "Aftalt med far at han kommer lørdag.", Status = "Stille dag, så film om eftermiddagen.", TrafficLight = TrafficLight.Green }
         );
-    }
 
-    
+        // Seed fixed tasks for both departments
+        modelBuilder.Entity<DepartmentTask>().HasData(
+            new DepartmentTask { Id = 1, DepartmentId = 1, TaskName = "Medicinansvar" },
+            new DepartmentTask { Id = 2, DepartmentId = 1, TaskName = "Hygiejne" },
+            new DepartmentTask { Id = 3, DepartmentId = 1, TaskName = "Aftensmad" },
+            new DepartmentTask { Id = 4, DepartmentId = 2, TaskName = "Medicinansvar" },
+            new DepartmentTask { Id = 5, DepartmentId = 2, TaskName = "Hygiejne" },
+            new DepartmentTask { Id = 6, DepartmentId = 2, TaskName = "Aftensmad" }
+        );
+    }
 }
