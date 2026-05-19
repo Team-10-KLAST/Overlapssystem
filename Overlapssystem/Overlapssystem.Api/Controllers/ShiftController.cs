@@ -24,25 +24,18 @@ public class ShiftController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateShift(CreateShiftDto dto)
     {
-        try
+        var shift = await _createShiftUseCase.ExecuteAsync(
+            dto.Date,
+            (ShiftType)dto.ShiftType,
+            dto.DepartmentId
+        );
+        return Ok(new ShiftDto
         {
-            var shift = await _createShiftUseCase.ExecuteAsync(
-                dto.Date,
-                (ShiftType)dto.ShiftType,
-                dto.DepartmentId
-            );
-            return Ok(new ShiftDto
-            {
-                Id = shift.Id.ToString(),
-                DateTime = shift.Date.ToString("o"),
-                ShiftType = shift.Type.ToString(),
-                DepartmentId = shift.DepartmentId.ToString()
-            });
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+            Id = shift.Id.ToString(),
+            DateTime = shift.Date.ToString("o"),
+            ShiftType = shift.Type.ToString(),
+            DepartmentId = shift.DepartmentId.ToString()
+        });
     }
 
     [HttpGet("{id}")]

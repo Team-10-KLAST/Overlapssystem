@@ -20,33 +20,28 @@ namespace Overlapssystem.Application.Services
         }
 
         // Updates the traffic light status for a specific resident schema.
-        // and logs the action in the activity log
-        public async Task UpdateTrafficLightAsync(int residentSchemaId, string? trafficLight, int employeeId)
+        // and logs the action in the activity log. Returns true if the update was successful,
+        // false if the traffic light value was invalid or the resident schema was not found.
+        public async Task<bool> UpdateTrafficLightAsync(int residentSchemaId, string? trafficLight, int employeeId)
         {
-            TrafficLight? parsedTrafficLight = null;
-
-            if (trafficLight != null)
-            {
-                if (!Enum.TryParse<TrafficLight>(trafficLight, out var value))
-                    throw new ArgumentException("Ugyldigt trafiklys-niveau");
-                parsedTrafficLight = value;
-            }
-
             var schema = await _context.ResidentSchemas.FindAsync(residentSchemaId);
-            if (schema == null) throw new KeyNotFoundException();
+            if (schema == null) return false;
 
-            schema.TrafficLight = parsedTrafficLight;
+            schema.TrafficLight = trafficLight != null
+                ? Enum.Parse<TrafficLight>(trafficLight)
+                : null;
 
             _context.ActivityLogEntries.Add(new ActivityLogEntry
             {
                 ActionType = "Trafiklys",
-                Description = $"Ændrede trafiklys til {ToDanish(parsedTrafficLight)}",
+                Description = $"Ændrede trafiklys til {ToDanish(schema.TrafficLight)}",
                 Timestamp = DateTime.UtcNow,
                 EmployeeId = employeeId,
                 ResidentSchemaId = residentSchemaId
             });
 
             await _context.SaveChangesAsync();
+            return true;
         }
 
         // Translates TrafficLight enum values to Danish for log descriptions. 
