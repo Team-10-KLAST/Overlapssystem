@@ -4,59 +4,48 @@
 @inject ISaveShiftService SaveShiftService
 @inject NavigationManager Navigation
 
-<h3>Vælg vagt</h3>
-
-<div>
-    <label>Dato:</label>
-    <input type="date" @bind="model.Date" @bind:format="yyyy-MM-dd" max="@MaxDate" />
+<div style="padding: 24px;">
+    <h3 style="margin-bottom: 40px;">Vælg vagt</h3>
+    <div>
+        <label>Dato:</label>
+        <input type="date" @bind="model.Date" @bind:format="yyyy-MM-dd" max="@MaxDate" />
+    </div>
+    <br />
+    <div>
+        <label>Vagt type:</label>
+        <select @bind="model.ShiftType">
+            <option value=0 disabled selected>Vælg vagt type</option>
+            <option value="1">Dagvagt</option>
+            <option value="2">Aftenvagt</option>
+            <option value="3">Nattevagt</option>
+        </select>
+    </div>
+    <br />
+    <div>
+        <label>Afdeling:</label>
+        <select @bind="model.DepartmentId">
+            <option value="0" disabled selected>Vælg afdeling</option>
+            <option value="1">Skoven</option>
+            <option value="2">Slottet</option>
+        </select>
+    </div>
+    <br />
+    <button @onclick="SaveShift">Gem</button>
+    <br />
+    <br />
+    <p>@message</p>
 </div>
-
-<br />
-
-<div>
-    <label>Vagt type:</label>
-    <select @bind="model.ShiftType">
-        <option value=0 disabled selected>Vælg vagt type</option>
-        <option value="1">Dagvagt</option>
-        <option value="2">Aftenvagt</option>
-        <option value="3">Nattevagt</option>
-    </select>
-</div>
-
-<br />
-
-<div>
-    <label>Afdeling:</label>
-    <select @bind="model.DepartmentId">
-        <option value="0" disabled selected>Vælg afdeling</option>
-        <option value="1">Skoven</option>
-        <option value="2">Slottet</option>
-    </select>
-</div>
-
-<br />
-
-<button @onclick="SaveShift">Gem</button>
-
-<br />
-<br />
-
-<p>@message</p>
 
 @code {
     private string MaxDate => DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-
     private CreateShiftDto model = new()
     {
         Date = DateTime.Today
     };
-
     private string message = string.Empty;
-
     private async Task SaveShift()
     {
         (int? shiftId, string error) = await SaveShiftService.SaveShiftAsync(model);
-
         if (shiftId.HasValue)
         {
             Navigation.NavigateTo($"/overlapssystem/{shiftId.Value}");
