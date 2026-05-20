@@ -12,6 +12,7 @@ namespace Overlapssystem.Application.Interfaces
     public interface IAppDbContext
     {
         DbSet<Employee> Employees { get; }
+        DbSet<Phone> Phones { get; }
         DbSet<Resident> Residents { get; }
         DbSet<ResidentSchema> ResidentSchemas { get; }
         DbSet<Department> Departments { get; }

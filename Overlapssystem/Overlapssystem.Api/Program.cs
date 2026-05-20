@@ -16,6 +16,7 @@ var app = builder.Build();
 await IdentitySeeder.SeedAsync(app.Services);
 if (app.Environment.IsDevelopment())
     await EmployeeSeeder.SeedAsync(app.Services);
+await PhoneSeeder.SeedAsync(app.Services);
 
 if (app.Environment.IsDevelopment())
 {
