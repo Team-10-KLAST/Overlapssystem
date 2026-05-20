@@ -181,27 +181,50 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
            new Resident { ResidentId = 16, Initials = "H", ShoppingDay = "Fredag", PaymentMethod = PaymentMethod.PCard, DepartmentId = 2 }
        );
 
-        // Seed MedicationTimes - each resident gets one or two planned medication times.
+        // Seed MedicationTimes - residents get between 1-4 planned medication times.
         modelBuilder.Entity<MedicationTime>().HasData(
             // Skoven
             new MedicationTime { MedicationTimeId = 1, ResidentId = 1, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 17, ResidentId = 1, PlannedTime = new TimeOnly(12, 0) },
+            new MedicationTime { MedicationTimeId = 18, ResidentId = 1, PlannedTime = new TimeOnly(20, 0) },
             new MedicationTime { MedicationTimeId = 2, ResidentId = 2, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 19, ResidentId = 2, PlannedTime = new TimeOnly(18, 0) },
             new MedicationTime { MedicationTimeId = 3, ResidentId = 3, PlannedTime = new TimeOnly(18, 0) },
-            new MedicationTime { MedicationTimeId = 4, ResidentId = 4, PlannedTime = new TimeOnly(8, 0) },
-            new MedicationTime { MedicationTimeId = 5, ResidentId = 5, PlannedTime = new TimeOnly(10, 0) },
+            new MedicationTime { MedicationTimeId = 4, ResidentId = 4, PlannedTime = new TimeOnly(7, 0) },
+            new MedicationTime { MedicationTimeId = 20, ResidentId = 4, PlannedTime = new TimeOnly(12, 0) },
+            new MedicationTime { MedicationTimeId = 21, ResidentId = 4, PlannedTime = new TimeOnly(17, 0) },
+            new MedicationTime { MedicationTimeId = 22, ResidentId = 4, PlannedTime = new TimeOnly(22, 0) },
+            new MedicationTime { MedicationTimeId = 5, ResidentId = 5, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 23, ResidentId = 5, PlannedTime = new TimeOnly(14, 0) },
+            new MedicationTime { MedicationTimeId = 24, ResidentId = 5, PlannedTime = new TimeOnly(20, 0) },
             new MedicationTime { MedicationTimeId = 6, ResidentId = 6, PlannedTime = new TimeOnly(7, 45) },
+            new MedicationTime { MedicationTimeId = 25, ResidentId = 6, PlannedTime = new TimeOnly(19, 30) },
             new MedicationTime { MedicationTimeId = 7, ResidentId = 7, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 26, ResidentId = 7, PlannedTime = new TimeOnly(20, 0) },
             new MedicationTime { MedicationTimeId = 8, ResidentId = 8, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 27, ResidentId = 8, PlannedTime = new TimeOnly(13, 0) },
+            new MedicationTime { MedicationTimeId = 28, ResidentId = 8, PlannedTime = new TimeOnly(21, 0) },
             // Slottet
             new MedicationTime { MedicationTimeId = 9, ResidentId = 9, PlannedTime = new TimeOnly(9, 0) },
-            new MedicationTime { MedicationTimeId = 10, ResidentId = 10, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 29, ResidentId = 9, PlannedTime = new TimeOnly(21, 0) },
+            new MedicationTime { MedicationTimeId = 10, ResidentId = 10, PlannedTime = new TimeOnly(7, 0) },
+            new MedicationTime { MedicationTimeId = 30, ResidentId = 10, PlannedTime = new TimeOnly(12, 0) },
+            new MedicationTime { MedicationTimeId = 31, ResidentId = 10, PlannedTime = new TimeOnly(17, 0) },
+            new MedicationTime { MedicationTimeId = 32, ResidentId = 10, PlannedTime = new TimeOnly(22, 0) },
             new MedicationTime { MedicationTimeId = 11, ResidentId = 11, PlannedTime = new TimeOnly(12, 0) },
+            new MedicationTime { MedicationTimeId = 33, ResidentId = 11, PlannedTime = new TimeOnly(20, 0) },
             new MedicationTime { MedicationTimeId = 12, ResidentId = 12, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 34, ResidentId = 12, PlannedTime = new TimeOnly(14, 0) },
+            new MedicationTime { MedicationTimeId = 35, ResidentId = 12, PlannedTime = new TimeOnly(21, 0) },
             new MedicationTime { MedicationTimeId = 13, ResidentId = 13, PlannedTime = new TimeOnly(17, 0) },
             new MedicationTime { MedicationTimeId = 14, ResidentId = 14, PlannedTime = new TimeOnly(8, 0) },
-            new MedicationTime { MedicationTimeId = 15, ResidentId = 15, PlannedTime = new TimeOnly(20, 0) },
+            new MedicationTime { MedicationTimeId = 36, ResidentId = 14, PlannedTime = new TimeOnly(15, 0) },
+            new MedicationTime { MedicationTimeId = 37, ResidentId = 14, PlannedTime = new TimeOnly(22, 0) },
+            new MedicationTime { MedicationTimeId = 15, ResidentId = 15, PlannedTime = new TimeOnly(9, 0) },
+            new MedicationTime { MedicationTimeId = 38, ResidentId = 15, PlannedTime = new TimeOnly(20, 0) },
             new MedicationTime { MedicationTimeId = 16, ResidentId = 16, PlannedTime = new TimeOnly(8, 0) },
-            new MedicationTime { MedicationTimeId = 17, ResidentId = 1, PlannedTime = new TimeOnly(20, 0) }
+            new MedicationTime { MedicationTimeId = 39, ResidentId = 16, PlannedTime = new TimeOnly(13, 0) },
+            new MedicationTime { MedicationTimeId = 40, ResidentId = 16, PlannedTime = new TimeOnly(21, 0) }
         );
 
         // Seed ResidentSchemas - one per resident (16 total).
