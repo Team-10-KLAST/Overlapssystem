@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Overlapssystem.BlazorClient.Services;
 using Overlapssystem.Shared.DTOs;
 
@@ -34,6 +35,13 @@ namespace Overlapssystem.BlazorClient.Pages
                 _errorMessage = "Forkert email eller adgangskode.";
 
             _isLoading = false;
+        }
+
+        // Called when the user presses a key in the password field, to allow submitting the form with Enter
+        private async Task HandleKeyDown(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter")
+                await HandleLogin();
         }
     }
 }

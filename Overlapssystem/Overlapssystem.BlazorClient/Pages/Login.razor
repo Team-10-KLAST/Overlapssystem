@@ -1,5 +1,6 @@
 ﻿@* This page displays the login form *@
 
+@page "/"
 @page "/login"
 @attribute [AllowAnonymous]
 
@@ -24,7 +25,8 @@
         @* Password field *@
         <div class="mb-3">
             <label class="form-label">Adgangskode</label>
-            <input type="password" class="form-control" @bind="_loginDto.Password" placeholder="Adgangskode" />
+            <input type="password" class="form-control" @bind="_loginDto.Password"
+                   @bind:event="oninput" @onkeydown="HandleKeyDown" placeholder="Adgangskode" />
         </div>
 
         @* Login button *@
