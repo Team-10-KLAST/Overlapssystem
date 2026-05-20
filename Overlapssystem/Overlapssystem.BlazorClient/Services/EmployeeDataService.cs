@@ -12,24 +12,11 @@ namespace Overlapssystem.BlazorClient.Services
             _httpClient = httpClient;
         }
 
-        /// <summary>
-        /// Henter alle medarbejdere fra API'en og returnerer dem som DTOs.
-        /// </summary>
+        // Fetches the list of employees from the API and returns it as a collection of EmployeeDto.
         public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
         {
-            try
-            {
-                // Foretager et GET kald til api/employees
-                var employees = await _httpClient.GetFromJsonAsync<IEnumerable<EmployeeDto>>("api/employees");
-
-                return employees ?? Enumerable.Empty<EmployeeDto>();
-            }
-            catch (Exception ex)
-            {
-                // Her kan du logge fejlen eller håndtere den efter behov
-                Console.WriteLine($"Fejl ved hentning af medarbejdere: {ex.Message}");
-                return Enumerable.Empty<EmployeeDto>();
-            }
+            var employees = await _httpClient.GetFromJsonAsync<IEnumerable<EmployeeDto>>("api/employees");
+            return employees ?? Enumerable.Empty<EmployeeDto>();
         }
     }
 }

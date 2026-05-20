@@ -15,7 +15,8 @@ namespace Overlapssystem.BlazorClient.Services
         }
 
         // Returns the created shift's ID on success, or null on failure.
-        // Error message is set via the out parameter.
+        // Client-side validation for immediate user feedback.
+        // The same rules are enforced by model validation on the CreateShiftDto in the Shared project.
         public async Task<(int? ShiftId, string Message)> SaveShiftAsync(CreateShiftDto model)
         {
             if (model.Date.Date > DateTime.Today)

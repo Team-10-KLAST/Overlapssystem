@@ -22,23 +22,11 @@ public class TrafficLightController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTrafficLight(int id, UpdateTrafficLightDto dto)
     {
-        try
-        {
-            var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
-            await _trafficLightService.UpdateTrafficLightAsync(id, dto.TrafficLight, employeeId);
-            return NoContent();
-        }
-        catch (ArgumentException)
-        {
-            return BadRequest("Ugyldigt trafiklys-niveau");
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Noget gik galt");
-        }
+        var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
+        var success = await _trafficLightService.UpdateTrafficLightAsync(id, dto.TrafficLight, employeeId);
+
+        if (!success) return NotFound();
+
+        return NoContent();
     }
 }
