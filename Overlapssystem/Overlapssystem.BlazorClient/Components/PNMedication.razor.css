@@ -1,12 +1,26 @@
-﻿.pn-time {
+.pn-entry {
+    margin-right: 6px;
+    white-space: nowrap;
+}
+
+.pn-time {
     cursor: pointer;
     color: #555;
+}
+
+.pn-delete {
+    cursor: pointer;
+    color: #bbb;
+    font-size: 0.75em;
+    margin-left: 2px;
+    vertical-align: middle;
 }
 
 .pn-add {
     cursor: pointer;
     color: #4caf50;
     font-weight: bold;
+    margin-left: 4px;
 }
 
 .pn-input {

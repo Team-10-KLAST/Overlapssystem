@@ -10,4 +10,7 @@ public interface IPNDataService
 
     // Sends a new PN registration to the API and returns the saved result.
     Task<PNDto> RegisterPNAsync(PNDto dto);
+
+    // Sends a DELETE request to permanently remove a PN registration by ID.
+    Task DeletePNAsync(int pnId);
 }
