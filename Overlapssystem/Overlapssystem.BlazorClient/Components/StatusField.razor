@@ -22,7 +22,7 @@
 
     @* Confirm dialog before saving *@
     <ConfirmDialog IsVisible="showConfirm"
-                   Message="Vil du gemme status?"
+                   Message="@($"Vil du gemme status for {Initials}?")"
                    SubMessage="@currentStatus"
                    OnConfirm="SaveStatus"
                    OnCancel="CancelSave" />

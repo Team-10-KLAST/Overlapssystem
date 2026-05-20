@@ -27,9 +27,16 @@ namespace Overlapssystem.Application.Services
             var schema = await _context.ResidentSchemas.FindAsync(residentSchemaId);
             if (schema == null) return false;
 
-            schema.TrafficLight = trafficLight != null
-                ? Enum.Parse<TrafficLight>(trafficLight)
-                : null;
+            if (trafficLight != null)
+            {
+                if (!Enum.TryParse<TrafficLight>(trafficLight, out var parsed))
+                    return false;
+                schema.TrafficLight = parsed;
+            }
+            else
+            {
+                schema.TrafficLight = null;
+            }
 
             _context.ActivityLogEntries.Add(new ActivityLogEntry
             {
