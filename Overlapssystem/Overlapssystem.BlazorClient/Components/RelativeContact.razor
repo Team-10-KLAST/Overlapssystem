@@ -1,200 +1,135 @@
 @* ============================================================
    RELATIVE CONTACT COMPONENT
-   Shows registered pårørende contacts for a resident in a shift.
-   Supports create, edit and delete — all inline, no popups.
-   A persistent input form is always shown at the bottom.
-   Each entry is styled by type: Note (white) or Begivenhed (yellow).
-   Delete requires confirmation via ConfirmDialog.
+   Single textarea for writing a pårørende contact message
+   to inform the next shift. Supports save and cancel.
    ============================================================ *@
-@using Overlapssystem.Shared.DTOs
+
 @inject IRelativeContactDataService RelativeContactService
 
 @* Label — matches section-label style used across the card *@
 <span style="font-weight: bold; min-width: 70px; flex-shrink: 0; color: #333;">Pårørende</span>
 
-@* Content area — grows to fill remaining width of card-section *@
+@* Content area — grows to fill remaining width of card section *@
 <div class="rc-content">
 
-    @* Loop over existing registrations *@
-    @foreach (var contact in contacts)
+    @if (hasSavedMessage && !isEditing)
     {
-        @if (editingId == contact.Id)
+        @* Saved state: plain text, max 2 lines, tooltip shows full message *@
+        <div class="rc-saved-text" title="@currentMessage" @onclick="StartEditing">
+            @currentMessage
+        </div>
+    }
+    else
+    {
+        @* Empty or editing state: textarea with transparent border until focused *@
+        <textarea class="rc-textarea"
+                  @bind="currentMessage"
+                  @bind:event="oninput"
+                  @onfocus="OnFocus"
+                  @onblur="OnBlur"
+                  placeholder="Beskriv pårørendekontakt til næste vagt..." />
+
+        @* Gem and Annuller — only visible when the user has typed a change *@
+        @if (isEditing && HasChanges)
         {
-            @* Inline edit form shown for the entry being edited *@
-            <div class="rc-form">
-                <input class="rc-input"
-                       type="text"
-                       @bind="formNote"
-                       placeholder="Beskriv kontakten..." />
-                @* Type selection — click to choose before saving *@
-                <div class="rc-type-select">
-                    <button class="@(formContactType == "Note" ? "rc-type-btn rc-type-btn-active" : "rc-type-btn")"
-                            @onclick='() => formContactType = "Note"'>Note</button>
-                    <button class="@(formContactType == "Begivenhed" ? "rc-type-btn rc-type-btn-active" : "rc-type-btn")"
-                            @onclick='() => formContactType = "Begivenhed"'>Begivenhed</button>
-                </div>
-                <div class="rc-form-actions">
-                    <button class="rc-btn-save" @onclick="SaveEdit">Gem</button>
-                    <button class="rc-btn-cancel" @onclick="CancelEdit">Annuller</button>
-                </div>
-            </div>
-        }
-        else
-        {
-            @* View row — yellow background for Begivenhed, default for Note *@
-            <div class="@(contact.ContactType == "Begivenhed" ? "rc-entry rc-entry-begivenhed" : "rc-entry")">
-                <span class="rc-entry-note">@contact.ContactNote</span>
-                <span class="rc-entry-btn rc-entry-edit" @onclick="() => StartEdit(contact)" title="Rediger">✎</span>
-                <span class="rc-entry-btn rc-entry-delete" @onclick="() => StartDelete(contact)" title="Slet">✕</span>
+            <div class="rc-actions">
+                <button class="rc-btn-save" @onclick="SaveMessage">Gem</button>
+                <button class="rc-btn-cancel" @onclick="Cancel">Annuller</button>
             </div>
         }
     }
 
-    @* Persistent new-contact form — always visible at the bottom *@
-    <div class="rc-form">
-        <input class="rc-input"
-               type="text"
-               @bind="newFormNote"
-               placeholder="Beskriv kontakten..." />
-        @* Type selection — click to choose before saving *@
-        <div class="rc-type-select">
-            <button class="@(newFormContactType == "Note" ? "rc-type-btn rc-type-btn-active" : "rc-type-btn")"
-                    @onclick='() => newFormContactType = "Note"'>Note</button>
-            <button class="@(newFormContactType == "Begivenhed" ? "rc-type-btn rc-type-btn-active" : "rc-type-btn")"
-                    @onclick='() => newFormContactType = "Begivenhed"'>Begivenhed</button>
-        </div>
-        <div class="rc-form-actions">
-            <button class="rc-btn-save" @onclick="SaveNew">Gem</button>
-        </div>
-    </div>
-
 </div>
-
-@* Delete confirmation — uses the shared ConfirmDialog component *@
-<ConfirmDialog IsVisible="showDeleteConfirm"
-               Message="Er du sikker?"
-               SubMessage="Slet denne kontakt?"
-               OnConfirm="ConfirmDelete"
-               OnCancel="CancelDelete" />
 
 @code {
     // The schema data passed in from ResidentCard.
     [Parameter]
     public ResidentSchemaDto Schema { get; set; } = default!;
 
-    // Registered contacts for this schema, ordered by time.
-    private List<RelativeContactDto> contacts = new();
+    // The current text content of the textarea, bound via oninput.
+    private string currentMessage = string.Empty;
 
-    // ID of the contact being edited, or null when none.
-    private int? editingId = null;
+    // The last successfully saved message, used to detect changes and revert on cancel.
+    private string savedMessage = string.Empty;
 
-    // Contact awaiting delete confirmation.
-    private RelativeContactDto? pendingDelete = null;
+    // True while the textarea is active or the user has clicked the saved-text div.
+    private bool isEditing = false;
 
-    // True when the delete confirm dialog is visible.
-    private bool showDeleteConfirm = false;
+    // True when a non-empty message has been saved for this schema.
+    private bool hasSavedMessage = false;
 
-    // Bound to the note text input in the edit form.
-    private string formNote = string.Empty;
+    // The existing DTO from the API, used to decide between create and update.
+    private RelativeContactDto? existingContact = null;
 
-    // Selected contact type in the edit form: "Note" or "Begivenhed".
-    private string formContactType = "Note";
+    // True when the current textarea text differs from the last saved message.
+    private bool HasChanges => currentMessage != savedMessage;
 
-    // Bound to the note text input in the persistent new form.
-    private string newFormNote = string.Empty;
-
-    // Selected contact type in the persistent new form: "Note" or "Begivenhed".
-    private string newFormContactType = "Note";
-
-    // Loads contacts from the API when the component mounts.
+    // Loads the most recent contact note from the API when the component mounts.
     protected override async Task OnInitializedAsync()
     {
-        await LoadContacts();
+        await LoadContact();
     }
 
-    // Fetches all contacts for this schema from the API.
-    private async Task LoadContacts()
+    // Fetches all contacts for this schema and uses the first as the single saved message.
+    private async Task LoadContact()
     {
-        var result = await RelativeContactService.GetBySchemaAsync(Schema.ResidentSchemaId);
-        contacts = result.ToList();
-    }
-
-    // Opens the inline edit form for an existing contact.
-    private void StartEdit(RelativeContactDto contact)
-    {
-        editingId = contact.Id;
-        formNote = contact.ContactNote;
-        formContactType = contact.ContactType;
-    }
-
-    // Closes the edit form without saving.
-    private void CancelEdit()
-    {
-        editingId = null;
-    }
-
-    // Saves the new contact via the API, resets the persistent form, and refreshes the list.
-    private async Task SaveNew()
-    {
-        var dto = new RelativeContactDto
+        var contacts = await RelativeContactService.GetBySchemaAsync(Schema.ResidentSchemaId);
+        existingContact = contacts.FirstOrDefault();
+        if (existingContact != null)
         {
-            ResidentSchemaId = Schema.ResidentSchemaId,
-            ContactNote = newFormNote,
-            ContactType = newFormContactType
-        };
-
-        await RelativeContactService.CreateAsync(dto);
-
-        newFormNote = string.Empty;
-        newFormContactType = "Note";
-
-        await LoadContacts();
+            savedMessage = existingContact.ContactNote;
+            currentMessage = savedMessage;
+            hasSavedMessage = !string.IsNullOrWhiteSpace(savedMessage);
+        }
     }
 
-    // Saves the edited contact via the API and refreshes the list.
-    private async Task SaveEdit()
+    // Called when the textarea receives focus — enters editing mode.
+    private void OnFocus()
     {
-        if (editingId == null)
-            return;
+        isEditing = true;
+    }
 
-        var dto = new RelativeContactDto
+    // Called when the textarea loses focus — exits editing mode only if nothing has changed.
+    private void OnBlur()
+    {
+        if (!HasChanges)
+            isEditing = false;
+    }
+
+    // Called when the user clicks the saved-text div — switches to editing mode.
+    private void StartEditing()
+    {
+        isEditing = true;
+    }
+
+    // Saves the current message via create or update, then exits editing mode.
+    private async Task SaveMessage()
+    {
+        if (existingContact == null)
         {
-            Id = editingId.Value,
-            ResidentSchemaId = Schema.ResidentSchemaId,
-            ContactNote = formNote,
-            ContactType = formContactType
-        };
+            var dto = new RelativeContactDto
+            {
+                ResidentSchemaId = Schema.ResidentSchemaId,
+                ContactNote = currentMessage,
+                ContactType = "Note"
+            };
+            existingContact = await RelativeContactService.CreateAsync(dto);
+        }
+        else
+        {
+            existingContact.ContactNote = currentMessage;
+            await RelativeContactService.UpdateAsync(existingContact);
+        }
 
-        await RelativeContactService.UpdateAsync(dto);
-        editingId = null;
-        await LoadContacts();
+        savedMessage = currentMessage;
+        hasSavedMessage = !string.IsNullOrWhiteSpace(currentMessage);
+        isEditing = false;
     }
 
-    // Opens the delete confirmation dialog for the given contact.
-    private void StartDelete(RelativeContactDto contact)
+    // Reverts the textarea to the last saved message and exits editing mode.
+    private void Cancel()
     {
-        pendingDelete = contact;
-        showDeleteConfirm = true;
+        currentMessage = savedMessage;
+        isEditing = false;
     }
-
-    // Deletes the contact after the user confirms, then refreshes the list.
-    private async Task ConfirmDelete()
-    {
-        if (pendingDelete == null)
-            return;
-
-        await RelativeContactService.DeleteAsync(pendingDelete.Id);
-        showDeleteConfirm = false;
-        pendingDelete = null;
-        await LoadContacts();
-    }
-
-    // Cancels the delete without deleting.
-    private void CancelDelete()
-    {
-        showDeleteConfirm = false;
-        pendingDelete = null;
-    }
-
-
 }
