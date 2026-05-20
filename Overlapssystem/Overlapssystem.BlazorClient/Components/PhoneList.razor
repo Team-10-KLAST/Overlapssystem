@@ -1,0 +1,152 @@
+﻿@using Overlapssystem.Shared.DTOs
+@using Overlapssystem.BlazorClient.Services
+@inject IPhoneDataService PhoneService
+@inject IEmployeeDataService EmployeeService
+
+<div style="border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.2); display: flex; flex-direction: column; height: 274px; background-color: #fff;">
+
+    <!-- Top Bar med overskrift og den nye Nulstil-knap -->
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background-color: #fff;">
+        <h5 class="fw-bold m-0" style="font-size: 16px;">Telefonliste</h5>
+        @if (phones != null && phones.Any())
+        {
+                <button class="btn btn-outline-secondary btn-sm" 
+                        style="font-size: 11px; padding: 2px 8px; border-radius: 4px;"
+                        @onclick="ResetAllPhones">
+                    Nulstil alle
+                </button>
+        }
+    </div>
+
+    <!-- Header opdateret til en klar 'telefon-associeret' blå/teal farve -->
+    <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; padding: 8px 12px; font-weight: bold; flex-shrink: 0; font-size: 14px; border-bottom: 2px solid ;">
+        <span>Telefon</span>
+        <span>Medarbejder</span>
+        <span style="padding-right: 4px;">Test</span>
+    </div>
+
+    <!-- Scrollbart indhold -->
+    <div style="overflow-y: auto; flex: 1;">
+        @if (phones == null)
+        {
+                <p class="p-2 m-0" style="font-size: 13px;">Henter telefoner...</p>
+        }
+        else if (!phones.Any())
+        {
+                <p class="p-2 m-0 text-muted" style="font-size: 13px;">Ingen telefoner fundet.</p>
+        }
+        else
+        {
+            @foreach (var phone in phones)
+            {
+                        <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; padding: 4px 12px; border-bottom: 1px solid #eee; align-items: center; font-size: 13px;">
+                            <!-- Telefonnummer -->
+                            <span class="fw-bold text-secondary">@phone.Number</span>
+
+                            <!-- Dropdown til Medarbejder-initialer -->
+                            <select class="form-select form-select-sm border-0 bg-transparent p-0"
+                                    style="box-shadow: none; cursor: pointer;"
+                                    value="@phone.EmployeeId"
+                                    @onchange="@(e => OnEmployeeChanged(e, phone))">
+                                <option value="">tilføj</option>
+                        @foreach (var emp in AllEmployees)
+                        {
+                                        <option value="@emp.EmployeeId">@emp.Initials</option>
+                        }
+                            </select>
+
+                            <!-- Checkbox under Test - Deaktiveret hvis ingen medarbejder er valgt -->
+                            <div style="display: flex; align-items: center; justify-content: center; width: 24px;">
+                                <input type="checkbox" 
+                                       class="form-check-input m-0" 
+                                       style="cursor: @(phone.EmployeeId == null ? "not-allowed" : "pointer");"
+                                       disabled="@(phone.EmployeeId == null)"
+                                       checked="@phone.IsTested"
+                                       @onchange="@(e => OnTestChanged(e, phone))" />
+                            </div>
+                        </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public int ShiftId { get; set; }
+    [Parameter] public List<EmployeeDto> AllEmployees { get; set; } = new();
+
+    private List<PhoneDto>? phones;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShiftId > 0)
+        {
+            var result = await PhoneService.GetPhonesAsync();
+            var employees = await EmployeeService.GetEmployeesAsync();
+
+            phones = result.OrderBy(p => p.Number).ToList();
+            AllEmployees = employees.ToList();
+        }
+    }
+
+    private async Task OnEmployeeChanged(ChangeEventArgs e, PhoneDto phone)
+    {
+        string? stringValue = e.Value?.ToString();
+
+        if (int.TryParse(stringValue, out var employeeId))
+        {
+            phone.EmployeeId = employeeId;
+        }
+        else
+        {
+            phone.EmployeeId = null;
+            phone.IsTested = false;
+        }
+
+        bool success = await PhoneService.UpdatePhoneAsync(phone);
+
+        if (!success)
+        {
+            Console.WriteLine($"Kunne ikke opdatere medarbejder for telefon {phone.Number}");
+        }
+    }
+
+    private async Task OnTestChanged(ChangeEventArgs e, PhoneDto phone)
+    {
+        if (phone.EmployeeId == null) return;
+
+        if (e.Value is bool isTested)
+        {
+            phone.IsTested = isTested;
+
+            bool success = await PhoneService.UpdatePhoneAsync(phone);
+
+            if (!success)
+            {
+                phone.IsTested = !isTested;
+                Console.WriteLine($"Kunne ikke opdatere test-status for telefon {phone.Number}");
+            }
+        }
+    }
+
+    // Ny metode til at nulstille alle telefoner på én gang
+    private async Task ResetAllPhones()
+    {
+        if (phones == null || !phones.Any()) return;
+
+        foreach (var phone in phones)
+        {
+            // Ændre kun de telefoner, der faktisk har data tilknyttet
+            if (phone.EmployeeId != null || phone.IsTested)
+            {
+                phone.EmployeeId = null;
+                phone.IsTested = false;
+
+                // Opdater databasen for hver ændring
+                await PhoneService.UpdatePhoneAsync(phone);
+            }
+        }
+
+        // Tving komponenten til at gen-rendre det opdaterede UI
+        StateHasChanged();
+    }
+}

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
 using Overlapssystem.Domain.Enums;
-using Overlapssystem.Domain.Interfaces;
 using Overlapssystem.Infrastructure.Identity;
 
 
@@ -17,16 +16,20 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // DbSets for EF Core so it can create tables and manage data for these entities
-        public DbSet<Employee> Employees => Set<Employee>();
-        public DbSet<Resident> Residents => Set<Resident>();
-        public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
-        public DbSet<Department> Departments => Set<Department>();
-        public DbSet<Shift> Shifts => Set<Shift>();
-        public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
-        public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
-        public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
-        public DbSet<RelativeContact> RelativeContacts => Set<RelativeContact>();
-
+    public DbSet<Employee> Employees => Set<Employee>();
+    public DbSet<Resident> Residents => Set<Resident>();
+    public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
+    public DbSet<Department> Departments => Set<Department>();
+    public DbSet<Shift> Shifts => Set<Shift>();
+    public DbSet<MedicationTime> MedicationTimes => Set<MedicationTime>();
+    public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
+    public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
+    public DbSet<RelativeContact> RelativeContacts => Set<RelativeContact>();
+    public DbSet<Phone> Phones => Set<Phone>();
+    public DbSet<PN> PNs => Set<PN>();
+    public DbSet<ActivityLogEntry> ActivityLogEntries => Set<ActivityLogEntry>();
+    public DbSet<DepartmentTask> DepartmentTasks => Set<DepartmentTask>();
+    public DbSet<ShiftTaskAssignment> ShiftTaskAssignments => Set<ShiftTaskAssignment>();
 
     /// OnModelCreating is EF Core's hook for configuring the model. 
     /// We use it here to seed mock data so every developer
@@ -53,6 +56,28 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             employee.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
             employee.Property(e => e.LastName).IsRequired().HasMaxLength(100);
         });
+
+        modelBuilder.Entity<Phone>(phone =>
+        {
+            phone.HasKey(p => p.Id); 
+            phone.Property(p => p.Number).IsRequired().HasMaxLength(20);
+
+            phone.HasOne(p => p.Employee)
+                .WithOne() 
+                .HasForeignKey<Phone>(p => p.EmployeeId) 
+                .OnDelete(DeleteBehavior.SetNull); 
+                        
+            phone.HasIndex(p => p.EmployeeId)
+                .IsUnique();
+        });
+
+        modelBuilder.Entity<PN>()
+            .HasOne(p => p.ResidentSchema)
+            .WithMany()
+            .HasForeignKey(p => p.ResidentSchemaId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
 
         //Configure the relationships for Resident, ResidentSchema,
         //MedicationTime, and MedicationRegistration
@@ -84,18 +109,38 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             .HasForeignKey(rs => rs.SecondaryEmployeeId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        modelBuilder.Entity<ResidentSchema>()
-            .HasOne(rs => rs.ModifiedByEmployee)
+        // Configure ActivityLogEntry relationships
+        modelBuilder.Entity<ActivityLogEntry>()
+            .HasOne(a => a.Employee)
             .WithMany()
-            .HasForeignKey(rs => rs.ModifiedByEmployeeId)
+            .HasForeignKey(a => a.EmployeeId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        // Configure Employee relationship on MedicationRegistration
-        modelBuilder.Entity<MedicationRegistration>()
-            .HasOne(mr => mr.ModifiedByEmployee)
+        modelBuilder.Entity<ActivityLogEntry>()
+            .HasOne(a => a.ResidentSchema)
             .WithMany()
-            .HasForeignKey(mr => mr.ModifiedByEmployeeId)
+            .HasForeignKey(a => a.ResidentSchemaId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        // Configure DepartmentTask
+        modelBuilder.Entity<DepartmentTask>()
+            .HasOne(dt => dt.Department)
+            .WithMany()
+            .HasForeignKey(dt => dt.DepartmentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure ShiftTaskAssignment
+        modelBuilder.Entity<ShiftTaskAssignment>()
+            .HasOne(sta => sta.Shift)
+            .WithMany()
+            .HasForeignKey(sta => sta.ShiftId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ShiftTaskAssignment>()
+            .HasOne(sta => sta.DepartmentTask)
+            .WithMany()
+            .HasForeignKey(sta => sta.DepartmentTaskId)
+            .OnDelete(DeleteBehavior.Restrict);
 
 
         //Seed Residents - 8 mock residents 
@@ -137,27 +182,50 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
            new Resident { ResidentId = 16, Initials = "H", ShoppingDay = "Fredag", PaymentMethod = PaymentMethod.PCard, DepartmentId = 2 }
        );
 
-        // Seed MedicationTimes - each resident gets one or two planned medication times.
+        // Seed MedicationTimes - residents get between 1-4 planned medication times.
         modelBuilder.Entity<MedicationTime>().HasData(
             // Skoven
             new MedicationTime { MedicationTimeId = 1, ResidentId = 1, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 17, ResidentId = 1, PlannedTime = new TimeOnly(12, 0) },
+            new MedicationTime { MedicationTimeId = 18, ResidentId = 1, PlannedTime = new TimeOnly(20, 0) },
             new MedicationTime { MedicationTimeId = 2, ResidentId = 2, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 19, ResidentId = 2, PlannedTime = new TimeOnly(18, 0) },
             new MedicationTime { MedicationTimeId = 3, ResidentId = 3, PlannedTime = new TimeOnly(18, 0) },
-            new MedicationTime { MedicationTimeId = 4, ResidentId = 4, PlannedTime = new TimeOnly(8, 0) },
-            new MedicationTime { MedicationTimeId = 5, ResidentId = 5, PlannedTime = new TimeOnly(10, 0) },
+            new MedicationTime { MedicationTimeId = 4, ResidentId = 4, PlannedTime = new TimeOnly(7, 0) },
+            new MedicationTime { MedicationTimeId = 20, ResidentId = 4, PlannedTime = new TimeOnly(12, 0) },
+            new MedicationTime { MedicationTimeId = 21, ResidentId = 4, PlannedTime = new TimeOnly(17, 0) },
+            new MedicationTime { MedicationTimeId = 22, ResidentId = 4, PlannedTime = new TimeOnly(22, 0) },
+            new MedicationTime { MedicationTimeId = 5, ResidentId = 5, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 23, ResidentId = 5, PlannedTime = new TimeOnly(14, 0) },
+            new MedicationTime { MedicationTimeId = 24, ResidentId = 5, PlannedTime = new TimeOnly(20, 0) },
             new MedicationTime { MedicationTimeId = 6, ResidentId = 6, PlannedTime = new TimeOnly(7, 45) },
+            new MedicationTime { MedicationTimeId = 25, ResidentId = 6, PlannedTime = new TimeOnly(19, 30) },
             new MedicationTime { MedicationTimeId = 7, ResidentId = 7, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 26, ResidentId = 7, PlannedTime = new TimeOnly(20, 0) },
             new MedicationTime { MedicationTimeId = 8, ResidentId = 8, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 27, ResidentId = 8, PlannedTime = new TimeOnly(13, 0) },
+            new MedicationTime { MedicationTimeId = 28, ResidentId = 8, PlannedTime = new TimeOnly(21, 0) },
             // Slottet
             new MedicationTime { MedicationTimeId = 9, ResidentId = 9, PlannedTime = new TimeOnly(9, 0) },
-            new MedicationTime { MedicationTimeId = 10, ResidentId = 10, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 29, ResidentId = 9, PlannedTime = new TimeOnly(21, 0) },
+            new MedicationTime { MedicationTimeId = 10, ResidentId = 10, PlannedTime = new TimeOnly(7, 0) },
+            new MedicationTime { MedicationTimeId = 30, ResidentId = 10, PlannedTime = new TimeOnly(12, 0) },
+            new MedicationTime { MedicationTimeId = 31, ResidentId = 10, PlannedTime = new TimeOnly(17, 0) },
+            new MedicationTime { MedicationTimeId = 32, ResidentId = 10, PlannedTime = new TimeOnly(22, 0) },
             new MedicationTime { MedicationTimeId = 11, ResidentId = 11, PlannedTime = new TimeOnly(12, 0) },
+            new MedicationTime { MedicationTimeId = 33, ResidentId = 11, PlannedTime = new TimeOnly(20, 0) },
             new MedicationTime { MedicationTimeId = 12, ResidentId = 12, PlannedTime = new TimeOnly(8, 0) },
+            new MedicationTime { MedicationTimeId = 34, ResidentId = 12, PlannedTime = new TimeOnly(14, 0) },
+            new MedicationTime { MedicationTimeId = 35, ResidentId = 12, PlannedTime = new TimeOnly(21, 0) },
             new MedicationTime { MedicationTimeId = 13, ResidentId = 13, PlannedTime = new TimeOnly(17, 0) },
             new MedicationTime { MedicationTimeId = 14, ResidentId = 14, PlannedTime = new TimeOnly(8, 0) },
-            new MedicationTime { MedicationTimeId = 15, ResidentId = 15, PlannedTime = new TimeOnly(20, 0) },
+            new MedicationTime { MedicationTimeId = 36, ResidentId = 14, PlannedTime = new TimeOnly(15, 0) },
+            new MedicationTime { MedicationTimeId = 37, ResidentId = 14, PlannedTime = new TimeOnly(22, 0) },
+            new MedicationTime { MedicationTimeId = 15, ResidentId = 15, PlannedTime = new TimeOnly(9, 0) },
+            new MedicationTime { MedicationTimeId = 38, ResidentId = 15, PlannedTime = new TimeOnly(20, 0) },
             new MedicationTime { MedicationTimeId = 16, ResidentId = 16, PlannedTime = new TimeOnly(8, 0) },
-            new MedicationTime { MedicationTimeId = 17, ResidentId = 1, PlannedTime = new TimeOnly(20, 0) }
+            new MedicationTime { MedicationTimeId = 39, ResidentId = 16, PlannedTime = new TimeOnly(13, 0) },
+            new MedicationTime { MedicationTimeId = 40, ResidentId = 16, PlannedTime = new TimeOnly(21, 0) }
         );
 
         // Seed ResidentSchemas - one per resident (16 total).
@@ -182,19 +250,15 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             new ResidentSchema { ResidentSchemaId = 15, ResidentId = 15, ShiftId = 2, RelativeContact = "Mor og søster besøgte, gik en tur sammen.", Status = "Glad efter besøg, snakkede om det hele aftenen.", TrafficLight = TrafficLight.Green },
             new ResidentSchema { ResidentSchemaId = 16, ResidentId = 16, ShiftId = 2, RelativeContact = "Aftalt med far at han kommer lørdag.", Status = "Stille dag, så film om eftermiddagen.", TrafficLight = TrafficLight.Green }
         );
-    }
 
-    // Automatically sets CreatedAt and UpdatedAt on entities implementing IAuditable
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        foreach (var entry in ChangeTracker.Entries<IAuditable>())
-        {
-            if (entry.State == EntityState.Added)
-                entry.Entity.CreatedAt = DateTime.UtcNow;
-
-            if (entry.State == EntityState.Modified)
-                entry.Entity.UpdatedAt = DateTime.UtcNow;
-        }
-        return await base.SaveChangesAsync(cancellationToken);
+        // Seed fixed tasks for both departments
+        modelBuilder.Entity<DepartmentTask>().HasData(
+            new DepartmentTask { Id = 1, DepartmentId = 1, TaskName = "Medicinansvar" },
+            new DepartmentTask { Id = 2, DepartmentId = 1, TaskName = "Hygiejne" },
+            new DepartmentTask { Id = 3, DepartmentId = 1, TaskName = "Aftensmad" },
+            new DepartmentTask { Id = 4, DepartmentId = 2, TaskName = "Medicinansvar" },
+            new DepartmentTask { Id = 5, DepartmentId = 2, TaskName = "Hygiejne" },
+            new DepartmentTask { Id = 6, DepartmentId = 2, TaskName = "Aftensmad" }
+        );
     }
 }

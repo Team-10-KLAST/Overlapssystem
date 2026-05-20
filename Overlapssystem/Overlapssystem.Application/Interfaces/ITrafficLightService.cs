@@ -11,6 +11,6 @@ namespace Overlapssystem.Application.Interfaces
     // which defines the contract for updating a resident's traffic light status.
     public interface ITrafficLightService
     {
-        Task UpdateTrafficLightAsync(int residentSchemaId, string? trafficLight);
+        Task<bool> UpdateTrafficLightAsync(int residentSchemaId, string? trafficLight, int employeeId);
     }
 }

@@ -1,0 +1,76 @@
+﻿@inject IDepartmentTaskDataService TaskService
+
+<div style="border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.2); display: flex; flex-direction: column; height: 274px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr auto; background-color: #d9edf7; padding: 8px 12px; font-weight: bold; flex-shrink: 0;">
+        <span>Ansvarsopgaver</span>
+        <span>Medarbejder</span>
+        <span></span>
+    </div>
+    <div style="overflow-y: auto; flex: 1;">
+        @if (tasks == null)
+        {
+            <p class="p-2">Henter opgaver...</p>
+        }
+        else
+        {
+            @foreach (var task in tasks)
+            {
+                <div style="display: grid; grid-template-columns: 1fr 1fr auto; padding: 4px 8px; border-bottom: 1px solid #eee; align-items: center;">
+                    <input class="form-control form-control-sm border-0"
+                           placeholder="Ny opgave..."
+                           @bind="task.TaskName"
+                           @bind:event="onchange"
+                           @bind:after="() => UpdateTaskName(task)" />
+                    <input class="form-control form-control-sm border-0"
+                           placeholder="Navn/initialer..."
+                           @bind="task.AssignedEmployee"
+                           @bind:event="onchange"
+                           @bind:after="() => SaveAssignment(task)" />
+                    <button class="btn btn-sm text-danger border-0 bg-transparent" @onclick="() => DeleteTask(task)">✕</button>
+                </div>
+            }
+        }
+    </div>
+    <div style="padding: 4px 8px; border-top: 1px solid #eee; flex-shrink: 0;">
+        <button class="btn btn-sm btn-outline-secondary w-100" @onclick="AddTask">+ Tilføj opgave</button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int DepartmentId { get; set; }
+    [Parameter] public int ShiftId { get; set; }
+
+    private List<DepartmentTaskDto>? tasks;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (DepartmentId > 0 && ShiftId > 0)
+        {
+            var result = await TaskService.GetTasksAsync(DepartmentId, ShiftId);
+            tasks = result.ToList();
+        }
+    }
+
+    private async Task UpdateTaskName(DepartmentTaskDto task)
+    {
+        await TaskService.UpdateTaskNameAsync(task);
+    }
+
+    private async Task SaveAssignment(DepartmentTaskDto task)
+    {
+        await TaskService.SaveAssignmentAsync(ShiftId, task);
+    }
+
+    private async Task AddTask()
+    {
+        var newTask = await TaskService.CreateTaskAsync(DepartmentId);
+        if (newTask != null)
+            tasks?.Add(newTask);
+    }
+
+    private async Task DeleteTask(DepartmentTaskDto task)
+    {
+        await TaskService.DeleteTaskAsync(task.Id);
+        tasks?.Remove(task);
+    }
+}

@@ -15,6 +15,7 @@ public class ActivityLogController : ControllerBase
 {
     private readonly IActivityLogService _service;
 
+    // Constructor — receives the activity log service via dependency injection.
     public ActivityLogController(IActivityLogService service)
     {
         _service = service;
@@ -28,10 +29,11 @@ public class ActivityLogController : ControllerBase
         [FromQuery] DateTime from,
         [FromQuery] DateTime to)
     {
-        var medications = await _service.GetMedicationLogAsync(employeeId, from, to);
-        var schemas = await _service.GetResidentSchemaLogAsync(employeeId, from, to);
+        // Fetch log entries from the database via service
+        var entries = await _service.GetByEmployeeAsync(employeeId, from, to);
 
-        var dtos = ActivityLogMapper.ToDtoList(medications, schemas);
+        // Map entities to DTOs in the API layer (our convention)
+        var dtos = ActivityLogMapper.ToDtoList(entries);
 
         return Ok(dtos);
     }

@@ -16,7 +16,7 @@ namespace Overlapssystem.Api.Seed
             // Get required services
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            var employeeCreationService = scope.ServiceProvider.GetRequiredService<IEmployeeCreationService>();
+            var employeeService = scope.ServiceProvider.GetRequiredService<IEmployeeService>();
             var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
             // Ensure roles exist
@@ -37,7 +37,7 @@ namespace Overlapssystem.Api.Seed
             var existing = await userManager.FindByEmailAsync(adminEmail);
             if (existing == null)
             {
-                var employeeId = await employeeCreationService.CreateEmployeeAsync("Admin", "User");
+                var employeeId = await employeeService.CreateEmployeeAsync("Admin", "User");
 
                 var adminUser = new ApplicationUser
                 {

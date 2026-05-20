@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.Api.Controllers;
 
-// API controller for updating resident status
-
+// API controller for updating resident status.
 [ApiController]
 [Route("api/[controller]")]
 public class ResidentStatusController : ControllerBase
@@ -15,9 +15,7 @@ public class ResidentStatusController : ControllerBase
     public ResidentStatusController(IResidentStatusService service)
     {
         _service = service;
-            
     }
-
 
     // PUT api/residentstatus/5
     // Updates the status text for the resident schema with the given ID.
@@ -25,16 +23,12 @@ public class ResidentStatusController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusDto dto)
     {
-        // Call service to update the status in the database
-        var success = await _service.UpdateStatusAsync(id, dto.Status);
+        var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
+        var success = await _service.UpdateStatusAsync(id, dto.Status, employeeId);
 
-        // if schema was not found, return 404
         if (!success)
-        {
             return NotFound();
-        }
 
-        // return 204 no content - update succeeded, no data tyo return. 
         return NoContent();
     }
 }

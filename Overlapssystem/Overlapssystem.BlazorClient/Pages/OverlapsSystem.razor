@@ -5,9 +5,16 @@
 <div class="overlap-page">
     <div class="overlap-top">
         <p>Vagtinfo: @shiftDate - @shiftType - @departmentName</p>
-        <button class="btn btn-outline-danger btn-sm" @onclick="HandleLogout">
-            Log ud
-        </button>
+        <div style="display: flex; gap: 8px;">
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <a href="/activitylog" class="btn btn-outline-primary btn-sm">Aktivitetslog</a>
+                </Authorized>
+            </AuthorizeView>
+            <button class="btn btn-outline-danger btn-sm" @onclick="HandleLogout">
+                Log ud
+            </button>
+        </div>
     </div>
 
     <div class="overlap-middle">
@@ -30,23 +37,19 @@
         }
     </div>
 
-    <div class="overlap-bottom container-fluid mt-3">
+    <div class="overlap-bottom container-fluid">
         <div class="row">
             @* Venstre side - Telefonliste *@
             <div class="col-md-4">
-                <div class="p-3 border rounded bg-light" style="min-height: 200px;">
-                    <h5 class="fw-bold">Telefonliste</h5>
-                    <p class="text-muted">Her kommer telefonlisten...</p>
+                <div class="p-3 border rounded bg-light" style="min-height: 200px;">                    
                     @* Til ny komponent med telefonliste *@
+                    <PhoneList ShiftId="@ShiftId" />
                 </div>
             </div>
             @* Midten - Afdelingsopgaver *@
+            @* Midten - Afdelingsopgaver *@
             <div class="col-md-4">
-                <div class="p-3 border rounded bg-light" style="min-height: 200px;">
-                    <h5 class="fw-bold">Afdelingsopgaver</h5>
-                    <p class="text-muted">Her kommer listen over opgaver...</p>
-                    @* Til ny komponent med opgaver *@
-                </div>
+                <ShiftTaskSection DepartmentId="@currentDepartment" ShiftId="@ShiftId" />
             </div>
             @* Højre side - Huskeseddel *@
             <div class="col-md-4">

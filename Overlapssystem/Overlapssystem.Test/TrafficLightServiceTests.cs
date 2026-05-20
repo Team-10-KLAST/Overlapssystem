@@ -44,6 +44,13 @@ namespace Overlapssystem.Test
                 }
             );
 
+            context.Employees.Add(new Employee
+            {
+                EmployeeId = 1,
+                FirstName = "Test",
+                LastName = "User"
+            });
+
             context.SaveChanges();
         }
 
@@ -57,9 +64,10 @@ namespace Overlapssystem.Test
             var service = new TrafficLightService(context);
 
             // ACT
-            await service.UpdateTrafficLightAsync(1, "Red");
+            var result = await service.UpdateTrafficLightAsync(1, "Red", 1);
 
             // ASSERT
+            Assert.IsTrue(result);
             var schema = await context.ResidentSchemas.FindAsync(1);
             Assert.AreEqual(TrafficLight.Red, schema!.TrafficLight);
 
@@ -68,32 +76,18 @@ namespace Overlapssystem.Test
         }
 
         [TestMethod]
-        // Tests that UpdateTrafficLightAsync throws KeyNotFoundException when schema does not exist.
-        public async Task UpdateTrafficLightAsync_InvalidId_ThrowsKeyNotFoundException()
+        // Tests that UpdateTrafficLightAsync returns false when schema does not exist.
+        public async Task UpdateTrafficLightAsync_InvalidId_ReturnsFalse()
         {
             // ARRANGE
             var context = CreateContext("UpdateTrafficLight_InvalidId");
             var service = new TrafficLightService(context);
 
-            // ACT & ASSERT
-            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(
-                () => service.UpdateTrafficLightAsync(999, "Red")
-            );
-        }
+            // ACT
+            var result = await service.UpdateTrafficLightAsync(999, "Red", 1);
 
-        [TestMethod]
-        // Tests that UpdateTrafficLightAsync throws ArgumentException when an invalid string is passed.
-        public async Task UpdateTrafficLightAsync_InvalidString_ThrowsArgumentException()
-        {
-            // ARRANGE
-            var context = CreateContext("UpdateTrafficLight_InvalidString");
-            SeedTestData(context);
-            var service = new TrafficLightService(context);
-
-            // ACT & ASSERT
-            await Assert.ThrowsExceptionAsync<ArgumentException>(
-                () => service.UpdateTrafficLightAsync(1, "Blå")
-            );
+            // ASSERT
+            Assert.IsFalse(result);
         }
 
         [TestMethod]
@@ -106,9 +100,10 @@ namespace Overlapssystem.Test
             var service = new TrafficLightService(context);
 
             // ACT
-            await service.UpdateTrafficLightAsync(1, null);
+            var result = await service.UpdateTrafficLightAsync(1, null, 1);
 
             // ASSERT
+            Assert.IsTrue(result);
             var schema = await context.ResidentSchemas.FindAsync(1);
             Assert.IsNull(schema!.TrafficLight);
         }

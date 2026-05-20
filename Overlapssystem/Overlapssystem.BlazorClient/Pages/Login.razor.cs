@@ -8,7 +8,7 @@ namespace Overlapssystem.BlazorClient.Pages
     public partial class Login
     {
         // Injected services
-        [Inject] private AuthService AuthService { get; set; } = default!;
+        [Inject] private IAuthService AuthService { get; set; } = default!;
         [Inject] private NavigationManager Navigation { get; set; } = default!;
 
         // Holds the login form data bound to the input fields in Login.razor

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Shared.DTOs;
 
@@ -22,19 +23,9 @@ namespace Overlapssystem.Api.Controllers
         [HttpPost("mark-given")]
         public async Task<IActionResult> MarkGiven(MarkMedicationGivenDto dto)
         {
-            try
-            {
-                await _service.MarkAsGivenAsync(dto.ResidentSchemaId, dto.MedicationTimeId);
-                return NoContent();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Noget gik galt");
-            }
+            var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
+            await _service.MarkAsGivenAsync(dto.ResidentSchemaId, dto.MedicationTimeId, employeeId);
+            return NoContent();
         }
     }
 }

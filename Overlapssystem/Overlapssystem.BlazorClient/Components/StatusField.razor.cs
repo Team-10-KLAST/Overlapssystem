@@ -14,6 +14,10 @@ public partial class StatusField
     [Parameter]
     public int ResidentSchemaId { get; set; }
 
+    // The initials of the resident, used for display in the confirm dialog.
+    [Parameter]
+    public string? Initials { get; set; }
+
     // Event callback to notify ResidentCard when status is saved.
     [Parameter]
     public EventCallback<string> OnStatusSaved { get; set; }

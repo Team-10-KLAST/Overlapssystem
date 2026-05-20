@@ -24,37 +24,31 @@ public class ShiftController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateShift(CreateShiftDto dto)
     {
-        try
+        var shift = await _createShiftUseCase.ExecuteAsync(
+            dto.Date,
+            (ShiftType)dto.ShiftType,
+            dto.DepartmentId
+        );
+        return Ok(new ShiftDto
         {
-            var shift = await _createShiftUseCase.ExecuteAsync(
-                dto.Date,
-                (ShiftType)dto.ShiftType,
-                dto.DepartmentId
-            );
-            return Ok(new ShiftDto
-            {
-                Id = shift.Id.ToString(),
-                DateTime = shift.Date.ToString("o"),
-                ShiftType = shift.Type.ToString(),
-                DepartmentId = shift.DepartmentId.ToString()
-            });
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+            Id = shift.Id.ToString(),
+            DateTime = shift.Date.ToString("o"),
+            ShiftType = shift.Type.ToString(),
+            DepartmentId = shift.DepartmentId.ToString()
+        });
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetShiftById(int id)
     {
-        //Hent vagt via id  
         var shift = await _shiftService.GetShiftByIdAsync(id);
+        if (shift == null)
+            return NotFound($"Vagt med id {id} blev ikke fundet.");
 
         var shiftDto = new ShiftDto
         {
             Id = shift.Id.ToString(),
-            DateTime = shift.Date.ToString("o"), //ISO 8601 format
+            DateTime = shift.Date.ToString("o"),
             ShiftType = shift.Type.ToString(),
             DepartmentId = shift.DepartmentId.ToString()
         };

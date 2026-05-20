@@ -16,7 +16,7 @@ public class ActivityLogDataService : IActivityLogDataService
         int employeeId, DateTime from, DateTime to)
     {
         var fromStr = from.ToString("yyyy-MM-dd");
-        var toStr = to.ToString("yyyy-MM-dd");
+        var toStr = to.AddDays(1).ToString("yyyy-MM-dd");
 
         return await _http.GetFromJsonAsync<List<ActivityLogEntryDto>>(
             $"api/activitylog?employeeId={employeeId}&from={fromStr}&to={toStr}")

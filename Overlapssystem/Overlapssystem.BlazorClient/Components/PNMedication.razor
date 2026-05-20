@@ -1,93 +1,144 @@
-﻿@* ============================================================
+@* ============================================================
    PN MEDICATION COMPONENT
    Clickable field — shows a time input on click, closes on change or Enter/Escape.
-   Multiple PN times are supported and shown separated by ", ".
+   Multiple PN times are supported. Each entry shows a ✕ delete button.
+   Delete requires confirmation via ConfirmDialog.
+   Persists PN registrations via IPNDataService.
    ============================================================ *@
 @using Overlapssystem.Shared.DTOs
+@inject IPNDataService PNDataService
 
+@* PN label *@
 <span style="font-weight: bold; min-width: 70px; flex-shrink: 0; color: #333;">PN</span>
+
+@* List of registered PN times with add and delete support *@
 <span class="section-value">
+    @* Empty state — dash shown when no times are registered *@
     @if (PNTimes.Count == 0 && !IsAddingNew)
     {
-        // Shows a dash when no PN times are registered.
         <span class="pn-time" @onclick="StartAddNew">—</span>
     }
     else
     {
+        @* Loop over existing registrations — click a time to edit, click ✕ to delete *@
         @for (int i = 0; i < PNTimes.Count; i++)
         {
             var index = i;
+            var pn = PNTimes[index];
             @if (EditingIndex == index)
             {
-                // Shows a time input when editing an existing time.
+                @* Time input shown when editing an existing entry *@
                 <input class="pn-input"
                        type="time"
-                       value="@PNTimes[index]"
+                       value="@pn.GivenTime"
                        @onchange="e => OnEditTimeChanged(e, index)"
                        @onkeydown="OnKeyDown" />
             }
             else
             {
-                // Shows the time — click to edit it.
-                <span class="pn-time" @onclick="() => StartEdit(index)">@FormatTime(PNTimes[index])</span>
-            }
-
-            @if (index < PNTimes.Count - 1)
-            {
-                <span>, </span>
+                @* Time label and delete button for this entry *@
+                <span class="pn-entry"><span class="pn-time" @onclick="() => StartEdit(index)">@FormatTime(pn.GivenTime)</span><span class="pn-delete" @onclick="() => StartDelete(pn)" title="Slet">✕</span></span>
             }
         }
 
+        @* New time input or + button *@
         @if (IsAddingNew)
         {
-            // Shows a time input for adding a new PN time.
-            @if (PNTimes.Count > 0)
-            {
-                <span>, </span>
-            }
+            @* Time input for registering a new PN time *@
             <input class="pn-input"
                    type="time"
                    value=""
+                   @oninput="e => pendingTime = e.Value?.ToString() ?? string.Empty"
                    @onchange="OnNewTimeChanged"
-                   @onkeydown="OnKeyDown" />
+                   @onkeydown="OnKeyDownNew" />
         }
         else
         {
-            // Button to add a new PN time.
-            <span class="pn-add" @onclick="StartAddNew"> +</span>
+            @* Button to add a new PN time *@
+            <span class="pn-add" @onclick="StartAddNew">+</span>
         }
     }
 </span>
+
+@* Delete confirmation — uses the shared ConfirmDialog component *@
+<ConfirmDialog IsVisible="showDeleteConfirm"
+               Message="Er du sikker?"
+               SubMessage="Slet denne PN-tid permanent?"
+               OnConfirm="ConfirmDelete"
+               OnCancel="CancelDelete" />
 
 @code {
     // The schema data passed in from ResidentCard.
     [Parameter]
     public ResidentSchemaDto Schema { get; set; } = default!;
 
-    // Tracks all registered PN times.
-    private List<string> PNTimes { get; set; } = new();
+    // Tracks all registered PN registrations for this schema.
+    private List<PNDto> PNTimes { get; set; } = new();
 
-    // Tracks which time is being edited.
+    // Index of the time currently being edited, or -1 if none.
     private int EditingIndex { get; set; } = -1;
 
-    // Tracks whether a new time is being added.
+    // True when the new-time input field is visible.
     private bool IsAddingNew { get; set; } = false;
 
-    // Opens input for editing an existing time.
+    // PN registration awaiting delete confirmation.
+    private PNDto? pendingDelete = null;
+
+    // True when the delete confirm dialog is visible.
+    private bool showDeleteConfirm = false;
+
+    // Tracks the time value as the user types, used to save on Enter.
+    private string pendingTime = string.Empty;
+
+    // Loads existing PN registrations from the API when the component initializes.
+    protected override async Task OnInitializedAsync()
+    {
+        var pns = await PNDataService.GetPNsBySchemaAsync(Schema.ResidentSchemaId);
+        PNTimes = pns.ToList();
+    }
+
+    // Opens the inline edit input for the time at the given index.
     private void StartEdit(int index)
     {
         EditingIndex = index;
         IsAddingNew = false;
     }
 
-    // Opens input for adding a new time.
+    // Shows the new-time input field and clears any previously tracked time.
     private void StartAddNew()
     {
         IsAddingNew = true;
         EditingIndex = -1;
+        pendingTime = string.Empty;
     }
 
-    // Formats time to HH:mm.
+    // Opens the delete confirmation dialog for the given PN.
+    private void StartDelete(PNDto pn)
+    {
+        pendingDelete = pn;
+        showDeleteConfirm = true;
+    }
+
+    // Deletes the PN after the user confirms, then removes it from the list.
+    private async Task ConfirmDelete()
+    {
+        if (pendingDelete == null)
+            return;
+
+        await PNDataService.DeletePNAsync(pendingDelete.PNId);
+        PNTimes.Remove(pendingDelete);
+        showDeleteConfirm = false;
+        pendingDelete = null;
+    }
+
+    // Cancels the delete without deleting.
+    private void CancelDelete()
+    {
+        showDeleteConfirm = false;
+        pendingDelete = null;
+    }
+
+    // Formats a time string to HH:mm for compact display.
     private string FormatTime(string time)
     {
         if (time.Length >= 5)
@@ -95,35 +146,60 @@
         return time;
     }
 
-    // Updates an existing time and closes the input field.
+    // Handles time change when editing an existing entry — updates the local display only.
     private void OnEditTimeChanged(ChangeEventArgs e, int index)
     {
         var time = e.Value?.ToString() ?? string.Empty;
         if (!string.IsNullOrEmpty(time))
-        {
-            PNTimes[index] = time;
-        }
+            PNTimes[index].GivenTime = time;
         EditingIndex = -1;
     }
 
-    // Adds a new time to the list and closes the input field.
-    private void OnNewTimeChanged(ChangeEventArgs e)
+    // Handles time input when the user leaves the field — skipped if Enter already saved the entry.
+    private async Task OnNewTimeChanged(ChangeEventArgs e)
     {
+        if (!IsAddingNew)
+            return;
+
         var time = e.Value?.ToString() ?? string.Empty;
         if (!string.IsNullOrEmpty(time))
         {
-            PNTimes.Add(time);
+            var dto = new PNDto { ResidentSchemaId = Schema.ResidentSchemaId, GivenTime = time };
+            var saved = await PNDataService.RegisterPNAsync(dto);
+            PNTimes.Add(saved);
         }
         IsAddingNew = false;
+        pendingTime = string.Empty;
     }
 
-    // Closes the input field when Enter or Escape is pressed.
+    // Closes the edit input on Enter or Escape.
     private void OnKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "Enter" || e.Key == "Escape")
         {
             EditingIndex = -1;
             IsAddingNew = false;
+        }
+    }
+
+    // Saves pendingTime on Enter, or discards on Escape. onchange handles blur without Enter.
+    private async Task OnKeyDownNew(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            if (!string.IsNullOrEmpty(pendingTime))
+            {
+                var dto = new PNDto { ResidentSchemaId = Schema.ResidentSchemaId, GivenTime = pendingTime };
+                var saved = await PNDataService.RegisterPNAsync(dto);
+                PNTimes.Add(saved);
+            }
+            IsAddingNew = false;
+            pendingTime = string.Empty;
+        }
+        else if (e.Key == "Escape")
+        {
+            IsAddingNew = false;
+            pendingTime = string.Empty;
         }
     }
 }
