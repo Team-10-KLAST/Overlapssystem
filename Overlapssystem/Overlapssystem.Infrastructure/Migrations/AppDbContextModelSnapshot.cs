@@ -186,7 +186,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ResidentSchemaId");
 
-                    b.ToTable("ActivityLogEntries");
+                    b.ToTable("ActivityLogEntries", (string)null);
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Department", b =>
@@ -203,7 +203,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("DepartmentId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
 
                     b.HasData(
                         new
@@ -235,67 +235,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("DepartmentId");
 
-                    b.ToTable("DepartmentNotes");
-                });
-
-            modelBuilder.Entity("Overlapssystem.Domain.Entities.DepartmentTask", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TaskName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.ToTable("DepartmentTasks");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DepartmentId = 1,
-                            TaskName = "Medicinansvar"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DepartmentId = 1,
-                            TaskName = "Hygiejne"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            DepartmentId = 1,
-                            TaskName = "Aftensmad"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            DepartmentId = 2,
-                            TaskName = "Medicinansvar"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            DepartmentId = 2,
-                            TaskName = "Hygiejne"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            DepartmentId = 2,
-                            TaskName = "Aftensmad"
-                        });
+                    b.ToTable("DepartmentNotes", (string)null);
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Employee", b =>
@@ -318,7 +258,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("EmployeeId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.MedicationRegistration", b =>
@@ -347,7 +287,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ResidentSchemaId");
 
-                    b.ToTable("MedicationRegistrations");
+                    b.ToTable("MedicationRegistrations", (string)null);
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.MedicationTime", b =>
@@ -368,7 +308,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ResidentId");
 
-                    b.ToTable("MedicationTimes");
+                    b.ToTable("MedicationTimes", (string)null);
 
                     b.HasData(
                         new
@@ -493,7 +433,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ResidentSchemaId");
 
-                    b.ToTable("PNs");
+                    b.ToTable("PNs", (string)null);
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
@@ -522,7 +462,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Residents");
+                    b.ToTable("Residents", (string)null);
 
                     b.HasData(
                         new
@@ -696,7 +636,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ShiftId");
 
-                    b.ToTable("ResidentSchemas");
+                    b.ToTable("ResidentSchemas", (string)null);
 
                     b.HasData(
                         new
@@ -864,7 +804,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Shifts");
+                    b.ToTable("Shifts", (string)null);
 
                     b.HasData(
                         new
@@ -881,33 +821,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                             DepartmentId = 2,
                             Type = 1
                         });
-                });
-
-            modelBuilder.Entity("Overlapssystem.Domain.Entities.ShiftTaskAssignment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AssignedEmployee")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DepartmentTaskId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShiftId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentTaskId");
-
-                    b.HasIndex("ShiftId");
-
-                    b.ToTable("ShiftTaskAssignments");
                 });
 
             modelBuilder.Entity("Overlapssystem.Infrastructure.Identity.ApplicationUser", b =>
@@ -1052,17 +965,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Navigation("ResidentSchema");
                 });
 
-            modelBuilder.Entity("Overlapssystem.Domain.Entities.DepartmentTask", b =>
-                {
-                    b.HasOne("Overlapssystem.Domain.Entities.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Department");
-                });
-
             modelBuilder.Entity("Overlapssystem.Domain.Entities.MedicationRegistration", b =>
                 {
                     b.HasOne("Overlapssystem.Domain.Entities.MedicationTime", "MedicationTime")
@@ -1144,25 +1046,6 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Navigation("Resident");
 
                     b.Navigation("SecondaryEmployee");
-
-                    b.Navigation("Shift");
-                });
-
-            modelBuilder.Entity("Overlapssystem.Domain.Entities.ShiftTaskAssignment", b =>
-                {
-                    b.HasOne("Overlapssystem.Domain.Entities.DepartmentTask", "DepartmentTask")
-                        .WithMany()
-                        .HasForeignKey("DepartmentTaskId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Overlapssystem.Domain.Entities.Shift", "Shift")
-                        .WithMany()
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DepartmentTask");
 
                     b.Navigation("Shift");
                 });

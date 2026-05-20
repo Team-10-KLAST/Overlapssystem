@@ -17,6 +17,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
 
     // DbSets for EF Core so it can create tables and manage data for these entities
     public DbSet<Employee> Employees => Set<Employee>();
+    //public DbSet<Phone> Phones => Set<Phone>();
     public DbSet<Resident> Residents => Set<Resident>();
     public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
     public DbSet<Department> Departments => Set<Department>();
@@ -55,6 +56,19 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             employee.Property(e => e.LastName).IsRequired().HasMaxLength(100);
         });
 
+        modelBuilder.Entity<Phone>(phone =>
+        {
+            phone.HasKey(p => p.Id); 
+            phone.Property(p => p.Number).IsRequired().HasMaxLength(20);
+
+            phone.HasOne(p => p.Employee)
+                .WithOne() 
+                .HasForeignKey<Phone>(p => p.EmployeeId) 
+                .OnDelete(DeleteBehavior.SetNull); 
+                        
+            phone.HasIndex(p => p.EmployeeId)
+                .IsUnique();
+        });
 
         modelBuilder.Entity<PN>()
             .HasOne(p => p.ResidentSchema)
