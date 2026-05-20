@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Overlapssystem.Shared.Validation;
 
 namespace Overlapssystem.Shared.DTOs;
 
@@ -9,9 +10,9 @@ public class PNDto
     public int PNId { get; set; }
 
     // Sent as string so frontend doesn't need to know about TimeOnly.
-    // Validated to ensure it follows the HH:mm format.
+    // Validated to ensure it is a validd time format.
     [Required]
-    [RegularExpression(@"^([01]\d|2[0-3]):[0-5]\d$", ErrorMessage = "Tidsformat skal være HH:mm")]
+    [ValidTimeFormat]
     public string GivenTime { get; set; } = string.Empty;
 
     public int ResidentSchemaId { get; set; }
