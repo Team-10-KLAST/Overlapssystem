@@ -23,17 +23,15 @@ public class PNController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<PNDto>> Register(PNDto dto)
     {
-        if (!int.TryParse(User.FindFirstValue("EmployeeId"), out var employeeId))
-            return Unauthorized();
-
         try
         {
+            var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
             var id = await _service.RegisterPNAsync(dto.ResidentSchemaId, TimeOnly.Parse(dto.GivenTime), employeeId);
             return Ok(new PNDto { PNId = id, ResidentSchemaId = dto.ResidentSchemaId, GivenTime = dto.GivenTime });
         }
         catch (FormatException)
         {
-            return BadRequest("Ugyldigt tidsformat â€” brug HH:mm");
+            return BadRequest("Ugyldigt tidsformat — brug HH:mm");
         }
         catch (Exception)
         {

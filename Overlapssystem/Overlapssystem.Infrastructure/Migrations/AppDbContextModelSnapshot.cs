@@ -496,6 +496,34 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.ToTable("PNs");
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Phone", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsTested")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique()
+                        .HasFilter("[EmployeeId] IS NOT NULL");
+
+                    b.ToTable("Phones");
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
                 {
                     b.Property<int>("ResidentId")
@@ -1102,6 +1130,16 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("ResidentSchema");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Phone", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.Employee", "Employee")
+                        .WithOne()
+                        .HasForeignKey("Overlapssystem.Domain.Entities.Phone", "EmployeeId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>

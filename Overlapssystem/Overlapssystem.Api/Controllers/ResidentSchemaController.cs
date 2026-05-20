@@ -34,8 +34,6 @@ public class ResidentSchemaController : ControllerBase
     [HttpPost("assign")]
     public async Task<IActionResult> AssignEmployee([FromBody] AssignEmployeeDto dto)
     {
-        if (dto == null) return BadRequest("Data mangler.");
-
         var success = await _assignService.AssignEmployeeAsync(
             dto.ResidentSchemaId,
             dto.EmployeeId,

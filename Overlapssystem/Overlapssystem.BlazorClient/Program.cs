@@ -39,7 +39,7 @@ builder.Services.AddScoped<IResidentSchemaDataService, ResidentSchemaDataService
 builder.Services.AddScoped<ITrafficLightDataService, TrafficLightDataService>();
 builder.Services.AddScoped<IResidentStatusDataService, ResidentStatusDataService>();
 builder.Services.AddScoped<IDepartmentNoteDataService, DepartmentNoteDataService>();
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISaveShiftService, SaveShiftService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
 builder.Services.AddScoped<IMedicationDataService, MedicationDataService>();
@@ -48,6 +48,7 @@ builder.Services.AddScoped<IEmployeeAssignmentDataService, EmployeeAssignmentDat
 builder.Services.AddScoped<IEmployeeDataService, EmployeeDataService>();
 builder.Services.AddScoped<IDepartmentTaskDataService, DepartmentTaskDataService>();
 builder.Services.AddScoped<IActivityLogDataService, ActivityLogDataService>();
+builder.Services.AddScoped<IPhoneDataService, PhoneDataService>();
 
 
 await builder.Build().RunAsync();

@@ -4,7 +4,7 @@ using Overlapssystem.Shared.DTOs;
 namespace Overlapssystem.BlazorClient.Services
 {
     // Handles communication with the API's authentication endpoints 
-    public class AuthService
+    public class AuthService : IAuthService
     {
         private readonly HttpClient _httpClient;
         private readonly JwtAuthenticationStateProvider _authStateProvider;

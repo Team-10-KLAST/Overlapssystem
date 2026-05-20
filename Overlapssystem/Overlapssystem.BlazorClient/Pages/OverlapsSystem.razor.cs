@@ -6,7 +6,7 @@ namespace Overlapssystem.BlazorClient.Pages;
 
 public partial class OverlapsSystem
 {
-    [Inject] private AuthService AuthService { get; set; } = default!;
+    [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private IResidentSchemaDataService SchemaService { get; set; } = default!;
     [Inject] private IShiftService ShiftService { get; set; } = default!;

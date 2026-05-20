@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Overlapssystem.Shared.DTOs
-{
-    /// <summary>
-    /// DTO til overførsel af data ved tildeling af en medarbejder til et skema.
-    /// </summary>
-    public class AssignEmployeeDto
-    {
-        public int ResidentSchemaId { get; set; }
-        public int EmployeeId { get; set; }
+namespace Overlapssystem.Shared.DTOs;
 
-        // Bruges til at skelne mellem primær (1) og sekundær (2) position
-        public int Position { get; set; }
-    }
+// DTO for transferring data when assigning an employee to a resident schema,
+// including the position (primary or secondary).
+public class AssignEmployeeDto
+{
+    public int ResidentSchemaId { get; set; }
+    public int EmployeeId { get; set; }
+
+    // Used to distinguish between primary (1) and secondary (2) positions for an employee in a resident schema.
+    [Range(1, 2, ErrorMessage = "Position skal være 1 (primær) eller 2 (sekundær).")]
+    public int Position { get; set; }
 }
+
