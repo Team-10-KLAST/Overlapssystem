@@ -1,5 +1,6 @@
 ﻿using Overlapssystem.Domain.Entities;
 using Overlapssystem.Shared.DTOs;
+using Overlapssystem.Domain.Enums;
 
 namespace Overlapssystem.Api.Mappers;
 
@@ -16,7 +17,7 @@ public static class ResidentSchemaMapper
             Status = s.Status,
             TrafficLight = s.TrafficLight?.ToString(),
             ShoppingDay = s.Resident.ShoppingDay,
-            PaymentMethod = s.Resident.PaymentMethod.ToString(),
+            PaymentMethod = ToDanish(s.Resident.PaymentMethod),
             MedicationTimes = MapMedicationTimes(s),
             SelectedPrimaryId = s.PrimaryEmployeeId,
             SelectedSecondaryId = s.SecondaryEmployeeId,
@@ -38,4 +39,13 @@ public static class ResidentSchemaMapper
                 ?.GivenTime
         }).ToList();
     }
+
+    // Translates paymentmethod enum values to danish for display in UI. 
+    public static string ToDanish(PaymentMethod value) => value switch
+    {
+        PaymentMethod.OwnCard => "Eget kort",
+        PaymentMethod.PCard => "P-kort",
+        PaymentMethod.Cash => "Kontant",
+        _ => "Ukendt"
+    };
 }
