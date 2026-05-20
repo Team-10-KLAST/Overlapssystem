@@ -392,6 +392,32 @@ namespace Overlapssystem.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.RelativeContact", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContactNote")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ResidentSchemaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResidentSchemaId");
+
+                    b.ToTable("RelativeContacts");
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
                 {
                     b.Property<int>("ResidentId")
@@ -415,6 +441,8 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ResidentId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Residents");
 
@@ -962,6 +990,28 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Resident");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.RelativeContact", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.ResidentSchema", "ResidentSchema")
+                        .WithMany()
+                        .HasForeignKey("ResidentSchemaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ResidentSchema");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.ResidentSchema", b =>
