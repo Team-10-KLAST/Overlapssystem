@@ -11,6 +11,6 @@ public interface IPNService
     // Returns all PN registrations for a specific resident schema.
     Task<IEnumerable<PN>> GetPNsBySchemaAsync(int residentSchemaId);
 
-    // Deletes a PN registration permanently by ID. Throws KeyNotFoundException if not found.
-    Task DeletePNAsync(int pnId);
+    // Deletes a PN registration permanently by ID. Returns false if not found.
+    Task<bool> DeletePNAsync(int pnId);
 }
