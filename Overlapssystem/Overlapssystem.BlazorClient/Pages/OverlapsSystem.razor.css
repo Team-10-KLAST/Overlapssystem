@@ -11,12 +11,18 @@
     background-color: #d9edf7;
     padding: 8px 16px;
     border-radius: 4px;
-    text-align: center;
     min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.overlap-top-actions {
+    display: flex;
+    gap: 8px;
 }
 
 .overlap-middle {
