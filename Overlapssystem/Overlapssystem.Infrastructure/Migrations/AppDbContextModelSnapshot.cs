@@ -379,8 +379,26 @@ namespace Overlapssystem.Infrastructure.Migrations
                         },
                         new
                         {
+                            MedicationTimeId = 17,
+                            PlannedTime = new TimeOnly(12, 0, 0),
+                            ResidentId = 1
+                        },
+                        new
+                        {
+                            MedicationTimeId = 18,
+                            PlannedTime = new TimeOnly(20, 0, 0),
+                            ResidentId = 1
+                        },
+                        new
+                        {
                             MedicationTimeId = 2,
                             PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 2
+                        },
+                        new
+                        {
+                            MedicationTimeId = 19,
+                            PlannedTime = new TimeOnly(18, 0, 0),
                             ResidentId = 2
                         },
                         new
@@ -392,13 +410,43 @@ namespace Overlapssystem.Infrastructure.Migrations
                         new
                         {
                             MedicationTimeId = 4,
-                            PlannedTime = new TimeOnly(8, 0, 0),
+                            PlannedTime = new TimeOnly(7, 0, 0),
+                            ResidentId = 4
+                        },
+                        new
+                        {
+                            MedicationTimeId = 20,
+                            PlannedTime = new TimeOnly(12, 0, 0),
+                            ResidentId = 4
+                        },
+                        new
+                        {
+                            MedicationTimeId = 21,
+                            PlannedTime = new TimeOnly(17, 0, 0),
+                            ResidentId = 4
+                        },
+                        new
+                        {
+                            MedicationTimeId = 22,
+                            PlannedTime = new TimeOnly(22, 0, 0),
                             ResidentId = 4
                         },
                         new
                         {
                             MedicationTimeId = 5,
-                            PlannedTime = new TimeOnly(10, 0, 0),
+                            PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 5
+                        },
+                        new
+                        {
+                            MedicationTimeId = 23,
+                            PlannedTime = new TimeOnly(14, 0, 0),
+                            ResidentId = 5
+                        },
+                        new
+                        {
+                            MedicationTimeId = 24,
+                            PlannedTime = new TimeOnly(20, 0, 0),
                             ResidentId = 5
                         },
                         new
@@ -409,8 +457,20 @@ namespace Overlapssystem.Infrastructure.Migrations
                         },
                         new
                         {
+                            MedicationTimeId = 25,
+                            PlannedTime = new TimeOnly(19, 30, 0),
+                            ResidentId = 6
+                        },
+                        new
+                        {
                             MedicationTimeId = 7,
                             PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 7
+                        },
+                        new
+                        {
+                            MedicationTimeId = 26,
+                            PlannedTime = new TimeOnly(20, 0, 0),
                             ResidentId = 7
                         },
                         new
@@ -421,14 +481,50 @@ namespace Overlapssystem.Infrastructure.Migrations
                         },
                         new
                         {
+                            MedicationTimeId = 27,
+                            PlannedTime = new TimeOnly(13, 0, 0),
+                            ResidentId = 8
+                        },
+                        new
+                        {
+                            MedicationTimeId = 28,
+                            PlannedTime = new TimeOnly(21, 0, 0),
+                            ResidentId = 8
+                        },
+                        new
+                        {
                             MedicationTimeId = 9,
                             PlannedTime = new TimeOnly(9, 0, 0),
                             ResidentId = 9
                         },
                         new
                         {
+                            MedicationTimeId = 29,
+                            PlannedTime = new TimeOnly(21, 0, 0),
+                            ResidentId = 9
+                        },
+                        new
+                        {
                             MedicationTimeId = 10,
-                            PlannedTime = new TimeOnly(8, 0, 0),
+                            PlannedTime = new TimeOnly(7, 0, 0),
+                            ResidentId = 10
+                        },
+                        new
+                        {
+                            MedicationTimeId = 30,
+                            PlannedTime = new TimeOnly(12, 0, 0),
+                            ResidentId = 10
+                        },
+                        new
+                        {
+                            MedicationTimeId = 31,
+                            PlannedTime = new TimeOnly(17, 0, 0),
+                            ResidentId = 10
+                        },
+                        new
+                        {
+                            MedicationTimeId = 32,
+                            PlannedTime = new TimeOnly(22, 0, 0),
                             ResidentId = 10
                         },
                         new
@@ -439,8 +535,26 @@ namespace Overlapssystem.Infrastructure.Migrations
                         },
                         new
                         {
+                            MedicationTimeId = 33,
+                            PlannedTime = new TimeOnly(20, 0, 0),
+                            ResidentId = 11
+                        },
+                        new
+                        {
                             MedicationTimeId = 12,
                             PlannedTime = new TimeOnly(8, 0, 0),
+                            ResidentId = 12
+                        },
+                        new
+                        {
+                            MedicationTimeId = 34,
+                            PlannedTime = new TimeOnly(14, 0, 0),
+                            ResidentId = 12
+                        },
+                        new
+                        {
+                            MedicationTimeId = 35,
+                            PlannedTime = new TimeOnly(21, 0, 0),
                             ResidentId = 12
                         },
                         new
@@ -457,7 +571,25 @@ namespace Overlapssystem.Infrastructure.Migrations
                         },
                         new
                         {
+                            MedicationTimeId = 36,
+                            PlannedTime = new TimeOnly(15, 0, 0),
+                            ResidentId = 14
+                        },
+                        new
+                        {
+                            MedicationTimeId = 37,
+                            PlannedTime = new TimeOnly(22, 0, 0),
+                            ResidentId = 14
+                        },
+                        new
+                        {
                             MedicationTimeId = 15,
+                            PlannedTime = new TimeOnly(9, 0, 0),
+                            ResidentId = 15
+                        },
+                        new
+                        {
+                            MedicationTimeId = 38,
                             PlannedTime = new TimeOnly(20, 0, 0),
                             ResidentId = 15
                         },
@@ -469,9 +601,15 @@ namespace Overlapssystem.Infrastructure.Migrations
                         },
                         new
                         {
-                            MedicationTimeId = 17,
-                            PlannedTime = new TimeOnly(20, 0, 0),
-                            ResidentId = 1
+                            MedicationTimeId = 39,
+                            PlannedTime = new TimeOnly(13, 0, 0),
+                            ResidentId = 16
+                        },
+                        new
+                        {
+                            MedicationTimeId = 40,
+                            PlannedTime = new TimeOnly(21, 0, 0),
+                            ResidentId = 16
                         });
                 });
 
