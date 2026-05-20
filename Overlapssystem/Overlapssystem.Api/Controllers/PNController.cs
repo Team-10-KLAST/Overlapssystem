@@ -23,9 +23,11 @@ public class PNController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<PNDto>> Register(PNDto dto)
     {
+        if (!int.TryParse(User.FindFirstValue("EmployeeId"), out var employeeId))
+            return Unauthorized();
+
         try
         {
-            var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
             var id = await _service.RegisterPNAsync(dto.ResidentSchemaId, TimeOnly.Parse(dto.GivenTime), employeeId);
             return Ok(new PNDto { PNId = id, ResidentSchemaId = dto.ResidentSchemaId, GivenTime = dto.GivenTime });
         }
@@ -52,5 +54,25 @@ public class PNController : ControllerBase
             GivenTime = p.GivenTime.ToString("HH:mm")
         });
         return Ok(dtos);
+    }
+
+    // DELETE api/pn/{id}
+    // Deletes a PN registration permanently. Returns 404 if not found.
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            await _service.DeletePNAsync(id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Noget gik galt");
+        }
     }
 }

@@ -18,16 +18,13 @@ public class PNService : IPNService
     // Registers a new PN medication with a given time for a resident schema.
     public async Task<int> RegisterPNAsync(int residentSchemaId, TimeOnly givenTime, int employeeId)
     {
-        // step 1: create new PN entity with the given time
         var pn = new PN
         {
             ResidentSchemaId = residentSchemaId,
             GivenTime = givenTime
         };
 
-        // step 2: add to database and save
         _context.PNs.Add(pn);
-
 
         _context.ActivityLogEntries.Add(new ActivityLogEntry
         {
@@ -38,10 +35,8 @@ public class PNService : IPNService
             ResidentSchemaId = residentSchemaId
         });
 
-
         await _context.SaveChangesAsync();
 
-        // step 3: return the generated ID
         return pn.PNId;
     }
 
@@ -51,5 +46,17 @@ public class PNService : IPNService
         return await _context.PNs
             .Where(p => p.ResidentSchemaId == residentSchemaId)
             .ToListAsync();
+    }
+
+    // Deletes a PN registration permanently by ID. Throws KeyNotFoundException if not found.
+    public async Task DeletePNAsync(int pnId)
+    {
+        var pn = await _context.PNs.FindAsync(pnId);
+
+        if (pn == null)
+            throw new KeyNotFoundException();
+
+        _context.PNs.Remove(pn);
+        await _context.SaveChangesAsync();
     }
 }

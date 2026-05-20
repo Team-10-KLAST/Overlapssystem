@@ -18,8 +18,6 @@ public class PNDataService : IPNDataService
     public async Task<IEnumerable<PNDto>> GetPNsBySchemaAsync(int residentSchemaId)
     {
         var result = await _http.GetFromJsonAsync<IEnumerable<PNDto>>($"api/pn/{residentSchemaId}");
-
-        // return empty list if the API returns null
         return result ?? Enumerable.Empty<PNDto>();
     }
 
@@ -29,5 +27,12 @@ public class PNDataService : IPNDataService
         var response = await _http.PostAsJsonAsync("api/pn", dto);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<PNDto>() ?? dto;
+    }
+
+    // Calls DELETE api/pn/{id} to permanently delete a PN registration.
+    public async Task DeletePNAsync(int pnId)
+    {
+        var response = await _http.DeleteAsync($"api/pn/{pnId}");
+        response.EnsureSuccessStatusCode();
     }
 }
