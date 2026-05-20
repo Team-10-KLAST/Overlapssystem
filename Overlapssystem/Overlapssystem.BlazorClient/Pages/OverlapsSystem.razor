@@ -5,9 +5,16 @@
 <div class="overlap-page">
     <div class="overlap-top">
         <p>Vagtinfo: @shiftDate - @shiftType - @departmentName</p>
-        <button class="btn btn-outline-danger btn-sm" @onclick="HandleLogout">
-            Log ud
-        </button>
+        <div style="display: flex; gap: 8px;">
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <a href="/activitylog" class="btn btn-outline-primary btn-sm">Aktivitetslog</a>
+                </Authorized>
+            </AuthorizeView>
+            <button class="btn btn-outline-danger btn-sm" @onclick="HandleLogout">
+                Log ud
+            </button>
+        </div>
     </div>
 
     <div class="overlap-middle">
