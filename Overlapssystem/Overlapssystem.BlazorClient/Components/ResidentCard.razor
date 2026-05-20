@@ -29,7 +29,8 @@
 
     @* FIXED MEDICATION *@
     <div class="card-section">
-        <FixedMedication Schema="@Schema"
+        <FixedMedication MedicationTimes="@Schema.MedicationTimes"
+                         Initials="@Schema.Initials"
                          OnMedicationGiven="HandleMedicationGiven" />
     </div>
 
@@ -66,6 +67,7 @@
         <span class="section-label">Status</span>
         <StatusField Status="@Schema.Status"
                      ResidentSchemaId="@Schema.ResidentSchemaId"
+                     Initials="@Schema.Initials"
                      OnStatusSaved="HandleStatusSaved" />
     </div>
 
