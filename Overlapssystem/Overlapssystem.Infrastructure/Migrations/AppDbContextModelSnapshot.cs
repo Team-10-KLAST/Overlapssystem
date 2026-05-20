@@ -186,7 +186,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ResidentSchemaId");
 
-                    b.ToTable("ActivityLogEntries", (string)null);
+                    b.ToTable("ActivityLogEntries");
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Department", b =>
@@ -203,7 +203,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("DepartmentId");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
 
                     b.HasData(
                         new
@@ -235,7 +235,67 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("DepartmentId");
 
-                    b.ToTable("DepartmentNotes", (string)null);
+                    b.ToTable("DepartmentNotes");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.DepartmentTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TaskName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("DepartmentTasks");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DepartmentId = 1,
+                            TaskName = "Medicinansvar"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DepartmentId = 1,
+                            TaskName = "Hygiejne"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DepartmentId = 1,
+                            TaskName = "Aftensmad"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DepartmentId = 2,
+                            TaskName = "Medicinansvar"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DepartmentId = 2,
+                            TaskName = "Hygiejne"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DepartmentId = 2,
+                            TaskName = "Aftensmad"
+                        });
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Employee", b =>
@@ -258,7 +318,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("EmployeeId");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.MedicationRegistration", b =>
@@ -287,7 +347,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ResidentSchemaId");
 
-                    b.ToTable("MedicationRegistrations", (string)null);
+                    b.ToTable("MedicationRegistrations");
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.MedicationTime", b =>
@@ -308,7 +368,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ResidentId");
 
-                    b.ToTable("MedicationTimes", (string)null);
+                    b.ToTable("MedicationTimes");
 
                     b.HasData(
                         new
@@ -433,7 +493,35 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ResidentSchemaId");
 
-                    b.ToTable("PNs", (string)null);
+                    b.ToTable("PNs");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Phone", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsTested")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique()
+                        .HasFilter("[EmployeeId] IS NOT NULL");
+
+                    b.ToTable("Phones");
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
@@ -462,7 +550,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Residents", (string)null);
+                    b.ToTable("Residents");
 
                     b.HasData(
                         new
@@ -636,7 +724,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasIndex("ShiftId");
 
-                    b.ToTable("ResidentSchemas", (string)null);
+                    b.ToTable("ResidentSchemas");
 
                     b.HasData(
                         new
@@ -804,7 +892,7 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Shifts", (string)null);
+                    b.ToTable("Shifts");
 
                     b.HasData(
                         new
@@ -821,6 +909,33 @@ namespace Overlapssystem.Infrastructure.Migrations
                             DepartmentId = 2,
                             Type = 1
                         });
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.ShiftTaskAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AssignedEmployee")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DepartmentTaskId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentTaskId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.ToTable("ShiftTaskAssignments");
                 });
 
             modelBuilder.Entity("Overlapssystem.Infrastructure.Identity.ApplicationUser", b =>
@@ -965,6 +1080,17 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Navigation("ResidentSchema");
                 });
 
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.DepartmentTask", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("Overlapssystem.Domain.Entities.MedicationRegistration", b =>
                 {
                     b.HasOne("Overlapssystem.Domain.Entities.MedicationTime", "MedicationTime")
@@ -1004,6 +1130,16 @@ namespace Overlapssystem.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("ResidentSchema");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Phone", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.Employee", "Employee")
+                        .WithOne()
+                        .HasForeignKey("Overlapssystem.Domain.Entities.Phone", "EmployeeId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.Resident", b =>
@@ -1046,6 +1182,25 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Navigation("Resident");
 
                     b.Navigation("SecondaryEmployee");
+
+                    b.Navigation("Shift");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.ShiftTaskAssignment", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.DepartmentTask", "DepartmentTask")
+                        .WithMany()
+                        .HasForeignKey("DepartmentTaskId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Overlapssystem.Domain.Entities.Shift", "Shift")
+                        .WithMany()
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DepartmentTask");
 
                     b.Navigation("Shift");
                 });

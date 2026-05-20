@@ -17,7 +17,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
 
     // DbSets for EF Core so it can create tables and manage data for these entities
     public DbSet<Employee> Employees => Set<Employee>();
-    //public DbSet<Phone> Phones => Set<Phone>();
+    public DbSet<Phone> Phones => Set<Phone>();
     public DbSet<Resident> Residents => Set<Resident>();
     public DbSet<ResidentSchema> ResidentSchemas => Set<ResidentSchema>();
     public DbSet<Department> Departments => Set<Department>();
