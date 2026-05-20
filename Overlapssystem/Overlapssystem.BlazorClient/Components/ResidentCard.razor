@@ -57,10 +57,12 @@
         <span class="section-value">@Schema.RelativeContact</span>
     </div>
 
+    @* EMPLOYEE ASSIGNMENT *@
     <EmployeeAssignment ResidentSchemaId="@Schema.ResidentSchemaId" 
                      AllEmployees="@allEmployees"
                      SelectedPrimaryId="@Schema.SelectedPrimaryId"
-                     SelectedSecondaryId="@Schema.SelectedSecondaryId" />
+                     SelectedSecondaryId="@Schema.SelectedSecondaryId" 
+                     OnEmployeeChanged="HandleEmployeeChanged" />
 
     @* STATUS - Editable status field with save and confirm dialog. *@
     <div class="card-section status-section">
@@ -132,5 +134,12 @@
         {
             // TODO: Tilføj fejlhåndtering til brugeren på et senere tidspunkt
         }
+    }
+
+	// When an employee is assigned, we call the API and update the local schema.
+    private void HandleEmployeeChanged((int position, int? employeeId) args)
+    {
+        if (args.position == 1) Schema.SelectedPrimaryId = args.employeeId;
+        else Schema.SelectedSecondaryId = args.employeeId;
     }
 }

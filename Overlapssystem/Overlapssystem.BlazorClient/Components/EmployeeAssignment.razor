@@ -38,6 +38,8 @@
     [Parameter] public int? SelectedPrimaryId { get; set; }
     [Parameter] public int? SelectedSecondaryId { get; set; }
 
+    [Parameter] public EventCallback<(int position, int? employeeId)> OnEmployeeChanged { get; set; }
+
     // Filtrerer listen så den valgte medarbejder ikke vises i den anden dropdown
     private IEnumerable<EmployeeDto> GetAvailableEmployees(int position)
     {
@@ -64,12 +66,16 @@
             {
                 if (position == 1) SelectedPrimaryId = employeeId;
                 else SelectedSecondaryId = employeeId;
+
+                await OnEmployeeChanged.InvokeAsync((position, employeeId));
             }
         }
         else
         {
             if (position == 1) SelectedPrimaryId = null;
             else SelectedSecondaryId = null;
+
+            await OnEmployeeChanged.InvokeAsync((position, null));
         }
     }
 }
