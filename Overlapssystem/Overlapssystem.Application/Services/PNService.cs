@@ -48,15 +48,14 @@ public class PNService : IPNService
             .ToListAsync();
     }
 
-    // Deletes a PN registration permanently by ID. Throws KeyNotFoundException if not found.
-    public async Task DeletePNAsync(int pnId)
+    // Deletes a PN registration permanently by ID. Returns false if not found.
+    public async Task<bool> DeletePNAsync(int pnId)
     {
         var pn = await _context.PNs.FindAsync(pnId);
-
-        if (pn == null)
-            throw new KeyNotFoundException();
+        if (pn == null) return false;
 
         _context.PNs.Remove(pn);
         await _context.SaveChangesAsync();
+        return true;
     }
 }

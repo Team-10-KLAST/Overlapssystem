@@ -23,20 +23,9 @@ public class PNController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<PNDto>> Register(PNDto dto)
     {
-        try
-        {
-            var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
-            var id = await _service.RegisterPNAsync(dto.ResidentSchemaId, TimeOnly.Parse(dto.GivenTime), employeeId);
-            return Ok(new PNDto { PNId = id, ResidentSchemaId = dto.ResidentSchemaId, GivenTime = dto.GivenTime });
-        }
-        catch (FormatException)
-        {
-            return BadRequest("Ugyldigt tidsformat — brug HH:mm");
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Noget gik galt");
-        }
+        var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
+        var id = await _service.RegisterPNAsync(dto.ResidentSchemaId, TimeOnly.Parse(dto.GivenTime), employeeId);
+        return Ok(new PNDto { PNId = id, ResidentSchemaId = dto.ResidentSchemaId, GivenTime = dto.GivenTime });
     }
 
     // GET api/pn/{residentSchemaId}
@@ -59,18 +48,8 @@ public class PNController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        try
-        {
-            await _service.DeletePNAsync(id);
-            return NoContent();
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Noget gik galt");
-        }
+        var success = await _service.DeletePNAsync(id);
+        if (!success) return NotFound();
+        return NoContent();
     }
 }
