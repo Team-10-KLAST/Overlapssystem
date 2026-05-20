@@ -48,6 +48,7 @@ builder.Services.AddScoped<IEmployeeAssignmentDataService, EmployeeAssignmentDat
 builder.Services.AddScoped<IEmployeeDataService, EmployeeDataService>();
 builder.Services.AddScoped<IDepartmentTaskDataService, DepartmentTaskDataService>();
 builder.Services.AddScoped<IActivityLogDataService, ActivityLogDataService>();
+builder.Services.AddScoped<IRelativeContactDataService, RelativeContactDataService>();
 builder.Services.AddScoped<IPhoneDataService, PhoneDataService>();
 
 

@@ -21,9 +21,9 @@ namespace Overlapssystem.Application.Interfaces
         DbSet<MedicationRegistration> MedicationRegistrations { get; }
         DbSet<PN> PNs { get; }
         DbSet<DepartmentNote> DepartmentNotes { get; }
+        DbSet<RelativeContact> RelativeContacts { get; }
         DbSet<DepartmentTask> DepartmentTasks { get; }
         DbSet<ShiftTaskAssignment> ShiftTaskAssignments { get; }
-
         DbSet<ActivityLogEntry> ActivityLogEntries { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
