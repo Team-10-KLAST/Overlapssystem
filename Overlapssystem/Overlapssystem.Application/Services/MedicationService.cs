@@ -14,10 +14,12 @@ namespace Overlapssystem.Application.Services
     public class MedicationService : IMedicationService
     {
         private readonly IAppDbContext _context;
+        private readonly IActivityLogService _activityLogService;
 
-        public MedicationService(IAppDbContext context)
+        public MedicationService(IAppDbContext context, IActivityLogService activityLogService)
         {
             _context = context;
+            _activityLogService = activityLogService;
         }
 
         // Creates a new MedicationRegistration when a staff member marks a medication as given.
@@ -44,14 +46,12 @@ namespace Overlapssystem.Application.Services
 
             _context.MedicationRegistrations.Add(registration);
 
-            _context.ActivityLogEntries.Add(new ActivityLogEntry
-            {
-                ActionType = "Medicin",
-                Description = $"Markerede medicin som givet kl. {medicationTime?.PlannedTime.ToString("HH:mm") ?? "ukendt"}",
-                Timestamp = DateTime.UtcNow,
-                EmployeeId = employeeId,
-                ResidentSchemaId = residentSchemaId
-            });
+            await _activityLogService.AddLogEntry(
+                "Medicin",
+                $"Markerede medicin som givet kl. {medicationTime?.PlannedTime.ToString("HH:mm") ?? "ukendt"}",
+                employeeId,
+                residentSchemaId);
+
             await _context.SaveChangesAsync();
         }
     }
