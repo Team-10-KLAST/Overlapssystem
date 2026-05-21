@@ -1,8 +1,9 @@
-﻿using Overlapssystem.Shared.DTOs;
+﻿using Overlapssystem.BlazorClient.Models;
+using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
 public interface IShiftService
 {
-    Task<ShiftDto?> GetByIdAsync(int id);
+    Task<Result<ShiftDto>> GetByIdAsync(int id);
 }
