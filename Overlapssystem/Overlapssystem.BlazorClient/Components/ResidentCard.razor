@@ -14,6 +14,14 @@
 
 <div class="resident-card">
 
+    @* Error message shown if any API call in OnInitializedAsync fails *@
+    @if (loadError)
+    {
+        <div class="card-error">
+            Noget kunne ikke indlæses. Prøv at genindlæse siden.
+        </div>
+    }
+
     @* HEADER  *@
     <div class="card-header">
         <span class="initials">@Schema.Initials</span>
@@ -91,6 +99,9 @@
     public ResidentSchemaDto Schema { get; set; } = default!;
     private List<EmployeeDto> allEmployees = new();
 
+    // True if any API call in OnInitializedAsync failed — triggers the error message in the card.
+    private bool loadError = false;
+
     // All PN registrations for this schema, owned by ResidentCard and passed to PNMedication.
     private List<PNDto> pnTimes = new();
 
@@ -104,11 +115,9 @@
         var pnsTask = PNDataService.GetPNsBySchemaAsync(Schema.ResidentSchemaId);
         var contactsTask = RelativeContactService.GetBySchemaAsync(Schema.ResidentSchemaId);
 
-        await Task.WhenAll(employeesTask, pnsTask, contactsTask);
-
-        allEmployees = employeesTask.Result.ToList();
-        pnTimes = pnsTask.Result.ToList();
-        relativeContact = contactsTask.Result.FirstOrDefault();
+        try { allEmployees = (await employeesTask).ToList(); } catch (Exception) { loadError = true; }
+        try { pnTimes = (await pnsTask).ToList(); } catch (Exception) { loadError = true; }
+        try { relativeContact = (await contactsTask).FirstOrDefault(); } catch (Exception) { loadError = true; }
     }
 
     // Persists the new traffic light color via the API and updates the local schema on success.
