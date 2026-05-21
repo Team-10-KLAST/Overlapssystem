@@ -29,6 +29,11 @@
         <span class="initials">@Schema.Initials</span>
     </div>
 
+    @if (_errorMessage != null)
+    {
+        <div class="card-error">@_errorMessage</div>
+    }
+
     @* RISK ASSESSMENT  *@
     <div class="card-section risk-section">
         <span class="section-label">Risiko</span>
@@ -104,6 +109,9 @@
     // True if any API call in OnInitializedAsync failed — triggers the error message in the card.
     private bool loadError = false;
 
+    // A general error message string that can be set by any operation in the card to show an error to the user.
+    private string? _errorMessage;
+
     // All PN registrations for this schema, owned by ResidentCard and passed to PNMedication.
     private List<PNDto> pnTimes = new();
 
@@ -126,14 +134,13 @@
     // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleTrafficLightChanged(string newColor)
     {
-        try
-        {
-            await TrafficLightService.UpdateTrafficLightAsync(Schema.ResidentSchemaId, newColor);
+        var result = await TrafficLightService.UpdateTrafficLightAsync(Schema.ResidentSchemaId, newColor);
+
+        if (result.IsSuccess)
             Schema.TrafficLight = newColor;
-        }
-        catch (Exception)
-        {
-        }
+
+        else
+            _errorMessage = result.Error;
     }
 
     // Persists the new status text via the API and updates the local schema on success.
