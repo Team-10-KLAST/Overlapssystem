@@ -1,0 +1,135 @@
+@* ============================================================
+   RELATIVE CONTACT COMPONENT
+   Single textarea for writing a pårørende contact message
+   to inform the next shift. Supports save and cancel.
+   ============================================================ *@
+
+@inject IRelativeContactDataService RelativeContactService
+
+@* Label — matches section-label style used across the card *@
+<span style="font-weight: bold; min-width: 70px; flex-shrink: 0; color: #333;">Pårørende</span>
+
+@* Content area — grows to fill remaining width of card section *@
+<div class="rc-content">
+
+    @if (hasSavedMessage && !isEditing)
+    {
+        @* Saved state: plain text, max 2 lines, tooltip shows full message *@
+        <div class="rc-saved-text" title="@currentMessage" @onclick="StartEditing">
+            @currentMessage
+        </div>
+    }
+    else
+    {
+        @* Empty or editing state: textarea with transparent border until focused *@
+        <textarea class="rc-textarea"
+                  @bind="currentMessage"
+                  @bind:event="oninput"
+                  @onfocus="OnFocus"
+                  @onblur="OnBlur"
+                  placeholder="Beskriv pårørendekontakt til næste vagt..." />
+
+        @* Gem and Annuller — only visible when the user has typed a change *@
+        @if (isEditing && HasChanges)
+        {
+            <div class="rc-actions">
+                <button class="rc-btn-save" @onclick="SaveMessage">Gem</button>
+                <button class="rc-btn-cancel" @onclick="Cancel">Annuller</button>
+            </div>
+        }
+    }
+
+</div>
+
+@code {
+    // The schema data passed in from ResidentCard.
+    [Parameter]
+    public ResidentSchemaDto Schema { get; set; } = default!;
+
+    // The current text content of the textarea, bound via oninput.
+    private string currentMessage = string.Empty;
+
+    // The last successfully saved message, used to detect changes and revert on cancel.
+    private string savedMessage = string.Empty;
+
+    // True while the textarea is active or the user has clicked the saved-text div.
+    private bool isEditing = false;
+
+    // True when a non-empty message has been saved for this schema.
+    private bool hasSavedMessage = false;
+
+    // The existing DTO from the API, used to decide between create and update.
+    private RelativeContactDto? existingContact = null;
+
+    // True when the current textarea text differs from the last saved message.
+    private bool HasChanges => currentMessage != savedMessage;
+
+    // Loads the most recent contact note from the API when the component mounts.
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadContact();
+    }
+
+    // Fetches all contacts for this schema and uses the first as the single saved message.
+    private async Task LoadContact()
+    {
+        var contacts = await RelativeContactService.GetBySchemaAsync(Schema.ResidentSchemaId);
+        existingContact = contacts.FirstOrDefault();
+        if (existingContact != null)
+        {
+            savedMessage = existingContact.ContactNote;
+            currentMessage = savedMessage;
+            hasSavedMessage = !string.IsNullOrWhiteSpace(savedMessage);
+        }
+    }
+
+    // Called when the textarea receives focus — enters editing mode.
+    private void OnFocus()
+    {
+        isEditing = true;
+    }
+
+    // Called when the textarea loses focus — exits editing mode only if nothing has changed.
+    private void OnBlur()
+    {
+        if (!HasChanges)
+            isEditing = false;
+    }
+
+    // Called when the user clicks the saved-text div — switches to editing mode.
+    private void StartEditing()
+    {
+        isEditing = true;
+    }
+
+    // Saves the current message via create or update, then exits editing mode.
+    private async Task SaveMessage()
+    {
+        if (existingContact == null)
+        {
+            var dto = new RelativeContactDto
+            {
+                ResidentSchemaId = Schema.ResidentSchemaId,
+                ContactNote = currentMessage,
+                ContactType = "Note"
+            };
+            existingContact = await RelativeContactService.CreateAsync(dto);
+        }
+        else
+        {
+            existingContact.ContactNote = currentMessage;
+            await RelativeContactService.UpdateAsync(existingContact);
+        }
+
+        savedMessage = currentMessage;
+        hasSavedMessage = !string.IsNullOrWhiteSpace(currentMessage);
+        isEditing = false;
+    }
+
+    // Reverts the textarea to the last saved message and exits editing mode.
+    private void Cancel()
+    {
+        currentMessage = savedMessage;
+        isEditing = false;
+    }
+}
