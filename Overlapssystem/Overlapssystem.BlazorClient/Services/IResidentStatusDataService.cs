@@ -1,4 +1,5 @@
-﻿using Overlapssystem.Shared.DTOs;
+﻿using Overlapssystem.BlazorClient.Models;
+using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
@@ -6,5 +7,5 @@ namespace Overlapssystem.BlazorClient.Services;
 public interface IResidentStatusDataService
 {
     // Updates the status text for a specific resident schema.
-    Task<bool> UpdateStatusAsync(int residentSchemaId, string newStatus);
+    Task<Result> UpdateStatusAsync(int residentSchemaId, string newStatus);
 }

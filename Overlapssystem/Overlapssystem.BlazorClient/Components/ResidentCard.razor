@@ -147,17 +147,12 @@
     // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleStatusSaved(string newStatus)
     {
-        try
-        {
-            var success = await StatusService.UpdateStatusAsync(Schema.ResidentSchemaId, newStatus);
-            if (success)
-            {
-                Schema.Status = newStatus;
-            }
-        }
-        catch (Exception)
-        {
-        }
+        var result = await StatusService.UpdateStatusAsync(Schema.ResidentSchemaId, newStatus);
+
+        if (result.IsSuccess)
+            Schema.Status = newStatus;
+        else
+            _errorMessage = result.Error;
     }
 
     // Persists the medication as given via the API and updates the local state on success.
