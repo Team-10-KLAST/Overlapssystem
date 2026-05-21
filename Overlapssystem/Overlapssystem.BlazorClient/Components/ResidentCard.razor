@@ -9,6 +9,8 @@
 @inject IResidentStatusDataService StatusService
 @inject IMedicationDataService MedicationService
 @inject IEmployeeDataService EmployeeDataService
+@inject IPNDataService PNDataService
+@inject IRelativeContactDataService RelativeContactService
 
 <div class="resident-card">
 
@@ -36,7 +38,10 @@
 
     @* PN MEDICATION *@
     <div class="card-section">
-        <PNMedication Schema="@Schema" />
+        <PNMedication Schema="@Schema"
+                      ExistingPNTimes="@pnTimes"
+                      OnPNAdded="HandlePNAdded"
+                      OnPNDeleted="HandlePNDeleted" />
     </div>
 
     @* SHOPPING DAY *@
@@ -53,7 +58,9 @@
 
     @* RELATIVE CONTACT *@
     <div class="card-section">
-        <RelativeContact Schema="@Schema" />
+        <RelativeContact Schema="@Schema"
+                         ExistingContact="@relativeContact"
+                         OnContactSaved="HandleContactSaved" />
     </div>
 
     @* EMPLOYEE ASSIGNMENT *@
@@ -84,27 +91,42 @@
     public ResidentSchemaDto Schema { get; set; } = default!;
     private List<EmployeeDto> allEmployees = new();
 
+    // All PN registrations for this schema, owned by ResidentCard and passed to PNMedication.
+    private List<PNDto> pnTimes = new();
+
+    // The existing relative contact for this schema, owned by ResidentCard and passed to RelativeContact.
+    private RelativeContactDto? relativeContact = null;
+
+    // Loads employees, PN times, and the relative contact in parallel when the card initializes.
     protected override async Task OnInitializedAsync()
     {
-        // Hent alle medarbejdere én gang når kortet indlæses
-        var employees = await EmployeeDataService.GetEmployeesAsync();
-        allEmployees = employees.ToList();
+        var employeesTask = EmployeeDataService.GetEmployeesAsync();
+        var pnsTask = PNDataService.GetPNsBySchemaAsync(Schema.ResidentSchemaId);
+        var contactsTask = RelativeContactService.GetBySchemaAsync(Schema.ResidentSchemaId);
+
+        await Task.WhenAll(employeesTask, pnsTask, contactsTask);
+
+        allEmployees = employeesTask.Result.ToList();
+        pnTimes = pnsTask.Result.ToList();
+        relativeContact = contactsTask.Result.FirstOrDefault();
     }
-	// When the traffic light changes, we update the local schema and call the service to persist it.
+
+    // Persists the new traffic light color via the API and updates the local schema on success.
+    // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleTrafficLightChanged(string newColor)
     {
         try
         {
             await TrafficLightService.UpdateTrafficLightAsync(Schema.ResidentSchemaId, newColor);
-            Schema.TrafficLight = newColor; // opdater kun lokalt hvis API-kaldet lykkedes
+            Schema.TrafficLight = newColor;
         }
         catch (Exception)
         {
-            // TODO: Tilføj fejlhåndtering til brugeren på et senere tidspunkt
         }
     }
 
-    // When status is saved, call the Status API to persist.
+    // Persists the new status text via the API and updates the local schema on success.
+    // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleStatusSaved(string newStatus)
     {
         try
@@ -117,11 +139,11 @@
         }
         catch (Exception)
         {
-            // TODO: Show error message to user
         }
     }
 
-    // When a medication time is marked as given, we call the API and update the local state.
+    // Persists the medication as given via the API and updates the local state on success.
+    // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleMedicationGiven(MedicationTimeDto med)
     {
         try
@@ -131,11 +153,57 @@
         }
         catch (Exception)
         {
-            // TODO: Tilføj fejlhåndtering til brugeren på et senere tidspunkt
         }
     }
 
-	// When an employee is assigned, we call the API and update the local schema.
+    // Registers a new PN time via the API and adds the saved entry to the local list.
+    private async Task HandlePNAdded(PNDto dto)
+    {
+        try
+        {
+            var saved = await PNDataService.RegisterPNAsync(dto);
+            pnTimes.Add(saved);
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    // Deletes a PN time via the API and removes it from the local list.
+    private async Task HandlePNDeleted(PNDto dto)
+    {
+        try
+        {
+            await PNDataService.DeletePNAsync(dto.PNId);
+            pnTimes.Remove(dto);
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    // Saves the relative contact note via the API — creates a new record or updates the existing one.
+    private async Task HandleContactSaved(RelativeContactDto dto)
+    {
+        try
+        {
+            if (relativeContact == null)
+            {
+                relativeContact = await RelativeContactService.CreateAsync(dto);
+            }
+            else
+            {
+                await RelativeContactService.UpdateAsync(dto);
+                relativeContact = dto;
+            }
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    // Updates the local schema when EmployeeAssignment reports a change.
+    // EmployeeAssignment calls the API itself — ResidentCard only mirrors the result locally.
     private void HandleEmployeeChanged((int position, int? employeeId) args)
     {
         if (args.position == 1) Schema.SelectedPrimaryId = args.employeeId;
