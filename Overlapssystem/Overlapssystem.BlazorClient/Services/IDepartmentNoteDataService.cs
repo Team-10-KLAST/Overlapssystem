@@ -1,10 +1,9 @@
 ﻿using Overlapssystem.Shared.DTOs;
 
-namespace Overlapssystem.BlazorClient.Services
+namespace Overlapssystem.BlazorClient.Services;
+
+public interface IDepartmentNoteDataService
 {
-    public interface IDepartmentNoteDataService
-    {
-            Task<IEnumerable<DepartmentNoteDto>> GetNoteByDepartmentIdAsync(int departmentId);
-            Task UpdateNoteAsync(DepartmentNoteDto dto);
-    }
+        Task<IEnumerable<DepartmentNoteDto>> GetNoteByDepartmentIdAsync(int departmentId);
+        Task UpdateNoteAsync(DepartmentNoteDto dto);
 }

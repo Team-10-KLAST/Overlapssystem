@@ -4,49 +4,48 @@ using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
 using Overlapssystem.Shared.DTOs;
 
-namespace Overlapssystem.Api.Controllers
+namespace Overlapssystem.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class DepartmentNoteController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class DepartmentNoteController : ControllerBase
+    private readonly IDepartmentNoteService _departmentNoteService;
+
+    public DepartmentNoteController(IDepartmentNoteService departmentNoteService)
     {
-        private readonly IDepartmentNoteService _departmentNoteService;
+        _departmentNoteService = departmentNoteService;
+    }
 
-        public DepartmentNoteController(IDepartmentNoteService departmentNoteService)
+    [HttpGet("{departmentId}")]
+    public async Task<ActionResult<DepartmentNoteDto>> Get(int departmentId)
+    {
+        //Kalder sercvice
+        var note = await _departmentNoteService.GetNoteAsync(departmentId);
+
+        //Map Entity tilbage til dto
+        var dto = new DepartmentNoteDto
         {
-            _departmentNoteService = departmentNoteService;
-        }
+            DepartmentId = note.DepartmentId,
+            Content = note.Content
+        };
 
-        [HttpGet("{departmentId}")]
-        public async Task<ActionResult<DepartmentNoteDto>> Get(int departmentId)
+        return Ok(dto);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Put(DepartmentNoteDto dto)
+    {
+        // 1. Map DTO til Entity (da din service tager imod entiteter)
+        var note = new DepartmentNote
         {
-            //Kalder sercvice
-            var note = await _departmentNoteService.GetNoteAsync(departmentId);
+            DepartmentId = dto.DepartmentId,
+            Content = dto.Content
+        };
 
-            //Map Entity tilbage til dto
-            var dto = new DepartmentNoteDto
-            {
-                DepartmentId = note.DepartmentId,
-                Content = note.Content
-            };
+        // 2. Send til din Application Service
+        await _departmentNoteService.SaveNoteAsync(note);
 
-            return Ok(dto);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> Put(DepartmentNoteDto dto)
-        {
-            // 1. Map DTO til Entity (da din service tager imod entiteter)
-            var note = new DepartmentNote
-            {
-                DepartmentId = dto.DepartmentId,
-                Content = dto.Content
-            };
-
-            // 2. Send til din Application Service
-            await _departmentNoteService.SaveNoteAsync(note);
-
-            return NoContent();
-        }
+        return NoContent();
     }
 }

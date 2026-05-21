@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Overlapssystem.Shared.DTOs
+namespace Overlapssystem.Shared.DTOs;
+
+public class DepartmentNoteDto
 {
-    public class DepartmentNoteDto
-    {
-        public int DepartmentId { get; set; }
-        public string Content { get; set; } = string.Empty;
-    }
+    public int DepartmentId { get; set; }
+    public string Content { get; set; } = string.Empty;
 }

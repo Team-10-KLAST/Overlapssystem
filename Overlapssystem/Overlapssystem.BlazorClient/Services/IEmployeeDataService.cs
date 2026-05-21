@@ -1,10 +1,9 @@
 ﻿using Overlapssystem.Shared.DTOs;
 
-namespace Overlapssystem.BlazorClient.Services
+namespace Overlapssystem.BlazorClient.Services;
+
+public interface IEmployeeDataService
 {
-    public interface IEmployeeDataService
-    {
-        // Henter listen af medarbejdere fra API'en
-        Task<IEnumerable<EmployeeDto>> GetEmployeesAsync();
-    }
+    // Henter listen af medarbejdere fra API'en
+    Task<IEnumerable<EmployeeDto>> GetEmployeesAsync();
 }
