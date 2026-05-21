@@ -11,6 +11,8 @@
 @inject IEmployeeDataService EmployeeDataService
 @inject IPNDataService PNDataService
 @inject IRelativeContactDataService RelativeContactService
+@inject IEmployeeAssignmentDataService AssignmentService
+
 
 <div class="resident-card">
 
@@ -211,11 +213,24 @@
         }
     }
 
-    // Updates the local schema when EmployeeAssignment reports a change.
-    // EmployeeAssignment calls the API itself — ResidentCard only mirrors the result locally.
-    private void HandleEmployeeChanged((int position, int? employeeId) args)
+	// Assigns the selected employee via the API and updates the local schema on success.
+    private async Task HandleEmployeeChanged((int position, int? employeeId) args)
     {
-        if (args.position == 1) Schema.SelectedPrimaryId = args.employeeId;
-        else Schema.SelectedSecondaryId = args.employeeId;
+        if (args.employeeId.HasValue)
+        {
+            var success = await AssignmentService.AssignEmployeeAsync(
+                Schema.ResidentSchemaId, args.employeeId.Value, args.position);
+
+            if (success)
+            {
+                if (args.position == 1) Schema.SelectedPrimaryId = args.employeeId;
+                else Schema.SelectedSecondaryId = args.employeeId;
+            }
+        }
+        else
+        {
+            if (args.position == 1) Schema.SelectedPrimaryId = null;
+            else Schema.SelectedSecondaryId = null;
+        }
     }
 }
