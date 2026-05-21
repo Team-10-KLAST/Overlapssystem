@@ -30,7 +30,8 @@ namespace Overlapssystem.Application
 
             services.AddScoped<IActivityLogService, ActivityLogService>();
             services.AddScoped<IPhoneService, PhoneService>();
-            // If there are more services, register them here. 
+            services.AddScoped<IRelativeContactService, RelativeContactService>();
+            // If there are more services, register them here.
 
             return services;
         }

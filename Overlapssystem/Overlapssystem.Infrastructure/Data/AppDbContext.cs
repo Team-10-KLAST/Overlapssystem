@@ -26,6 +26,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
     public DbSet<MedicationRegistration> MedicationRegistrations => Set<MedicationRegistration>();
     public DbSet<PN> PNs => Set<PN>();
     public DbSet<DepartmentNote> DepartmentNotes => Set<DepartmentNote>();
+    public DbSet<RelativeContact> RelativeContacts => Set<RelativeContact>();
     public DbSet<ActivityLogEntry> ActivityLogEntries => Set<ActivityLogEntry>();
     public DbSet<DepartmentTask> DepartmentTasks => Set<DepartmentTask>();
     public DbSet<ShiftTaskAssignment> ShiftTaskAssignments => Set<ShiftTaskAssignment>();
