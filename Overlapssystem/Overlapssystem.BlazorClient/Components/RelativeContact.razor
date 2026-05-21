@@ -14,9 +14,9 @@
 
     @if (hasSavedMessage && !isEditing)
     {
-        @* Saved state: plain text, max 2 lines, tooltip shows full message *@
+        @* Saved state: renders newlines as <br> so line breaks entered by the user are preserved *@
         <div class="rc-saved-text" title="@currentMessage" @onclick="StartEditing">
-            @currentMessage
+            @SavedMessageHtml
         </div>
     }
     else
@@ -63,6 +63,11 @@
 
     // True when the current textarea text differs from the last saved message.
     private bool HasChanges => currentMessage != savedMessage;
+
+    // Converts newlines to <br> tags so Enter key line breaks are preserved visually.
+    // HtmlEncode prevents XSS before injecting the raw markup.
+    private MarkupString SavedMessageHtml =>
+        new(System.Net.WebUtility.HtmlEncode(currentMessage).Replace("\n", "<br>"));
 
     // Loads the most recent contact note from the API when the component mounts.
     protected override async Task OnInitializedAsync()
