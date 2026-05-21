@@ -12,5 +12,5 @@ public interface IPNService
     Task<IEnumerable<PN>> GetPNsBySchemaAsync(int residentSchemaId);
 
     // Deletes a PN registration permanently by ID. Returns false if not found.
-    Task<bool> DeletePNAsync(int pnId);
+    Task<bool> DeletePNAsync(int pnId, int employeeId);
 }

@@ -11,10 +11,12 @@ namespace Overlapssystem.Application.Services;
 public class ResidentStatusService : IResidentStatusService
 {
     private readonly IAppDbContext _context;
+    private readonly IActivityLogService _activityLogService;
 
-    public ResidentStatusService(IAppDbContext context)
+    public ResidentStatusService(IAppDbContext context, IActivityLogService activityLogService)
     {
         _context = context;
+        _activityLogService = activityLogService;
             
     }
 
@@ -35,14 +37,11 @@ public class ResidentStatusService : IResidentStatusService
         // Step 3: update status field 
         schema.Status = newStatus;
 
-        _context.ActivityLogEntries.Add(new ActivityLogEntry
-        {
-            ActionType = "Status",
-            Description = $"Tilføjede til status: {newStatus}",
-            Timestamp = DateTime.UtcNow,
-            EmployeeId = employeeId,
-            ResidentSchemaId = residentSchemaId
-        });
+        await _activityLogService.AddLogEntry(
+            "Status",
+            $"Tilføjede til status: {newStatus}",
+            employeeId,
+            residentSchemaId);
 
         // step 4: save changes to database
         await _context.SaveChangesAsync();
