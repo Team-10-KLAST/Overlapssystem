@@ -1,5 +1,6 @@
-﻿using Overlapssystem.Shared.DTOs;
-using System.Net.Http.Json; // VIGTIG: Giver adgang til GetFromJsonAsync
+﻿using System.Net.Http.Json;
+using Overlapssystem.BlazorClient.Models;
+using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
@@ -13,17 +14,34 @@ public class DepartmentNoteDataService : IDepartmentNoteDataService
     }
 
     // Hent noten fra API'en
-    public async Task<IEnumerable<DepartmentNoteDto>> GetNoteByDepartmentIdAsync(int departmentId)
+    public async Task<Result<IEnumerable<DepartmentNoteDto>>> GetNoteByDepartmentIdAsync(int departmentId)
     {
-        var dto = await _http.GetFromJsonAsync<DepartmentNoteDto>($"api/departmentnote/{departmentId}");
+        try
+        {
+            var dto = await _http.GetFromJsonAsync<DepartmentNoteDto>($"api/departmentnote/{departmentId}");
 
-        if (dto == null)
-            return new List<DepartmentNoteDto>();
+            if (dto == null)
+                return Result<IEnumerable<DepartmentNoteDto>>.Success(new List<DepartmentNoteDto>());
 
-        return new List<DepartmentNoteDto> { dto };
+            return Result<IEnumerable<DepartmentNoteDto>>.Success(new List<DepartmentNoteDto> { dto });
+        }
+        catch (HttpRequestException)
+        {
+            return Result<IEnumerable<DepartmentNoteDto>>.Failure("Kunne ikke hente note.");
+        }
     }
-    public async Task UpdateNoteAsync(DepartmentNoteDto dto)
+    public async Task<Result> UpdateNoteAsync(DepartmentNoteDto dto)
     {
-        await _http.PutAsJsonAsync($"api/departmentnote", dto);
+        try
+        {
+            var response = await _http.PutAsJsonAsync("api/departmentnote", dto);
+            return response.IsSuccessStatusCode
+                ? Result.Success()
+                : Result.Failure("Kunne ikke gemme note.");
+        }
+        catch (HttpRequestException)
+        {
+            return Result.Failure("Ingen forbindelse til serveren.");
+        }
     }
 }

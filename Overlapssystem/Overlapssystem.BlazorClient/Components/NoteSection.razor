@@ -4,6 +4,12 @@
     <div style="background-color: #ffc107; padding: 8px 12px; font-weight: bold;">
         Huskeseddel
     </div>
+
+    @if (_errorMessage != null)
+    {
+        <div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
+    }
+
     <div style="background-color: #fffde7;">
         <textarea style="width: 100%; height: 200px; background-color: #fffde7; resize: none; border: none; padding: 8px; outline: none;"
                   @bind="Content"
@@ -25,25 +31,33 @@
     private string Content = string.Empty;
     private bool isSaving = false;
     private int _loadedDepartmentId = 0;
+	private string? _errorMessage;
 
     protected override async Task OnParametersSetAsync()
     {
         if (DepartmentId > 0 && DepartmentId != _loadedDepartmentId)
         {
             _loadedDepartmentId = DepartmentId;
-            var notes = await NoteService.GetNoteByDepartmentIdAsync(DepartmentId);
-            Content = notes.FirstOrDefault()?.Content ?? string.Empty;
+            var result = await NoteService.GetNoteByDepartmentIdAsync(DepartmentId);
+            if (result.IsSuccess)
+                Content = result.Data!.FirstOrDefault()?.Content ?? string.Empty;
+            else
+                _errorMessage = result.Error;
         }
     }
 
     private async Task SaveInternal()
     {
         isSaving = true;
-        await NoteService.UpdateNoteAsync(new DepartmentNoteDto
+        var result = await NoteService.UpdateNoteAsync(new DepartmentNoteDto
         {
             DepartmentId = DepartmentId,
             Content = Content ?? ""
         });
+
+        if (!result.IsSuccess)
+            _errorMessage = result.Error;
+
         await Task.Delay(500);
         isSaving = false;
         StateHasChanged();

@@ -1,5 +1,6 @@
-﻿using Overlapssystem.Shared.DTOs;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
+using Overlapssystem.BlazorClient.Models;
+using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
@@ -13,34 +14,31 @@ public class PhoneDataService : IPhoneDataService
     }
 
     
-    public async Task<IEnumerable<PhoneDto>> GetPhonesAsync()
+    public async Task<Result<IEnumerable<PhoneDto>>> GetPhonesAsync()
     {
         try
         {
-            // Foretager et GET kald til api/phones
             var phones = await _httpClient.GetFromJsonAsync<IEnumerable<PhoneDto>>("api/phones");
-
-            return phones ?? Enumerable.Empty<PhoneDto>();
+            return Result<IEnumerable<PhoneDto>>.Success(phones ?? Enumerable.Empty<PhoneDto>());
         }
-        catch (Exception ex)
+        catch (HttpRequestException)
         {
-            Console.WriteLine($"Fejl ved hentning af telefoner: {ex.Message}");
-            return Enumerable.Empty<PhoneDto>();
+            return Result<IEnumerable<PhoneDto>>.Failure("Kunne ikke hente telefoner.");
         }
     }
 
-    public async Task<bool> UpdatePhoneAsync(PhoneDto phoneDto)
+    public async Task<Result> UpdatePhoneAsync(PhoneDto phoneDto)
     {
         try
         {
             var response = await _httpClient.PutAsJsonAsync($"api/phones/{phoneDto.Id}", phoneDto);
-
-            return response.IsSuccessStatusCode;
+            return response.IsSuccessStatusCode
+                ? Result.Success()
+                : Result.Failure("Kunne ikke opdatere telefon.");
         }
-        catch (Exception ex)
+        catch (HttpRequestException)
         {
-            Console.WriteLine($"Fejl ved opdatering af telefon (Id: {phoneDto.Id}): {ex.Message}");
-            return false;
+            return Result.Failure("Ingen forbindelse til serveren.");
         }
     }
 }

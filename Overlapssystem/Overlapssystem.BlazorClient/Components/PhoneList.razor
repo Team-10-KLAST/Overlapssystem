@@ -75,39 +75,39 @@
     [Parameter] public List<EmployeeDto> AllEmployees { get; set; } = new();
 
     private List<PhoneDto>? phones;
+	private string? _errorMessage;
 
     protected override async Task OnParametersSetAsync()
     {
         if (ShiftId > 0)
         {
-            var result = await PhoneService.GetPhonesAsync();
-            var employees = await EmployeeService.GetEmployeesAsync();
+            var phonesResult = await PhoneService.GetPhonesAsync();
+            if (phonesResult.IsSuccess)
+                phones = phonesResult.Data!.OrderBy(p => p.Number).ToList();
+            else
+                _errorMessage = phonesResult.Error;
 
-            phones = result.OrderBy(p => p.Number).ToList();
-            AllEmployees = employees.ToList();
+            var employeesResult = await EmployeeService.GetEmployeesAsync();
+            if (employeesResult.IsSuccess)
+                AllEmployees = employeesResult.Data!.ToList();
+            else
+                _errorMessage = employeesResult.Error;
         }
     }
 
     private async Task OnEmployeeChanged(ChangeEventArgs e, PhoneDto phone)
     {
-        string? stringValue = e.Value?.ToString();
-
-        if (int.TryParse(stringValue, out var employeeId))
-        {
+        if (int.TryParse(e.Value?.ToString(), out var employeeId))
             phone.EmployeeId = employeeId;
-        }
         else
         {
             phone.EmployeeId = null;
             phone.IsTested = false;
         }
 
-        bool success = await PhoneService.UpdatePhoneAsync(phone);
-
-        if (!success)
-        {
-            Console.WriteLine($"Kunne ikke opdatere medarbejder for telefon {phone.Number}");
-        }
+        var result = await PhoneService.UpdatePhoneAsync(phone);
+        if (!result.IsSuccess)
+            _errorMessage = result.Error;
     }
 
     private async Task OnTestChanged(ChangeEventArgs e, PhoneDto phone)
@@ -117,13 +117,11 @@
         if (e.Value is bool isTested)
         {
             phone.IsTested = isTested;
-
-            bool success = await PhoneService.UpdatePhoneAsync(phone);
-
-            if (!success)
+            var result = await PhoneService.UpdatePhoneAsync(phone);
+            if (!result.IsSuccess)
             {
                 phone.IsTested = !isTested;
-                Console.WriteLine($"Kunne ikke opdatere test-status for telefon {phone.Number}");
+                _errorMessage = result.Error;
             }
         }
     }
@@ -139,7 +137,6 @@
             {
                 phone.EmployeeId = null;
                 phone.IsTested = false;
-
                 await PhoneService.UpdatePhoneAsync(phone);
             }
         }

@@ -1,11 +1,12 @@
-﻿using Overlapssystem.Shared.DTOs;
+﻿using Overlapssystem.BlazorClient.Models;
+using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
 public interface IPhoneDataService
 {
     
-    Task<IEnumerable<PhoneDto>> GetPhonesAsync();
+    Task<Result<IEnumerable<PhoneDto>>> GetPhonesAsync();
 
-    Task<bool> UpdatePhoneAsync(PhoneDto phoneDto);
+    Task<Result> UpdatePhoneAsync(PhoneDto phoneDto);
 }
