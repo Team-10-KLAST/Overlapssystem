@@ -5,8 +5,8 @@
 
 <div style="border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.2); display: flex; flex-direction: column; height: 274px; background-color: #fff;">
 
-    <!-- Top Bar med overskrift og den nye Nulstil-knap -->
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background-color: #fff;">
+    @* Top bar — heading and reset button *@
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 12px; background-color: #fff;">
         <h5 class="fw-bold m-0" style="font-size: 16px;">Telefonliste</h5>
         @if (phones != null && phones.Any())
         {
@@ -18,14 +18,14 @@
         }
     </div>
 
-    <!-- Header opdateret til en klar 'telefon-associeret' blå/teal farve -->
+    @* Column headers — phone number, employee, test status *@
     <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; padding: 8px 12px; font-weight: bold; flex-shrink: 0; font-size: 14px; border-bottom: 2px solid ;">
         <span>Telefon</span>
         <span>Medarbejder</span>
         <span style="padding-right: 4px;">Test</span>
     </div>
 
-    <!-- Scrollbart indhold -->
+    @* Scrollable phone list — scrolls inside the fixed-height box when there are many entries *@
     <div style="overflow-y: auto; flex: 1;">
         @if (phones == null)
         {
@@ -40,10 +40,10 @@
             @foreach (var phone in phones)
             {
                         <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; padding: 4px 12px; border-bottom: 1px solid #eee; align-items: center; font-size: 13px;">
-                            <!-- Telefonnummer -->
+                            @* Phone number *@
                             <span class="fw-bold text-secondary">@phone.Number</span>
 
-                            <!-- Dropdown til Medarbejder-initialer -->
+                            @* Dropdown for assigning an employee to this phone *@
                             <select class="form-select form-select-sm border-0 bg-transparent p-0"
                                     style="box-shadow: none; cursor: pointer;"
                                     value="@phone.EmployeeId"
@@ -55,10 +55,10 @@
                         }
                             </select>
 
-                            <!-- Checkbox under Test - Deaktiveret hvis ingen medarbejder er valgt -->
+                            @* Test checkbox — disabled until an employee is assigned *@
                             <div style="display: flex; align-items: center; justify-content: center; width: 24px;">
-                                <input type="checkbox" 
-                                       class="form-check-input m-0" 
+                                <input type="checkbox"
+                                       class="form-check-input m-0"
                                        style="cursor: @(phone.EmployeeId == null ? "not-allowed" : "pointer");"
                                        disabled="@(phone.EmployeeId == null)"
                                        checked="@phone.IsTested"
@@ -128,25 +128,22 @@
         }
     }
 
-    // Ny metode til at nulstille alle telefoner på én gang
+    // Resets all phones to unassigned and untested.
     private async Task ResetAllPhones()
     {
         if (phones == null || !phones.Any()) return;
 
         foreach (var phone in phones)
         {
-            // Ændre kun de telefoner, der faktisk har data tilknyttet
             if (phone.EmployeeId != null || phone.IsTested)
             {
                 phone.EmployeeId = null;
                 phone.IsTested = false;
 
-                // Opdater databasen for hver ændring
                 await PhoneService.UpdatePhoneAsync(phone);
             }
         }
 
-        // Tving komponenten til at gen-rendre det opdaterede UI
         StateHasChanged();
     }
 }

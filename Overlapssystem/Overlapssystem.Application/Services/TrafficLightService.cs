@@ -13,10 +13,12 @@ namespace Overlapssystem.Application.Services;
 public class TrafficLightService : ITrafficLightService
 {
     private readonly IAppDbContext _context;
+    private readonly IActivityLogService _activityLogService;
 
-    public TrafficLightService(IAppDbContext context)
+    public TrafficLightService(IAppDbContext context, IActivityLogService activityLogService)
     {
         _context = context;
+        _activityLogService = activityLogService;
     }
 
     // Updates the traffic light status for a specific resident schema.
@@ -38,14 +40,11 @@ public class TrafficLightService : ITrafficLightService
             schema.TrafficLight = null;
         }
 
-        _context.ActivityLogEntries.Add(new ActivityLogEntry
-        {
-            ActionType = "Trafiklys",
-            Description = $"Ændrede trafiklys til {ToDanish(schema.TrafficLight)}",
-            Timestamp = DateTime.UtcNow,
-            EmployeeId = employeeId,
-            ResidentSchemaId = residentSchemaId
-        });
+        await _activityLogService.AddLogEntry(
+            "Trafiklys",
+            $"Ændrede trafiklys til {ToDanish(schema.TrafficLight)}",
+            employeeId,
+            residentSchemaId);
 
         await _context.SaveChangesAsync();
         return true;

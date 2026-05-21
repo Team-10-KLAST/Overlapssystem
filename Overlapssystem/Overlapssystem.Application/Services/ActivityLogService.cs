@@ -18,13 +18,20 @@ public class ActivityLogService : IActivityLogService
         _context = context;
     }
 
-    // Saves a new log entry to the database.
+    // Adds a new log entry to the database.
     // Called by other services (MedicationService, TrafficLightService, etc.)
-    // whenever an employee performs a loggable action.
-    public async Task LogActionAsync(ActivityLogEntry entry)
+    // whenever an employee performs a loggable action. 
+    public Task AddLogEntry(string actionType, string description, int employeeId, int residentSchemaId)
     {
-        _context.ActivityLogEntries.Add(entry);
-        await _context.SaveChangesAsync();
+        _context.ActivityLogEntries.Add(new ActivityLogEntry
+        {
+            ActionType = actionType,
+            Description = description,
+            Timestamp = DateTime.UtcNow,
+            EmployeeId = employeeId,
+            ResidentSchemaId = residentSchemaId
+        });
+        return Task.CompletedTask;
     }
 
     // Returns all log entries for a specific employee within a date range.

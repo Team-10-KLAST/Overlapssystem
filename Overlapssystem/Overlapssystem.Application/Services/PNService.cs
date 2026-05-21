@@ -9,10 +9,12 @@ namespace Overlapssystem.Application.Services;
 public class PNService : IPNService
 {
     private readonly IAppDbContext _context;
+    private readonly IActivityLogService _activityLogService;
 
-    public PNService(IAppDbContext context)
+    public PNService(IAppDbContext context, IActivityLogService activityLogService)
     {
         _context = context;
+        _activityLogService = activityLogService;
     }
 
     // Registers a new PN medication with a given time for a resident schema.
@@ -26,14 +28,11 @@ public class PNService : IPNService
 
         _context.PNs.Add(pn);
 
-        _context.ActivityLogEntries.Add(new ActivityLogEntry
-        {
-            ActionType = "PN",
-            Description = $"Markerede PN medicin kl. {givenTime.ToString("HH:mm")}",
-            Timestamp = DateTime.UtcNow,
-            EmployeeId = employeeId,
-            ResidentSchemaId = residentSchemaId
-        });
+        await _activityLogService.AddLogEntry(
+            "PN",
+            $"Markerede PN medicin kl. {givenTime:HH:mm}",
+            employeeId,
+            residentSchemaId);
 
         await _context.SaveChangesAsync();
 
@@ -49,12 +48,19 @@ public class PNService : IPNService
     }
 
     // Deletes a PN registration permanently by ID. Returns false if not found.
-    public async Task<bool> DeletePNAsync(int pnId)
+    public async Task<bool> DeletePNAsync(int pnId, int employeeId)
     {
         var pn = await _context.PNs.FindAsync(pnId);
         if (pn == null) return false;
 
         _context.PNs.Remove(pn);
+
+        await _activityLogService.AddLogEntry(
+            "PN",
+            $"Slettede PN registrering for kl. {pn.GivenTime:HH:mm}",
+            employeeId,
+            pn.ResidentSchemaId);
+
         await _context.SaveChangesAsync();
         return true;
     }
