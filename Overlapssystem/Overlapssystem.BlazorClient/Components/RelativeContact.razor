@@ -4,8 +4,6 @@
    to inform the next shift. Supports save and cancel.
    ============================================================ *@
 
-@inject IRelativeContactDataService RelativeContactService
-
 @* Label — matches section-label style used across the card *@
 <span style="font-weight: bold; min-width: 70px; flex-shrink: 0; color: #333;">Pårørende</span>
 
@@ -46,6 +44,14 @@
     [Parameter]
     public ResidentSchemaDto Schema { get; set; } = default!;
 
+    // The existing contact loaded and passed in by ResidentCard, or null if none exists yet.
+    [Parameter]
+    public RelativeContactDto? ExistingContact { get; set; }
+
+    // Raised when the user saves — ResidentCard calls create or update on the API.
+    [Parameter]
+    public EventCallback<RelativeContactDto> OnContactSaved { get; set; }
+
     // The current text content of the textarea, bound via oninput.
     private string currentMessage = string.Empty;
 
@@ -58,9 +64,6 @@
     // True when a non-empty message has been saved for this schema.
     private bool hasSavedMessage = false;
 
-    // The existing DTO from the API, used to decide between create and update.
-    private RelativeContactDto? existingContact = null;
-
     // True when the current textarea text differs from the last saved message.
     private bool HasChanges => currentMessage != savedMessage;
 
@@ -69,22 +72,20 @@
     private MarkupString SavedMessageHtml =>
         new(System.Net.WebUtility.HtmlEncode(currentMessage).Replace("\n", "<br>"));
 
-    // Loads the most recent contact note from the API when the component mounts.
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadContact();
-    }
+    // Guards against overwriting in-progress edits if ExistingContact changes after initialization.
+    private bool _initialized = false;
 
-    // Fetches all contacts for this schema and uses the first as the single saved message.
-    private async Task LoadContact()
+    // Initializes local message state from ExistingContact once it becomes available.
+    // ExistingContact is null on the first render while ResidentCard loads async,
+    // so initialization is deferred until the first non-null value arrives.
+    protected override void OnParametersSet()
     {
-        var contacts = await RelativeContactService.GetBySchemaAsync(Schema.ResidentSchemaId);
-        existingContact = contacts.FirstOrDefault();
-        if (existingContact != null)
+        if (!_initialized && ExistingContact != null)
         {
-            savedMessage = existingContact.ContactNote;
+            savedMessage = ExistingContact.ContactNote;
             currentMessage = savedMessage;
             hasSavedMessage = !string.IsNullOrWhiteSpace(savedMessage);
+            _initialized = true;
         }
     }
 
@@ -107,24 +108,26 @@
         isEditing = true;
     }
 
-    // Saves the current message via create or update, then exits editing mode.
+    // Notifies ResidentCard to save via the API, then updates local display state.
     private async Task SaveMessage()
     {
-        if (existingContact == null)
+        RelativeContactDto dto;
+        if (ExistingContact == null)
         {
-            var dto = new RelativeContactDto
+            dto = new RelativeContactDto
             {
                 ResidentSchemaId = Schema.ResidentSchemaId,
                 ContactNote = currentMessage,
                 ContactType = "Note"
             };
-            existingContact = await RelativeContactService.CreateAsync(dto);
         }
         else
         {
-            existingContact.ContactNote = currentMessage;
-            await RelativeContactService.UpdateAsync(existingContact);
+            ExistingContact.ContactNote = currentMessage;
+            dto = ExistingContact;
         }
+
+        await OnContactSaved.InvokeAsync(dto);
 
         savedMessage = currentMessage;
         hasSavedMessage = !string.IsNullOrWhiteSpace(currentMessage);
