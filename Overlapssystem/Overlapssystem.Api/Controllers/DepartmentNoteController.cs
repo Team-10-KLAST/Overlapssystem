@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Overlapssystem.Api.Mappers;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
 using Overlapssystem.Shared.DTOs;
@@ -23,12 +24,7 @@ namespace Overlapssystem.Api.Controllers
             //Kalder sercvice
             var note = await _departmentNoteService.GetNoteAsync(departmentId);
 
-            //Map Entity tilbage til dto
-            var dto = new DepartmentNoteDto
-            {
-                DepartmentId = note.DepartmentId,
-                Content = note.Content
-            };
+            var dto = DepartmentNoteMapper.ToDto(note);
 
             return Ok(dto);
         }
@@ -36,12 +32,7 @@ namespace Overlapssystem.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(DepartmentNoteDto dto)
         {
-            // 1. Map DTO til Entity (da din service tager imod entiteter)
-            var note = new DepartmentNote
-            {
-                DepartmentId = dto.DepartmentId,
-                Content = dto.Content
-            };
+            var note = DepartmentNoteMapper.ToEntity(dto);
 
             // 2. Send til din Application Service
             await _departmentNoteService.SaveNoteAsync(note);

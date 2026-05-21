@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using Overlapssystem.Api.Mappers;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Shared.DTOs;
 
@@ -25,7 +26,7 @@ public class PNController : ControllerBase
     {
         var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
         var id = await _service.RegisterPNAsync(dto.ResidentSchemaId, TimeOnly.Parse(dto.GivenTime), employeeId);
-        return Ok(new PNDto { PNId = id, ResidentSchemaId = dto.ResidentSchemaId, GivenTime = dto.GivenTime });
+        return Ok(PNMapper.ToDto(id, dto.ResidentSchemaId, dto.GivenTime));
     }
 
     // GET api/pn/{residentSchemaId}
@@ -34,12 +35,7 @@ public class PNController : ControllerBase
     public async Task<ActionResult<IEnumerable<PNDto>>> GetBySchema(int residentSchemaId)
     {
         var pns = await _service.GetPNsBySchemaAsync(residentSchemaId);
-        var dtos = pns.Select(p => new PNDto
-        {
-            PNId = p.PNId,
-            ResidentSchemaId = p.ResidentSchemaId,
-            GivenTime = p.GivenTime.ToString("HH:mm")
-        });
+        var dtos = pns.Select(PNMapper.ToDto);
         return Ok(dtos);
     }
 

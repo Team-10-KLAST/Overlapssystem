@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Overlapssystem.Api.Mappers;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Shared.DTOs;
 
@@ -22,13 +23,9 @@ public class DepartmentTaskController : ControllerBase
         var tasks = await _departmentTaskService.GetTasksByDepartmentAsync(departmentId);
         var assignments = await _departmentTaskService.GetAssignmentsByShiftAsync(shiftId);
 
-        var dtos = tasks.Select(t => new DepartmentTaskDto
-        {
-            Id = t.Id,
-            TaskName = t.TaskName,
-            AssignedEmployee = assignments
-                .FirstOrDefault(a => a.DepartmentTaskId == t.Id)?.AssignedEmployee ?? string.Empty
-        });
+        var dtos = tasks.Select(t => DepartmentTaskMapper.ToDto(
+              t,
+              assignments.FirstOrDefault(a => a.DepartmentTaskId == t.Id)?.AssignedEmployee ?? string.Empty));
 
         return Ok(dtos);
     }
@@ -54,12 +51,7 @@ public class DepartmentTaskController : ControllerBase
     public async Task<IActionResult> CreateTask(int departmentId, DepartmentTaskDto dto)
     {
         var task = await _departmentTaskService.CreateTaskAsync(departmentId, dto.TaskName);
-        return Ok(new DepartmentTaskDto
-        {
-            Id = task.Id,
-            TaskName = task.TaskName,
-            AssignedEmployee = string.Empty
-        });
+        return Ok(DepartmentTaskMapper.ToDto(task, string.Empty));
     }
     
     // Deletes a task
