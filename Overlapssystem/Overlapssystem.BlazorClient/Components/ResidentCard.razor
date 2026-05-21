@@ -159,40 +159,34 @@
     // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleMedicationGiven(MedicationTimeDto med)
     {
-        try
-        {
-            await MedicationService.MarkAsGivenAsync(Schema.ResidentSchemaId, med.MedicationTimeId);
+        var result = await MedicationService.MarkAsGivenAsync(Schema.ResidentSchemaId, med.MedicationTimeId);
+
+        if (result.IsSuccess)
             med.IsGiven = true;
-        }
-        catch (Exception)
-        {
-        }
+        else
+            _errorMessage = result.Error;
     }
 
     // Registers a new PN time via the API and adds the saved entry to the local list.
     private async Task HandlePNAdded(PNDto dto)
     {
-        try
-        {
-            var saved = await PNDataService.RegisterPNAsync(dto);
-            pnTimes.Add(saved);
-        }
-        catch (Exception)
-        {
-        }
+        var result = await PNDataService.RegisterPNAsync(dto);
+
+        if (result.IsSuccess)
+            pnTimes.Add(result.Data!);
+        else
+            _errorMessage = result.Error;
     }
 
     // Deletes a PN time via the API and removes it from the local list.
     private async Task HandlePNDeleted(PNDto dto)
     {
-        try
-        {
-            await PNDataService.DeletePNAsync(dto.PNId);
+        var result = await PNDataService.DeletePNAsync(dto.PNId);
+
+        if (result.IsSuccess)
             pnTimes.Remove(dto);
-        }
-        catch (Exception)
-        {
-        }
+        else
+            _errorMessage = result.Error;
     }
 
     // Saves the relative contact note via the API — creates a new record or updates the existing one.

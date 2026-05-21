@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Overlapssystem.BlazorClient.Models;
 using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
@@ -14,15 +15,25 @@ public class MedicationDataService : IMedicationDataService
     }
 
     // Posts a request to the API to mark a planned medication time as given.
-    public async Task MarkAsGivenAsync(int residentSchemaId, int medicationTimeId)
+    public async Task<Result> MarkAsGivenAsync(int residentSchemaId, int medicationTimeId)
     {
-        var dto = new MarkMedicationGivenDto
+        try
         {
-            ResidentSchemaId = residentSchemaId,
-            MedicationTimeId = medicationTimeId
-        };
+            var dto = new MarkMedicationGivenDto
+            {
+                ResidentSchemaId = residentSchemaId,
+                MedicationTimeId = medicationTimeId
+            };
 
-        var response = await _http.PostAsJsonAsync("api/medication/mark-given", dto);
-        response.EnsureSuccessStatusCode();
+            var response = await _http.PostAsJsonAsync("api/medication/mark-given", dto);
+
+            return response.IsSuccessStatusCode
+                ? Result.Success()
+                : Result.Failure("Kunne ikke registrere medicin.");
+        }
+        catch (HttpRequestException)
+        {
+            return Result.Failure("Ingen forbindelse til serveren.");
+        }
     }
 }

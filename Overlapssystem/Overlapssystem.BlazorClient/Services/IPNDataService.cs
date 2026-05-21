@@ -1,3 +1,4 @@
+using Overlapssystem.BlazorClient.Models;
 using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
@@ -6,11 +7,11 @@ namespace Overlapssystem.BlazorClient.Services;
 public interface IPNDataService
 {
     // Fetches all PN registrations for a specific resident schema from the API.
-    Task<IEnumerable<PNDto>> GetPNsBySchemaAsync(int residentSchemaId);
+    Task<Result<IEnumerable<PNDto>>> GetPNsBySchemaAsync(int residentSchemaId);
 
     // Sends a new PN registration to the API and returns the saved result.
-    Task<PNDto> RegisterPNAsync(PNDto dto);
+    Task<Result<PNDto>> RegisterPNAsync(PNDto dto);
 
     // Sends a DELETE request to permanently remove a PN registration by ID.
-    Task DeletePNAsync(int pnId);
+    Task<Result> DeletePNAsync(int pnId);
 }
