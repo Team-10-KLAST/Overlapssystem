@@ -1,4 +1,5 @@
-﻿using Overlapssystem.Shared.DTOs;
+﻿using Overlapssystem.BlazorClient.Models;
+using Overlapssystem.Shared.DTOs;
 using System.Net.Http.Json;
 
 namespace Overlapssystem.BlazorClient.Services;
@@ -13,9 +14,16 @@ public class EmployeeDataService : IEmployeeDataService
     }
 
     // Fetches the list of employees from the API and returns it as a collection of EmployeeDto.
-    public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
+    public async Task<Result<IEnumerable<EmployeeDto>>> GetEmployeesAsync()
     {
-        var employees = await _httpClient.GetFromJsonAsync<IEnumerable<EmployeeDto>>("api/employees");
-        return employees ?? Enumerable.Empty<EmployeeDto>();
+        try
+        {
+            var employees = await _httpClient.GetFromJsonAsync<IEnumerable<EmployeeDto>>("api/employees");
+            return Result<IEnumerable<EmployeeDto>>.Success(employees ?? Enumerable.Empty<EmployeeDto>());
+        }
+        catch (HttpRequestException)
+        {
+            return Result<IEnumerable<EmployeeDto>>.Failure("Kunne ikke hente medarbejdere.");
+        }
     }
 }

@@ -125,9 +125,23 @@
         var pnsTask = PNDataService.GetPNsBySchemaAsync(Schema.ResidentSchemaId);
         var contactsTask = RelativeContactService.GetBySchemaAsync(Schema.ResidentSchemaId);
 
-        try { allEmployees = (await employeesTask).ToList(); } catch (Exception) { loadError = true; }
-        try { pnTimes = (await pnsTask).ToList(); } catch (Exception) { loadError = true; }
-        try { relativeContact = (await contactsTask).FirstOrDefault(); } catch (Exception) { loadError = true; }
+        var employeesResult = await employeesTask;
+        if (employeesResult.IsSuccess)
+            allEmployees = employeesResult.Data!.ToList();
+        else
+            loadError = true;
+
+        var pnsResult = await pnsTask;
+        if (pnsResult.IsSuccess)
+            pnTimes = pnsResult.Data!.ToList();
+        else
+            loadError = true;
+
+        var contactsResult = await contactsTask;
+        if (contactsResult.IsSuccess)
+            relativeContact = contactsResult.Data!.FirstOrDefault();
+        else
+            loadError = true;
     }
 
     // Persists the new traffic light color via the API and updates the local schema on success.
@@ -192,20 +206,23 @@
     // Saves the relative contact note via the API — creates a new record or updates the existing one.
     private async Task HandleContactSaved(RelativeContactDto dto)
     {
-        try
+        if (relativeContact == null)
         {
-            if (relativeContact == null)
-            {
-                relativeContact = await RelativeContactService.CreateAsync(dto);
-            }
+            var result = await RelativeContactService.CreateAsync(dto);
+
+            if (result.IsSuccess)
+                relativeContact = result.Data;
             else
-            {
-                await RelativeContactService.UpdateAsync(dto);
-                relativeContact = dto;
-            }
+                _errorMessage = result.Error;
         }
-        catch (Exception)
+        else
         {
+            var result = await RelativeContactService.UpdateAsync(dto);
+
+            if (result.IsSuccess)
+                relativeContact = dto;
+            else
+                _errorMessage = result.Error;
         }
     }
 
