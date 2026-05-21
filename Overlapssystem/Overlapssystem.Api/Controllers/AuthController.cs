@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Application.UseCases;
 using Overlapssystem.Shared.DTOs;
+using Overlapssystem.Api.Mappers;
 
 namespace Overlapssystem.Api.Controllers;
 
@@ -34,12 +35,7 @@ public class AuthController : ControllerBase
         if (!result.Success)
             return Unauthorized("Forkert email eller adgangskode.");
 
-        return Ok(new AuthResponseDto
-        {
-            Token = result.Token!,
-            Email = result.Email!,
-            Role = result.Role!
-        });
+        return Ok(AuthMapper.ToDto(result));
     }
 
     // POST api/auth/register

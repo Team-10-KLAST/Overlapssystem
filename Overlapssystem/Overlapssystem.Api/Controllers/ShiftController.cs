@@ -3,6 +3,7 @@ using Overlapssystem.Shared.DTOs;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Enums;
 using Overlapssystem.Application.UseCases;
+using Overlapssystem.Api.Mappers;
 
 namespace Overlapssystem.Api.Controllers;
 
@@ -29,13 +30,7 @@ public class ShiftController : ControllerBase
             (ShiftType)dto.ShiftType,
             dto.DepartmentId
         );
-        return Ok(new ShiftDto
-        {
-            Id = shift.Id.ToString(),
-            DateTime = shift.Date.ToString("o"),
-            ShiftType = shift.Type.ToString(),
-            DepartmentId = shift.DepartmentId.ToString()
-        });
+        return Ok(ShiftMapper.ToDto(shift));
     }
 
     [HttpGet("{id}")]
@@ -45,14 +40,7 @@ public class ShiftController : ControllerBase
         if (shift == null)
             return NotFound($"Vagt med id {id} blev ikke fundet.");
 
-        var shiftDto = new ShiftDto
-        {
-            Id = shift.Id.ToString(),
-            DateTime = shift.Date.ToString("o"),
-            ShiftType = shift.Type.ToString(),
-            DepartmentId = shift.DepartmentId.ToString()
-        };
-        return Ok(shiftDto);
+        return Ok(ShiftMapper.ToDto(shift));
     }
 
     [HttpGet]
@@ -61,13 +49,7 @@ public class ShiftController : ControllerBase
         var shifts = await _shiftService.GetAllShiftsAsync();
 
         // Mapping fra Shift-entity til ShiftDto
-        var dtos = shifts.Select(shift => new ShiftDto
-        {
-            Id = shift.Id.ToString(),
-            DateTime = shift.Date.ToString("o"), // ISO 8601 format
-            ShiftType = shift.Type.ToString(),
-            DepartmentId = shift.DepartmentId.ToString()
-        });
+        var dtos = shifts.Select(ShiftMapper.ToDto);
 
         return Ok(dtos);
     }

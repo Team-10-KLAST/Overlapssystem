@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Overlapssystem.Api.Mappers;
 using Overlapssystem.Application.Interfaces;
-using Overlapssystem.Domain.Entities;
 using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.Api.Controllers;
@@ -24,13 +24,7 @@ public class RelativeContactController : ControllerBase
     {
         var contacts = await _service.GetBySchemaAsync(residentSchemaId);
 
-        var dtos = contacts.Select(c => new RelativeContactDto
-        {
-            Id = c.Id,
-            ResidentSchemaId = c.ResidentSchemaId,
-            ContactNote = c.ContactNote,
-            ContactType = c.ContactType
-        });
+        var dtos = contacts.Select(RelativeContactMapper.ToDto);
 
         return Ok(dtos);
     }
@@ -40,17 +34,9 @@ public class RelativeContactController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<RelativeContactDto>> Create(RelativeContactDto dto)
     {
-        var contact = new RelativeContact
-        {
-            ResidentSchemaId = dto.ResidentSchemaId,
-            ContactNote = dto.ContactNote,
-            ContactType = dto.ContactType
-        };
-
+        var contact = RelativeContactMapper.ToEntity(dto);
         var created = await _service.CreateAsync(contact);
-
-        dto.Id = created.Id;
-        return Ok(dto);
+        return Ok(RelativeContactMapper.ToDto(created));
     }
 
     // PUT api/relativecontact/{id}
@@ -58,13 +44,7 @@ public class RelativeContactController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, RelativeContactDto dto)
     {
-        var contact = new RelativeContact
-        {
-            Id = id,
-            ResidentSchemaId = dto.ResidentSchemaId,
-            ContactNote = dto.ContactNote,
-            ContactType = dto.ContactType
-        };
+        var contact = RelativeContactMapper.ToEntity(id, dto);
 
         try
         {
