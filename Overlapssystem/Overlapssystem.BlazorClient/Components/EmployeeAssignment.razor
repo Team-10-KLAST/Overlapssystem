@@ -1,6 +1,5 @@
 ﻿@using Overlapssystem.Shared.DTOs
 @using Overlapssystem.BlazorClient.Services
-@inject IEmployeeAssignmentDataService AssignService
 
 <div class="employee-section">
     <span class="section-label">Medarbejder</span>
@@ -59,16 +58,10 @@
 
         if (int.TryParse(stringValue, out var employeeId))
         {
-            // Gem tildeling i databasen
-            var success = await AssignService.AssignEmployeeAsync(ResidentSchemaId, employeeId, position);
+            if (position == 1) SelectedPrimaryId = employeeId;
+            else SelectedSecondaryId = employeeId;
 
-            if (success)
-            {
-                if (position == 1) SelectedPrimaryId = employeeId;
-                else SelectedSecondaryId = employeeId;
-
-                await OnEmployeeChanged.InvokeAsync((position, employeeId));
-            }
+            await OnEmployeeChanged.InvokeAsync((position, employeeId));
         }
         else
         {

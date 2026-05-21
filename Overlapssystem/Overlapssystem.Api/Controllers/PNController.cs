@@ -44,7 +44,8 @@ public class PNController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var success = await _service.DeletePNAsync(id);
+        var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
+        var success = await _service.DeletePNAsync(id, employeeId);
         if (!success) return NotFound();
         return NoContent();
     }

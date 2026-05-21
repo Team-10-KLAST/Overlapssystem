@@ -5,39 +5,40 @@ using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
 using Overlapssystem.Shared.DTOs;
 
-namespace Overlapssystem.Api.Controllers
+namespace Overlapssystem.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class DepartmentNoteController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class DepartmentNoteController : ControllerBase
+    private readonly IDepartmentNoteService _departmentNoteService;
+
+    public DepartmentNoteController(IDepartmentNoteService departmentNoteService)
     {
-        private readonly IDepartmentNoteService _departmentNoteService;
+        _departmentNoteService = departmentNoteService;
+    }
 
-        public DepartmentNoteController(IDepartmentNoteService departmentNoteService)
-        {
-            _departmentNoteService = departmentNoteService;
-        }
+    [HttpGet("{departmentId}")]
+    public async Task<ActionResult<DepartmentNoteDto>> Get(int departmentId)
+    {
+        // 1. Hent entity fra service
+        var note = await _departmentNoteService.GetNoteAsync(departmentId);
 
-        [HttpGet("{departmentId}")]
-        public async Task<ActionResult<DepartmentNoteDto>> Get(int departmentId)
-        {
-            //Kalder sercvice
-            var note = await _departmentNoteService.GetNoteAsync(departmentId);
+        // 2. Map til DTO via mapper
+        var dto = DepartmentNoteMapper.ToDto(note);
 
-            var dto = DepartmentNoteMapper.ToDto(note);
+        return Ok(dto);
+    }
 
-            return Ok(dto);
-        }
+    [HttpPut]
+    public async Task<IActionResult> Put(DepartmentNoteDto dto)
+    {
+        // 1. Map DTO til Entity via mapper
+        var note = DepartmentNoteMapper.ToEntity(dto);
 
-        [HttpPut]
-        public async Task<IActionResult> Put(DepartmentNoteDto dto)
-        {
-            var note = DepartmentNoteMapper.ToEntity(dto);
+        // 2. Gem via service
+        await _departmentNoteService.SaveNoteAsync(note);
 
-            // 2. Send til din Application Service
-            await _departmentNoteService.SaveNoteAsync(note);
-
-            return NoContent();
-        }
+        return NoContent();
     }
 }
