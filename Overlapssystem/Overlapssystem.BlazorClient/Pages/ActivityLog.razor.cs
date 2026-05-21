@@ -18,12 +18,17 @@ public partial class ActivityLog
     private DateTime fromDate = DateTime.Today.AddDays(-7);
     private DateTime toDate = DateTime.Today;
     private bool isLoading;
-
     private bool CanSearch => selectedEmployeeId.HasValue;
+    private string? _errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        employees = await EmployeeService.GetEmployeesAsync();
+        var result = await EmployeeService.GetEmployeesAsync();
+
+        if (result.IsSuccess)
+            employees = result.Data;
+        else
+            _errorMessage = result.Error;
     }
 
     private void OnEmployeeChanged(ChangeEventArgs e)
@@ -38,9 +43,23 @@ public partial class ActivityLog
     {
         if (!selectedEmployeeId.HasValue) return;
 
+        if (toDate < fromDate)
+        {
+            _errorMessage = "Slutdato må ikke være tidligere end startdato.";
+            return;
+        }
+
+        _errorMessage = null;
         isLoading = true;
-        logEntries = await LogService.GetByEmployeeAsync(
+
+        var result = await LogService.GetByEmployeeAsync(
             selectedEmployeeId.Value, fromDate, toDate);
+
+        if (result.IsSuccess)
+            logEntries = result.Data;
+        else
+            _errorMessage = result.Error;
+
         isLoading = false;
     }
 }

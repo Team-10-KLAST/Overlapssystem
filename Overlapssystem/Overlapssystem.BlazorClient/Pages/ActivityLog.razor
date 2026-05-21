@@ -3,6 +3,11 @@
 
 <h2>Aktivitetslog</h2>
 
+@if (_errorMessage != null)
+{
+    <div class="alert alert-danger m-2">@_errorMessage</div>
+}
+
 <div class="filters">
     <div class="filter-group">
         <label>Medarbejder</label>
