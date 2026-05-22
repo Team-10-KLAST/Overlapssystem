@@ -18,6 +18,7 @@ public class AuthService : IAuthService
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ITokenService _tokenService;
 
+    // Constructor — receives the user manager, sign-in manager, and token service via dependency injection.
     public AuthService(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
@@ -28,7 +29,7 @@ public class AuthService : IAuthService
         _tokenService = tokenService;
     }
 
-    // Validates user credentials and generates a JWT token if successful
+    // Validates user credentials and generates a JWT token if successful.
     public async Task<LoginResult> LoginAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -55,6 +56,7 @@ public class AuthService : IAuthService
     }
 
     // Registers a new user with the specified email, password, and employee ID
+    // Assigns to Employee role bu default.
     public async Task<RegisterResult> RegisterAsync(string email, string password, int employeeId)
     {
         var user = new ApplicationUser

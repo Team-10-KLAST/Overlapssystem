@@ -12,13 +12,14 @@ public class TrafficLightController : ControllerBase
 {
     private readonly ITrafficLightService _trafficLightService;
 
+    // Constructor — receives the traffic light service via dependency injection.
     public TrafficLightController(ITrafficLightService trafficLightService)
     {
         _trafficLightService = trafficLightService;
     }
 
-    // PUT api/trafficlight/{id}
     // Updates the traffic light status for a specific resident schema.
+    // PUT api/trafficlight/{id}
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTrafficLight(int id, UpdateTrafficLightDto dto)
     {

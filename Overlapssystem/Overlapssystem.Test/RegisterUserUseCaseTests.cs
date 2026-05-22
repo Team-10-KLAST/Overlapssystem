@@ -17,7 +17,6 @@ namespace Overlapssystem.Test;
 [TestClass]
 public class RegisterUserUseCaseTests
 {
-    // Builds a RegisterUserUseCase instance with mocked dependencies for testing.
     private static RegisterUserUseCase Build(
         Mock<IEmployeeService> employeeServiceMock,
         Mock<IAuthService> authServiceMock)

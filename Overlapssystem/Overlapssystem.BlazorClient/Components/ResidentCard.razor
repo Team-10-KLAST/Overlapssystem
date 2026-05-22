@@ -73,9 +73,8 @@
 
     @* RELATIVE CONTACT *@
     <div class="card-section">
-        <RelativeContact Schema="@Schema"
-        ExistingContact="@relativeContact"
-        OnContactSaved="HandleContactSaved" />
+        <RelativeContact ContactNote="@Schema.RelativeContact"
+                         OnContactSaved="HandleContactSaved" />
     </div>
 
     @* EMPLOYEE ASSIGNMENT *@
@@ -115,15 +114,11 @@
     // All PN registrations for this schema, owned by ResidentCard and passed to PNMedication.
     private List<PNDto> pnTimes = new();
 
-    // The existing relative contact for this schema, owned by ResidentCard and passed to RelativeContact.
-    private RelativeContactDto? relativeContact = null;
-
     // Loads employees, PN times, and the relative contact in parallel when the card initializes.
     protected override async Task OnInitializedAsync()
     {
         var employeesTask = EmployeeDataService.GetEmployeesAsync();
         var pnsTask = PNDataService.GetPNsBySchemaAsync(Schema.ResidentSchemaId);
-        var contactsTask = RelativeContactService.GetBySchemaAsync(Schema.ResidentSchemaId);
 
         var employeesResult = await employeesTask;
         if (employeesResult.IsSuccess)
@@ -134,12 +129,6 @@
         var pnsResult = await pnsTask;
         if (pnsResult.IsSuccess)
             pnTimes = pnsResult.Data!.ToList();
-        else
-            loadError = true;
-
-        var contactsResult = await contactsTask;
-        if (contactsResult.IsSuccess)
-            relativeContact = contactsResult.Data!.FirstOrDefault();
         else
             loadError = true;
     }
@@ -203,27 +192,15 @@
             _errorMessage = result.Error;
     }
 
-    // Saves the relative contact note via the API — creates a new record or updates the existing one.
-    private async Task HandleContactSaved(RelativeContactDto dto)
+    // Saves the relative contact note via the API.
+    private async Task HandleContactSaved(string contactNote)
     {
-        if (relativeContact == null)
-        {
-            var result = await RelativeContactService.CreateAsync(dto);
+        var result = await RelativeContactService.UpdateAsync(Schema.ResidentSchemaId, contactNote);
 
-            if (result.IsSuccess)
-                relativeContact = result.Data;
-            else
-                _errorMessage = result.Error;
-        }
+        if (result.IsSuccess)
+            Schema.RelativeContact = contactNote;
         else
-        {
-            var result = await RelativeContactService.UpdateAsync(dto);
-
-            if (result.IsSuccess)
-                relativeContact = dto;
-            else
-                _errorMessage = result.Error;
-        }
+            _errorMessage = result.Error;
     }
 
 	// Assigns the selected employee via the API and updates the local schema on success.

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Overlapssystem.Domain.Entities;
 
-namespace Overlapssystem.Domain.Entities;
-
+// Represents the assignment of a department task to an employee for a specific shift.
 public class ShiftTaskAssignment
 {
     public int Id { get; set; }
@@ -13,6 +8,7 @@ public class ShiftTaskAssignment
     public int DepartmentTaskId { get; set; }
     public string AssignedEmployee { get; set; } = string.Empty;
 
+    // Navigation properties to the shift and department task this assignment belongs to.
     public Shift Shift { get; set; } = null!;
     public DepartmentTask DepartmentTask { get; set; } = null!;
 }

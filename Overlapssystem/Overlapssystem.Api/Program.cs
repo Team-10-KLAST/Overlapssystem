@@ -4,6 +4,8 @@ using Overlapssystem.Application;
 using Overlapssystem.Infrastructure;
 
 
+// Entry point of the application. Configures services, middleware, and runs the web application.
+// Configures services, middleware, and seed initial data on startup.
 var builder = WebApplication.CreateBuilder(args);
 
 // Register services in the DI container in each layer's DependencyInjection class.
@@ -13,11 +15,13 @@ builder.Services.AddApi(builder.Configuration);
 
 var app = builder.Build();
 
+// Seed initial data on startup.
 await IdentitySeeder.SeedAsync(app.Services);
 if (app.Environment.IsDevelopment())
     await EmployeeSeeder.SeedAsync(app.Services);
 await PhoneSeeder.SeedAsync(app.Services);
 
+// Configure midlleware pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

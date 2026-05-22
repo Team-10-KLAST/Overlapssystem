@@ -40,101 +40,49 @@
 </div>
 
 @code {
-    // The schema data passed in from ResidentCard.
     [Parameter]
-    public ResidentSchemaDto Schema { get; set; } = default!;
+    public string ContactNote { get; set; } = string.Empty;
 
-    // The existing contact loaded and passed in by ResidentCard, or null if none exists yet.
     [Parameter]
-    public RelativeContactDto? ExistingContact { get; set; }
+    public EventCallback<string> OnContactSaved { get; set; }
 
-    // Raised when the user saves — ResidentCard calls create or update on the API.
-    [Parameter]
-    public EventCallback<RelativeContactDto> OnContactSaved { get; set; }
-
-    // The current text content of the textarea, bound via oninput.
     private string currentMessage = string.Empty;
-
-    // The last successfully saved message, used to detect changes and revert on cancel.
     private string savedMessage = string.Empty;
-
-    // True while the textarea is active or the user has clicked the saved-text div.
     private bool isEditing = false;
-
-    // True when a non-empty message has been saved for this schema.
     private bool hasSavedMessage = false;
-
-    // True when the current textarea text differs from the last saved message.
     private bool HasChanges => currentMessage != savedMessage;
 
-    // Converts newlines to <br> tags so Enter key line breaks are preserved visually.
-    // HtmlEncode prevents XSS before injecting the raw markup.
     private MarkupString SavedMessageHtml =>
         new(System.Net.WebUtility.HtmlEncode(currentMessage).Replace("\n", "<br>"));
 
-    // Guards against overwriting in-progress edits if ExistingContact changes after initialization.
-    private bool _initialized = false;
-
-    // Initializes local message state from ExistingContact once it becomes available.
-    // ExistingContact is null on the first render while ResidentCard loads async,
-    // so initialization is deferred until the first non-null value arrives.
     protected override void OnParametersSet()
     {
-        if (!_initialized && ExistingContact != null)
+        if (!isEditing)
         {
-            savedMessage = ExistingContact.ContactNote;
+            savedMessage = ContactNote;
             currentMessage = savedMessage;
             hasSavedMessage = !string.IsNullOrWhiteSpace(savedMessage);
-            _initialized = true;
         }
     }
 
-    // Called when the textarea receives focus — enters editing mode.
-    private void OnFocus()
-    {
-        isEditing = true;
-    }
+    private void OnFocus() => isEditing = true;
 
-    // Called when the textarea loses focus — exits editing mode only if nothing has changed.
     private void OnBlur()
     {
         if (!HasChanges)
             isEditing = false;
     }
 
-    // Called when the user clicks the saved-text div — switches to editing mode.
-    private void StartEditing()
-    {
-        isEditing = true;
-    }
+    private void StartEditing() => isEditing = true;
 
-    // Notifies ResidentCard to save via the API, then updates local display state.
     private async Task SaveMessage()
     {
-        RelativeContactDto dto;
-        if (ExistingContact == null)
-        {
-            dto = new RelativeContactDto
-            {
-                ResidentSchemaId = Schema.ResidentSchemaId,
-                ContactNote = currentMessage,
-                ContactType = "Note"
-            };
-        }
-        else
-        {
-            ExistingContact.ContactNote = currentMessage;
-            dto = ExistingContact;
-        }
-
-        await OnContactSaved.InvokeAsync(dto);
-
+        await OnContactSaved.InvokeAsync(currentMessage);
         savedMessage = currentMessage;
         hasSavedMessage = !string.IsNullOrWhiteSpace(currentMessage);
         isEditing = false;
     }
 
-    // Reverts the textarea to the last saved message and exits editing mode.
     private void Cancel()
     {
         currentMessage = savedMessage;
