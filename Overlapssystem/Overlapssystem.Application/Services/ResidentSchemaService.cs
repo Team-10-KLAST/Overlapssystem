@@ -4,8 +4,7 @@ using Overlapssystem.Domain.Entities;
 
 namespace Overlapssystem.Application.Services;
 
-// concrete implementation of IResidentSchemaService 
-// Handles the business logic of fetching resident schemas. 
+// Handles fetching and initializing residnet schemas for shifts. 
 public class ResidentSchemaService : IResidentSchemaService
 {
     
@@ -16,7 +15,8 @@ public class ResidentSchemaService : IResidentSchemaService
         _context = context;
     }
 
-    // Fetches all resident schemas for a given shift, including related resident and medication data for that day.
+    // Returns all resident schemas for a shift,
+    // including resident data and medication registrations for that day.  
     public async Task<IEnumerable<ResidentSchema>> GetByShiftAsync(int shiftId)
     {
         var shift = await _context.Shifts.FindAsync(shiftId);
@@ -38,8 +38,7 @@ public class ResidentSchemaService : IResidentSchemaService
         return schemas;
     }
 
-    // Finds all shift IDs on the same date and department as the given shift.
-    // Used to fetch medication registrations across all shifts in the same day.
+    // Returns all shift IDs on the same date and department as the given shift.
     private async Task<List<int>> GetShiftIdsOnSameDayAsync(Shift shift)
     {
         return await _context.Shifts
@@ -48,8 +47,7 @@ public class ResidentSchemaService : IResidentSchemaService
             .ToListAsync();
     }
 
-    // Fetches all given medication registrations for a resident across a set of shifts.
-    // Includes registrations from all shifts on the same day, not just the current shift.
+    // Returns all given medication registrations for a resident across the provided shifts.
     private async Task<List<MedicationRegistration>> GetMedicationRegistrationsForResidentAsync(int residentId, List<int> shiftIds)
     {
         return await _context.MedicationRegistrations
@@ -59,8 +57,8 @@ public class ResidentSchemaService : IResidentSchemaService
             .ToListAsync();
     }
 
-    // Creates new ResidentSchemas for all residents in a department wehen a new shift starts
-    // Find all residents -> Check for existing residentshema -> List of resident ID -> Get previous schemas -> Post info into new schemas
+    // Creates new resident schemas for all residents in a department when a new shift starts,
+    // copying data from previous schemas.
     public async Task<IEnumerable<ResidentSchema>> InitializeSchemaForShiftAsync(int shiftId, int departmentId)
     {        
         var residents = await _context.Residents

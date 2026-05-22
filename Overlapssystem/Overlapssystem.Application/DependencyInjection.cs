@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Application.Services;
 using Overlapssystem.Application.UseCases;
 
 namespace Overlapssystem.Application;
 
+// Registers all application-layer services and use cases in the DI-container. 
 public static class DependencyInjection
 {
-        // Registers application services in the DI container. 
-        public static IServiceCollection AddApplication(this IServiceCollection services)
-        {
+
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    {
         services.AddScoped<IResidentSchemaService, ResidentSchemaService>();
         services.AddScoped<IResidentStatusService, ResidentStatusService>();
         services.AddScoped<IShiftService, ShiftService>();
@@ -31,7 +27,6 @@ public static class DependencyInjection
         services.AddScoped<IActivityLogService, ActivityLogService>();
         services.AddScoped<IPhoneService, PhoneService>();
         services.AddScoped<IRelativeContactService, RelativeContactService>();
-        // If there are more services, register them here.
 
         return services;
     }

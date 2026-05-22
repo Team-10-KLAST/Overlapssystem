@@ -2,21 +2,20 @@
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
 using Overlapssystem.Domain.Enums;
-using static System.Net.WebRequestMethods;
 
 namespace Overlapssystem.Application.Services;
 
+// Handles creating and retrieving shifts. 
 public class ShiftService : IShiftService
 {
-    //DbContext til databaseadgang
     private readonly IAppDbContext _context;
 
-    //Dependency injection af IAppDbContext  
     public ShiftService(IAppDbContext context)
     {
         _context = context;
     }
 
+    // Creates a new shift or returns the existing one if a matching shift already exists. 
     public async Task<Shift> CreateShiftAsync(DateTime date, ShiftType shiftType, int departmentId)
     {
         var existingShift = await _context.Shifts
@@ -39,15 +38,15 @@ public class ShiftService : IShiftService
         return shift;
     }
 
+    // Returns all shifts 
     public async Task<IEnumerable<Shift>> GetAllShiftsAsync()
     {
-        //Henter alle vagter
         return await _context.Shifts.ToListAsync();
     }
 
+    // Returns a shift by its ID, or null if not found. 
     public async Task<Shift> GetShiftByIdAsync(int id)
     {
-        //Henter vagt efter id
         var shift = await _context.Shifts.FindAsync(id);
         if (shift == null) return null;
 

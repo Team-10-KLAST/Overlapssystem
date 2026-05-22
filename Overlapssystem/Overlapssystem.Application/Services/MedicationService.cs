@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
 
@@ -13,7 +8,7 @@ namespace Overlapssystem.Application.Services;
 // Responsible for marking planned medication times as given in a specific shift.
 public class MedicationService : IMedicationService
 {
-        private readonly IAppDbContext _context;
+    private readonly IAppDbContext _context;
     private readonly IActivityLogService _activityLogService;
 
     public MedicationService(IAppDbContext context, IActivityLogService activityLogService)

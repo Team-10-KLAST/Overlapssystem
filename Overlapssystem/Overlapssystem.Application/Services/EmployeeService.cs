@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Overlapssystem.Application.Services;
 
-// This service provides operations related to employee management, such as retrieving all employees,
-// creating a new employee, and deleting an employee.
+// This service provides operations related to employee management
 public class EmployeeService : IEmployeeService
 {
     private readonly IAppDbContext _context;

@@ -4,23 +4,17 @@ using Overlapssystem.Domain.Entities;
 
 namespace Overlapssystem.Application.Services;
 
-// Handles saving and retrieving activity log entries.
-// Each action (medication, traffic light, status, PN) is stored
-// as a separate row in the ActivityLogEntries table.
-// This ensures full history — nothing is overwritten.
+// Handles saving and retrieving activity log entries for auditing purposes
 public class ActivityLogService : IActivityLogService
 {
     private readonly IAppDbContext _context;
 
-    // Constructor — receives the database context via dependency injection.
     public ActivityLogService(IAppDbContext context)
     {
         _context = context;
     }
 
-    // Adds a new log entry to the database.
-    // Called by other services (MedicationService, TrafficLightService, etc.)
-    // whenever an employee performs a loggable action. 
+    // Adds a new log entry to the context. Caller is responsible for calling SaveChangesAsync. 
     public Task AddLogEntry(string actionType, string description, int employeeId, int residentSchemaId)
     {
         _context.ActivityLogEntries.Add(new ActivityLogEntry
@@ -34,9 +28,8 @@ public class ActivityLogService : IActivityLogService
         return Task.CompletedTask;
     }
 
-    // Returns all log entries for a specific employee within a date range.
-    // Includes related data (Employee name, Resident initials, Department name)
-    // so the mapper can build a complete DTO for the frontend table.
+    // Returns all log entries for a specific employee within a date range,
+    // including related data. 
     public async Task<List<ActivityLogEntry>> GetByEmployeeAsync(
         int employeeId, DateTime from, DateTime to)
     {

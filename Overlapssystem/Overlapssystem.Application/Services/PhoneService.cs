@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Overlapssystem.Application.Services;
 
+// Handles CRUD operations for work phones and their employee assignments. 
 public class PhoneService : IPhoneService
 {
     private readonly IAppDbContext _context;
@@ -22,7 +18,7 @@ public class PhoneService : IPhoneService
     public async Task<IEnumerable<Phone>> GetAllPhonesAsync()
     {
         return await _context.Phones
-            .Include(p => p.Employee) // Inkluderer medarbejder-relationen til UI dropdownen
+            .Include(p => p.Employee)
             .OrderBy(p => p.Number)
             .ToListAsync();
     }
