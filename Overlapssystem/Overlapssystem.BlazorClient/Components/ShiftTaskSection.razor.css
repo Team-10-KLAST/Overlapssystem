@@ -1,0 +1,124 @@
+.task-panel {
+    background-color: white;
+    border: 1px solid #999;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 280px;
+}
+
+.task-panel-header {
+    padding: 8px 12px;
+    border-bottom: 1px solid #dde2ea;
+    flex-shrink: 0;
+}
+
+.task-panel-title {
+    color: #1f2937;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+/* Column headers — sticky inside .task-list-body so widths always match the rows */
+.task-col-headers {
+    display: grid;
+    grid-template-columns: 1fr 130px 16px;
+    padding: 6px 12px;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #dde2ea;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+.task-list-body {
+    overflow-y: auto;
+    flex: 1;
+    scrollbar-gutter: stable;
+}
+
+.task-row {
+    display: grid;
+    grid-template-columns: 1fr 130px 16px;
+    padding: 6px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Task name — fixed 130px column, bold black */
+.task-name-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1f2937 !important;
+    -webkit-text-fill-color: #1f2937;
+    width: 100%;
+    padding: 0;
+}
+
+/* Employee input — fixed width column */
+.task-employee-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 13px;
+    color: #1f2937 !important;
+    -webkit-text-fill-color: #1f2937;
+    width: 100%;
+    padding: 0;
+}
+
+.task-name-input::placeholder,
+.task-employee-input::placeholder {
+    color: #c4c9d4;
+    -webkit-text-fill-color: #c4c9d4;
+}
+
+.task-delete-btn {
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0 0 0 4px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.task-delete-btn:hover {
+    color: #374151;
+}
+
+.task-add-wrapper {
+    padding: 8px 12px;
+    border-top: 1px solid #dde2ea;
+    flex-shrink: 0;
+}
+
+/* Full-width add button — less prominent gray */
+.task-add-btn {
+    width: 100%;
+    background-color: #9ca3af;
+    color: white;
+    font-weight: 500;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.task-add-btn:hover {
+    background-color: #6b7280;
+}

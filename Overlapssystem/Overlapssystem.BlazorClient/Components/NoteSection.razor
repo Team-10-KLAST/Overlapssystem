@@ -1,23 +1,34 @@
-﻿@inject IDepartmentNoteDataService NoteService
+@* ============================================================
+   NOTE SECTION COMPONENT
+   Sticky note for department-wide notes that persist across shifts.
+   ============================================================ *@
 
-<div style="border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
-    <div style="background-color: #ffc107; padding: 8px 12px; font-weight: bold;">
-        Huskeseddel
+@inject IDepartmentNoteDataService NoteService
+
+<div class="note-panel">
+
+    @* Panel header — yellow background, bold black title *@
+    <div class="note-panel-header">
+        <span class="note-panel-title">Huskeseddel</span>
     </div>
 
+    @* Error message *@
     @if (_errorMessage != null)
     {
         <div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
     }
 
-    <div style="background-color: #fffde7;">
-        <textarea style="width: 100%; height: 200px; background-color: #fffde7; resize: none; border: none; padding: 8px; outline: none;"
+    @* Note content area *@
+    <div class="note-body">
+        <textarea class="note-textarea"
                   @bind="Content"
                   @bind:event="oninput"
                   @bind:after="SaveInternal"
                   placeholder="Skriv din note her...">
         </textarea>
-        <div style="height: 28px; padding: 4px 8px;">
+
+        @* Saving indicator *@
+        <div class="note-saving-indicator">
             @if (isSaving)
             {
                 <small style="color: #6c757d; font-style: italic;">Gemmer ændringer...</small>
@@ -31,7 +42,7 @@
     private string Content = string.Empty;
     private bool isSaving = false;
     private int _loadedDepartmentId = 0;
-	private string? _errorMessage;
+    private string? _errorMessage;
 
     protected override async Task OnParametersSetAsync()
     {

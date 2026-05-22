@@ -1,0 +1,137 @@
+.phone-panel {
+    background-color: white;
+    border: 1px solid #999;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 280px;
+}
+
+.phone-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #dde2ea;
+}
+
+.phone-panel-title {
+    color: #1f2937;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.phone-reset-btn {
+    font-size: 11px;
+    padding: 2px 8px;
+    border: 1px solid #dde2ea;
+    border-radius: 4px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.phone-reset-btn:hover {
+    background-color: #f9fafb;
+}
+
+/* Column headers row */
+.phone-col-headers {
+    display: grid;
+    grid-template-columns: 80px 1fr 26px;
+    padding: 4px 12px;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #dde2ea;
+    flex-shrink: 0;
+}
+
+/* Ensure "MEDARBEJDER" label is left-aligned above the input field */
+.phone-col-headers span:nth-child(2) {
+    text-align: left;
+}
+
+.phone-col-headers span:last-child {
+    text-align: center;
+}
+
+.phone-list-body {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.phone-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 26px;
+    padding: 4px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    align-items: center;
+    gap: 8px;
+}
+
+.phone-number {
+    font-size: 13px;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+/* Select styled as plain input — no border, no background, no arrow */
+.phone-employee-select {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 13px;
+    color: #1f2937 !important;
+    -webkit-text-fill-color: #1f2937;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    width: 100%;
+    padding: 0;
+}
+
+/* Gray placeholder when no employee is selected */
+.phone-employee-select.empty {
+    color: #c4c9d4 !important;
+    -webkit-text-fill-color: #c4c9d4;
+}
+
+/* Dropdown options always black */
+.phone-employee-select option {
+    color: #1f2937;
+    background-color: white;
+}
+
+/* Round checkbox — 18px circle with blue fill when checked */
+.phone-checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid #1f2937;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: white;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.phone-checkbox:checked {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+    background-size: 11px 11px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.phone-checkbox:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+}

@@ -42,18 +42,14 @@
         }
     </div>
 
-    <div class="overlap-bottom container-fluid">
-        <div class="row">
-            @* Left column — phone list *@
-            <div class="col-md-4">
-                <PhoneList ShiftId="@ShiftId" />
-            </div>
-            @* Center column — shift tasks *@
-            <div class="col-md-4">
-                <ShiftTaskSection DepartmentId="@currentDepartment" ShiftId="@ShiftId" />
-            </div>
-            @* Right column — note section *@
-            <div class="col-md-4">
+    <div class="overlap-bottom">
+        <div class="bottom-grid">
+            @* Left panel — phone list *@
+            <PhoneList ShiftId="@ShiftId" />
+            @* Center panel — shift tasks *@
+            <ShiftTaskSection DepartmentId="@currentDepartment" ShiftId="@ShiftId" />
+            @* Right panel — note section spans columns 3 and 4 *@
+            <div class="note-wrapper">
                 <NoteSection DepartmentId="@currentDepartment" />
             </div>
         </div>
