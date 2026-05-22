@@ -27,14 +27,23 @@ public partial class Login
         _errorMessage = null;
         _isLoading = true;
 
-        var success = await AuthService.LoginAsync(_loginDto);
+        try
+        {
+            var success = await AuthService.LoginAsync(_loginDto);
 
-        if (success)
-            Navigation.NavigateTo("/choose-shift");
-        else
-            _errorMessage = "Forkert email eller adgangskode.";
-
-        _isLoading = false;
+            if (success)
+                Navigation.NavigateTo("/choose-shift");
+            else
+                _errorMessage = "Forkert email eller adgangskode. Prøv igen.";
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Kunne ikke oprette forbindelse til serveren. Prøv igen senere.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
     // Called when the user presses a key in the password field, to allow submitting the form with Enter

@@ -18,18 +18,23 @@ public class AuthService : IAuthService
     // Sends login credentials to the API and stores the returned token if successful
     public async Task<bool> LoginAsync(LoginDto loginDto)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/auth/login", loginDto);
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/auth/login", loginDto);
+            if (!response.IsSuccessStatusCode)
+                return false;
 
-        if (!response.IsSuccessStatusCode)
+            var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+            if (result == null)
+                return false;
+
+            await _authStateProvider.NotifyUserLoggedIn(result.Token);
+            return true;
+        }
+        catch (HttpRequestException)
+        {
             return false;
-
-        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-
-        if (result == null)
-            return false;
-
-        await _authStateProvider.NotifyUserLoggedIn(result.Token);
-        return true;
+        }
     }
 
     // Clears the token and notifies Blazor that the user is logged out
