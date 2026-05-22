@@ -7,6 +7,8 @@ namespace Overlapssystem.Api.Mappers;
 // Responsible for mapping ResidentSchema entities to DTOs.
 public static class ResidentSchemaMapper
 {
+    // Maps a ResidentSchema entity to a ResidentSchemaDto,
+    // including related resident and medication information for display purposes.
     public static ResidentSchemaDto ToDto(ResidentSchema s)
     {
         return new ResidentSchemaDto

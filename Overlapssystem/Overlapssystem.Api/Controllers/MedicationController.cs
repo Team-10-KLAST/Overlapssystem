@@ -13,13 +13,14 @@ public class MedicationController : ControllerBase
 {
     private readonly IMedicationService _service;
 
+    // Constructor — receives the medication service via dependency injection.
     public MedicationController(IMedicationService service)
     {
         _service = service;
     }
 
-    // POST api/medication/mark-given
     // Marks a planned medication time as given in a specific shift.
+    // POST api/medication/mark-given
     [HttpPost("mark-given")]
     public async Task<IActionResult> MarkGiven(MarkMedicationGivenDto dto)
     {

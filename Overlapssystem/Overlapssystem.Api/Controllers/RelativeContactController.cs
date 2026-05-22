@@ -5,20 +5,21 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.Api.Controllers;
 
+// API controller responsible for managing relative contact registrations on a resident schema.
 [ApiController]
 [Route("api/[controller]")]
-// API controller for relative contact registrations on a resident schema.
 public class RelativeContactController : ControllerBase
 {
     private readonly IRelativeContactService _service;
 
+    // Constructor — receives the relative contact service via dependency injection.
     public RelativeContactController(IRelativeContactService service)
     {
         _service = service;
     }
 
-    // GET api/relativecontact/{residentSchemaId}
     // Returns all contacts for the given resident schema, ordered by ID.
+    // GET api/relativecontact/{residentSchemaId}
     [HttpGet("{residentSchemaId}")]
     public async Task<ActionResult<IEnumerable<RelativeContactDto>>> GetBySchema(int residentSchemaId)
     {
@@ -29,8 +30,8 @@ public class RelativeContactController : ControllerBase
         return Ok(dtos);
     }
 
-    // POST api/relativecontact
     // Creates a new relative contact and returns the saved DTO with its new ID.
+    // POST api/relativecontact
     [HttpPost]
     public async Task<ActionResult<RelativeContactDto>> Create(RelativeContactDto dto)
     {
@@ -39,8 +40,8 @@ public class RelativeContactController : ControllerBase
         return Ok(RelativeContactMapper.ToDto(created));
     }
 
-    // PUT api/relativecontact/{id}
     // Updates an existing relative contact. Returns 404 if not found.
+    // PUT api/relativecontact/{id}
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, RelativeContactDto dto)
     {
@@ -57,8 +58,8 @@ public class RelativeContactController : ControllerBase
         }
     }
 
+    // Permanently deletes a relative contact. Returns 404 if not found.
     // DELETE api/relativecontact/{id}
-    // Deletes a relative contact. Returns 404 if not found.
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
