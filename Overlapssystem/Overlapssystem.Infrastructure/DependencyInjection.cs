@@ -9,8 +9,11 @@ using Overlapssystem.Infrastructure.Services;
 
 namespace Overlapssystem.Infrastructure;
 
+// Registers all infrastructure-layer services in the dependency injection container.
+// Includes database context, authentication services, and ASP.NET Core Identity configuration.
 public static class DependencyInjection
 {
+    // Registers infrastructure services including EF Core, Identity, and authentication.
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)

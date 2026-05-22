@@ -14,6 +14,7 @@ public class PNController : ControllerBase
 {
     private readonly IPNService _service;
 
+    // Constructor — receives the PN service via dependency injection.
     public PNController(IPNService service)
     {
         _service = service;

@@ -10,11 +10,31 @@
 
 .card-header {
     background-color: #e8e8e8;
-    padding: 6px 8px;
+    padding: 6px 12px;
     font-weight: bold;
     font-size: 1rem;
-    text-align: center;
     border-bottom: 2px solid #999;
+    display: flex;
+    justify-content: space-between; /* Pushes error to the right when it exists */
+    align-items: center;
+    position: relative;
+}
+
+.initials {
+    flex: 1;
+    text-align: center;
+}
+    .initials:not(:only-child) {
+        text-align: left;
+    }   
+
+.card-error {
+    color: #dc3545;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid #f5c6cb;
 }
 
 .card-section {

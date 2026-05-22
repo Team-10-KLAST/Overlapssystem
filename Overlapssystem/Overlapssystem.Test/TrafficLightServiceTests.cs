@@ -11,6 +11,9 @@ using Overlapssystem.Infrastructure.Data;
 
 namespace Overlapssystem.Test;
 
+// Tests for TrafficLightService 
+// Uses in memory database so we dont touch the real database 
+// Each test gets a fresh database to avoid interference between tests. 
 [TestClass]
 public class TrafficLightServiceTests
 {
@@ -54,14 +57,15 @@ public class TrafficLightServiceTests
         context.SaveChanges();
     }
 
-    [TestMethod]
     // Tests that UpdateTrafficLightAsync correctly updates the traffic light status.
+    [TestMethod]
     public async Task UpdateTrafficLightAsync_ValidId_UpdatesTrafficLight()
     {
         // ARRANGE
         var context = CreateContext("UpdateTrafficLight_ValidId");
         SeedTestData(context);
-        var service = new TrafficLightService(context);
+        var logService = new ActivityLogService(context);
+        var service = new TrafficLightService(context, logService);
 
         // ACT
         var result = await service.UpdateTrafficLightAsync(1, "Red", 1);
@@ -75,13 +79,14 @@ public class TrafficLightServiceTests
         Assert.AreEqual(TrafficLight.Green, otherSchema!.TrafficLight);
     }
 
-    [TestMethod]
     // Tests that UpdateTrafficLightAsync returns false when schema does not exist.
+    [TestMethod]
     public async Task UpdateTrafficLightAsync_InvalidId_ReturnsFalse()
     {
         // ARRANGE
         var context = CreateContext("UpdateTrafficLight_InvalidId");
-        var service = new TrafficLightService(context);
+        var logService = new ActivityLogService(context);
+        var service = new TrafficLightService(context, logService);
 
         // ACT
         var result = await service.UpdateTrafficLightAsync(999, "Red", 1);
@@ -90,14 +95,15 @@ public class TrafficLightServiceTests
         Assert.IsFalse(result);
     }
 
-    [TestMethod]
     // Tests that UpdateTrafficLightAsync can set the traffic light to null.
+    [TestMethod]
     public async Task UpdateTrafficLightAsync_NullValue_SetsTrafficLightToNull()
     {
         // ARRANGE
         var context = CreateContext("UpdateTrafficLight_NullValue");
         SeedTestData(context);
-        var service = new TrafficLightService(context);
+        var logService = new ActivityLogService(context);
+        var service = new TrafficLightService(context, logService);
 
         // ACT
         var result = await service.UpdateTrafficLightAsync(1, null, 1);

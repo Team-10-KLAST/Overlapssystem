@@ -5,13 +5,9 @@
 public class PN
 {
     public int PNId { get; set; }
-
-    // The time the PN medication was given.
     public TimeOnly GivenTime { get; set; }
-
-    // Foreign key — which resident schema does this PN belong to?
     public int ResidentSchemaId { get; set; }
 
-    // Navigation property back to ResidentSchema.
+    // Navigation property to the resident schema this PN registration belongs to.
     public ResidentSchema ResidentSchema { get; set; } = null!;
 }

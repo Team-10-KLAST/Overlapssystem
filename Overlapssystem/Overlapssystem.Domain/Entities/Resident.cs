@@ -2,7 +2,7 @@
 
 namespace Overlapssystem.Domain.Entities;
 
-// Represent a resident (borger) with its "master data" 
+// Represent a resident (borger) with their master data 
 // A resident can have many ResidentSchemas over time (one per shift). 
 public class Resident
 {
@@ -11,10 +11,10 @@ public class Resident
     public string ShoppingDay { get; set; } = string.Empty;
     public PaymentMethod PaymentMethod { get; set; }
 
-    // Foreign key to the department this resident lives in.
-    // Navigation is uni-directional: Resident -> Department only. 
+    // Navigation property to the department this resident belongs to.
     public int DepartmentId { get; set; }
     public Department Department { get; set; } = null!;
-    // Navigation property to MedicationTimes. A resident can have multiple medication times.
+
+    // Navigation property to the medication times scheduled for this resident.
     public ICollection<MedicationTime> MedicationTimes { get; set; } = new List<MedicationTime>();
 }

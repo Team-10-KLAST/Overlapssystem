@@ -9,7 +9,8 @@ using Overlapssystem.Domain.Entities;
 
 namespace Overlapssystem.Infrastructure.Identity;
 
-// ApplicationUser extends IdentityUser to include a reference to an Employee
+// Extends the default IdentityUser with a reference to an Employee entity.
+// This links an authenticated user account to an employee record in the system.
 public class ApplicationUser : IdentityUser
 {
     public int? EmployeeId { get; set; }

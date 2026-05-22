@@ -8,7 +8,7 @@ using Overlapssystem.Api.Mappers;
 
 namespace Overlapssystem.Api.Controllers;
 
-// This controller handles authentication-related endpoints such as login and registration.
+// API controller responsible for authentication-related endpoints such as login and registration.
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
@@ -16,6 +16,7 @@ public class AuthController : ControllerBase
     private readonly IAuthService _authService;
     private readonly IRegisterUserUseCase _registerUserUseCase;
 
+    // Constructor — receives the authentication service and user registration use case via dependency injection.
     public AuthController(IAuthService authService, IRegisterUserUseCase registerUserUseCase)
     {
         _authService = authService;

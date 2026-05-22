@@ -17,6 +17,7 @@ public class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;
 
+    // Constructor — receives the application configuration via dependency injection to access JWT settings.
     public TokenService(IConfiguration configuration)
     {
         _configuration = configuration;

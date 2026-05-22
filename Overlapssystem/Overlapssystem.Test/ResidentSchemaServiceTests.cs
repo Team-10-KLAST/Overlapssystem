@@ -6,16 +6,12 @@ using Overlapssystem.Infrastructure.Data;
 
 namespace Overlapssystem.Test;
 
-// Unit tests for ResidentSchemaService
+// Tests for ResidentSchemaService
 // Uses in-memory database so we dont touch the real database
 // Each test gets a fresh database to avoid interference between tests. 
-
 [TestClass]
 public class ResidentSchemaServiceTests
 {
-
-    // Helper method that creates a fresh in-memory DbContext for each test. 
-    // A unique database per test ensures tests dont share data. 
     private AppDbContext CreateContext(string databaseName)
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -25,10 +21,8 @@ public class ResidentSchemaServiceTests
         return new AppDbContext(options);
     }
 
-    // Helper method that seeds data into the in-memory database. 
     private void SeedTestData(AppDbContext context)
     {
-        // Seed a shift so GetByShiftAsync can find it 
         context.Shifts.Add(new Shift
         {
             Id = 1,
@@ -36,7 +30,6 @@ public class ResidentSchemaServiceTests
             Type = ShiftType.Dagvagt,
             DepartmentId = 1
         });
-        
         
         context.Residents.AddRange(
             new Resident
@@ -81,9 +74,8 @@ public class ResidentSchemaServiceTests
         context.SaveChanges();
     }
 
+    // Tests that GetByShiftAsync returns all schemas for a given shift
     [TestMethod]
-    // Tests that GetByShiftAsync returns all schemas from database
-    // This verifies basic "happy path" - data exists and is returned. 
     public async Task GetByShiftAsync_ReturnsAllSchemasForShift()
     {
         // ARRANGE
@@ -99,9 +91,9 @@ public class ResidentSchemaServiceTests
         Assert.AreEqual(2, schemas.Count);
     }
 
-    [TestMethod]
     // Tests that GetByShiftAsync includes the related Resident data. 
     // This verifies that .Include(s => s.Resident) works correcly. 
+    [TestMethod]
     public async Task GetByShiftAsync_IncludesResidentData()
     {
         // ARRANGE 
@@ -112,16 +104,15 @@ public class ResidentSchemaServiceTests
         // ACT 
         var result = await service.GetByShiftAsync(1);
 
-        // ASSERT - Check that the correct ResidentIds are present.
+        // ASSERT
         var schemas = result.ToList();
         Assert.AreEqual(2, schemas.Count);
         Assert.IsTrue(schemas.Any(s => s.ResidentId == 1));
         Assert.IsTrue(schemas.Any(s => s.ResidentId == 2));
     }
 
+    // Tests that GetByShiftAsync returns an empty list when no data exists.
     [TestMethod]
-    //Tests that GetByShiftAsync returns an empty list when no data exists.
-    // This verifies that the service handles "no data " gracefully instead of throwing exception. 
     public async Task GetTaskAsync_EmptyDatabase_ReturnsEmptyList()
     {
         // ARRANGE 
@@ -135,8 +126,8 @@ public class ResidentSchemaServiceTests
         Assert.AreEqual(0, result.Count());
     }
 
-    [TestMethod]
     // Tests that GetAllAsync correctly handles schemas where TrafficLight is null.
+    [TestMethod]
     public async Task GetAllAsync_NullTrafficLight_ReturnsSchema()
     {
         // ARRANGE

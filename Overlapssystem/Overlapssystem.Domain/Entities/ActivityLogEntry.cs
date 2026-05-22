@@ -6,24 +6,13 @@
 public class ActivityLogEntry
 {
     public int ActivityLogEntryId { get; set; }
-
-    // What type of action: "Medicin", "Trafiklys", "Status", "PN"
     public string ActionType { get; set; } = string.Empty;
-
-    // Human-readable description of what happened
-    // e.g. "Markerede medicin som givet kl. 08:00"
-    // e.g. "Ændrede trafiklys til Grøn"
-    // e.g. "Tilføjede til status: borger har en depressiv episode"
     public string Description { get; set; } = string.Empty;
-
-    // When the action was performed
     public DateTime Timestamp { get; set; }
 
-    // Who performed the action
+    // Navigation properties to link the log entry to the employee and resident schema involved in the action.
     public int EmployeeId { get; set; }
     public Employee Employee { get; set; } = null!;
-
-    // Which resident schema was affected
     public int ResidentSchemaId { get; set; }
     public ResidentSchema ResidentSchema { get; set; } = null!;
 }

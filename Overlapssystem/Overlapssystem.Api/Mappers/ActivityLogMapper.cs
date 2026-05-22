@@ -3,11 +3,11 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.Api.Mappers;
 
-// Maps ActivityLogEntry entities to ActivityLogEntryDto.
+// Mapper responsible for converting ActivityLogEntry entities to ActivityLogEntryDto objects.
 // Now simple one-to-one mapping since each action is its own row.
 public static class ActivityLogMapper
 {
-    // Maps a single ActivityLogEntry entity to a DTO.
+    // Maps a single ActivityLogEntry entity to its corresponding DTO.
     public static ActivityLogEntryDto ToDto(ActivityLogEntry entry)
     {
         return new ActivityLogEntryDto

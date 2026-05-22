@@ -8,8 +8,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Overlapssystem.Api;
 
+// Static class for configuring API-related services and middleware in the dependency injection container.
 public static class DependencyInjection
 {
+    // Extension method to add API services, including authentication, controllers, Swagger, CORS, and rate limiting.
     public static IServiceCollection AddApi(
         this IServiceCollection services,
         IConfiguration configuration)

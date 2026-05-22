@@ -117,7 +117,6 @@ public class EmployeeServiceTests
         // ASSERT
         Assert.IsTrue(employeeId > 0);
 
-        // Verify the returned ID matches what is in the database
         var employee = await context.Employees.FindAsync(employeeId);
         Assert.IsNotNull(employee);
     }

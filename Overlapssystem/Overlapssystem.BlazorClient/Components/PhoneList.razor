@@ -52,12 +52,15 @@
 
                     @* Employee dropdown styled as plain input *@
                     <select class="phone-employee-select @(phone.EmployeeId == null ? "empty" : "")"
-                            value="@phone.EmployeeId"
+                            value="@(phone.EmployeeId?.ToString() ?? "")"
                             @onchange="@(e => OnEmployeeChanged(e, phone))">
                         <option value="">Tilføj initialer</option>
                         @foreach (var emp in AllEmployees)
                         {
-                            <option value="@emp.EmployeeId">@emp.Initials</option>
+                          var takenByOther = phones!.Any(p => p.Id != phone.Id && p.EmployeeId == emp.EmployeeId);
+                          <option value="@emp.EmployeeId" disabled="@takenByOther">
+                            @(takenByOther ? $"✓ {emp.Initials}" : emp.Initials)
+                          </option>
                         }
                     </select>
 
@@ -104,6 +107,8 @@
 
     private async Task OnEmployeeChanged(ChangeEventArgs e, PhoneDto phone)
     {
+        var previousEmployeeId = phone.EmployeeId;
+
         if (int.TryParse(e.Value?.ToString(), out var employeeId))
             phone.EmployeeId = employeeId;
         else
@@ -112,9 +117,15 @@
             phone.IsTested = false;
         }
 
+        StateHasChanged();
+
         var result = await PhoneService.UpdatePhoneAsync(phone);
         if (!result.IsSuccess)
+        {
+            phone.EmployeeId = previousEmployeeId;
             _errorMessage = result.Error;
+            StateHasChanged();
+        }
     }
 
     private async Task OnTestChanged(ChangeEventArgs e, PhoneDto phone)
@@ -133,7 +144,6 @@
         }
     }
 
-    // Resets all phones to unassigned and untested.
     private async Task ResetAllPhones()
     {
         if (phones == null || !phones.Any()) return;

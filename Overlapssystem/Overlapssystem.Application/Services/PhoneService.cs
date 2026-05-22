@@ -49,8 +49,7 @@ public class PhoneService : IPhoneService
         if (phone != null)
         {
             phone.EmployeeId = employeeId;
-            phone.IsTested = isTested;
-
+            phone.IsTested = employeeId == null ? false : isTested;
             await _context.SaveChangesAsync();
         }
     }
