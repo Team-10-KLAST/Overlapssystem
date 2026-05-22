@@ -18,6 +18,12 @@
         }
     </div>
 
+    @* Error message *@
+    @if (_errorMessage != null)
+    {
+        <div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
+    }
+
     @* Column headers — phone number, employee, test status *@
     <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; padding: 8px 12px; font-weight: bold; flex-shrink: 0; font-size: 14px; border-bottom: 2px solid ;">
         <span>Telefon</span>
@@ -81,17 +87,21 @@
     {
         if (ShiftId > 0)
         {
+            var errors = new List<string>();
+
             var phonesResult = await PhoneService.GetPhonesAsync();
             if (phonesResult.IsSuccess)
                 phones = phonesResult.Data!.OrderBy(p => p.Number).ToList();
             else
-                _errorMessage = phonesResult.Error;
+                errors.Add(phonesResult.Error!);
 
             var employeesResult = await EmployeeService.GetEmployeesAsync();
             if (employeesResult.IsSuccess)
                 AllEmployees = employeesResult.Data!.ToList();
             else
-                _errorMessage = employeesResult.Error;
+                errors.Add(employeesResult.Error!);
+
+            _errorMessage = errors.Any() ? string.Join(" | ", errors) : null;
         }
     }
 
