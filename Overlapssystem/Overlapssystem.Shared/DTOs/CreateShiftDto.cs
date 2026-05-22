@@ -4,7 +4,8 @@ using Overlapssystem.Shared.Validation;
 
 namespace Overlapssystem.Shared.DTOs;
 
-//dto til at oprette en ny vagt
+// DTO for creating a new shift.
+// Includes validation to ensure date, shift type and department are valid.
 public class CreateShiftDto
 {
     [Required]

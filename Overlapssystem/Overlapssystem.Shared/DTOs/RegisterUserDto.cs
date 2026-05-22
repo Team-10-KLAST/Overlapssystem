@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Overlapssystem.Shared.DTOs;
-
-// Used when the client sends registration details to the server to create a new user account.
+// DTO for transferring new user registration details from the client to the API.
+// to create a new user account.
 public class RegisterUserDto
 {
     [Required]

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Overlapssystem.Shared.DTOs;
 
-//dto til at repræsentere en vagt
+// DTO representing a shift with its date, type, and department.
 public class ShiftDto
 {
     public string Id { get; set; } = string.Empty;

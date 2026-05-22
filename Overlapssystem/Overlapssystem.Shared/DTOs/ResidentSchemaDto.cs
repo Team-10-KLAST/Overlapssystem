@@ -1,8 +1,7 @@
 ﻿namespace Overlapssystem.Shared.DTOs;
 
-// Data Transfer Object for a resident's schema card. 
-// Combines data from both Resident and ResidentSchema into one 
-
+// DTO combining data from both Resident and ResidentSchema into a single card representation.
+// Used to display a resident's full overview on the overlap dashboard.
 public class ResidentSchemaDto
 {
     public int ResidentSchemaId { get; set; }
@@ -10,8 +9,9 @@ public class ResidentSchemaDto
     public string RelativeContact { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
 
-    // Trafficlight send as string so frontend doesnt need to know about our enum.
+    // Sent as string so the frontend does not need to handle the TrafficLight enum directly.
     public string? TrafficLight { get; set; }
+
     public string ShoppingDay { get; set; } = string.Empty;
     public string PaymentMethod { get; set; } = string.Empty;
     public List<MedicationTimeDto> MedicationTimes { get; set; } = new();

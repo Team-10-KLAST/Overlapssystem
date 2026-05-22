@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Overlapssystem.Shared.DTOs;
 
-// DTO used when the client wants to update a resident's traffic light status.
+// DTO for updating a resident's traffic light status.
+// Accepts null to allow clearing the traffic light value.
 public class UpdateTrafficLightDto
 {
     [RegularExpression(@"^(Red|Yellow|Green)$",
