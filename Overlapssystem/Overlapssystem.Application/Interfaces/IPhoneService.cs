@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Overlapssystem.Domain.Entities;
+﻿using Overlapssystem.Domain.Entities;
 
 namespace Overlapssystem.Application.Interfaces;
 
+// Defines the contract for managing work phones and their employee assignments
 public interface IPhoneService
 {
     Task<IEnumerable<Phone>> GetAllPhonesAsync();

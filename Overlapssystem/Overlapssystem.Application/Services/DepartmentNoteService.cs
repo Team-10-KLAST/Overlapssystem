@@ -1,13 +1,9 @@
 ﻿using Overlapssystem.Application.Interfaces;
 using Overlapssystem.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Overlapssystem.Application.Services;
 
+// Handles retrieving and saving department-level notes. 
 public class DepartmentNoteService : IDepartmentNoteService
 {
     private readonly IAppDbContext _context;
@@ -17,12 +13,14 @@ public class DepartmentNoteService : IDepartmentNoteService
         _context = context;
     }
 
+    // Returns the note for a department, or an empty note if none exists. 
     public async Task<DepartmentNote> GetNoteAsync(int departmentId)
     {
         var note = await _context.DepartmentNotes.FindAsync(departmentId);
         return note ?? new DepartmentNote { DepartmentId = departmentId, Content = string.Empty };
     }
 
+    // Creates or updates the note for a department. 
     public async Task SaveNoteAsync(DepartmentNote note)
     {
         var existingNote = await _context.DepartmentNotes.FindAsync(note.DepartmentId);

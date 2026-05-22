@@ -4,8 +4,7 @@ using Overlapssystem.Domain.Entities;
 
 namespace Overlapssystem.Application.Services;
 
-// Concrete implementation of IPNService.
-// Handles the business logic for PN medication registrations.
+// This service handles the business logic for PN medication registrations.
 public class PNService : IPNService
 {
     private readonly IAppDbContext _context;
