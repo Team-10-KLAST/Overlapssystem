@@ -57,7 +57,7 @@ else if (logEntries != null && logEntries.Any())
             @foreach (var entry in logEntries)
             {
                 <tr>
-                    <td>@entry.Timestamp.ToString("dd/MM-yyyy HH:mm")</td>
+                    <td>@entry.Timestamp.ToLocalTime().ToString("dd/MM-yyyy HH:mm")</td>
                     <td>@entry.EmployeeName</td>
                     <td>@entry.ActionType</td>
                     <td>@entry.Description</td>
