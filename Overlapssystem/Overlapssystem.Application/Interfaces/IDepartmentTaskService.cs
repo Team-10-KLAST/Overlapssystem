@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Overlapssystem.Domain.Entities;
+﻿using Overlapssystem.Domain.Entities;
 
 namespace Overlapssystem.Application.Interfaces;
 
+// Defines the contract for managing department-level tasks and their shift assignments. 
 public interface IDepartmentTaskService
 {
     Task<IEnumerable<DepartmentTask>> GetTasksByDepartmentAsync(int departmentId);
