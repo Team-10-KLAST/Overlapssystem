@@ -3,8 +3,10 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.Api.Mappers;
 
+// Mapper responsible for converting between RelativeContact entities and RelativeContactDto objects.
 public static class RelativeContactMapper
 {
+    // Maps a RelativeContact entity to a RelativeContactDto.
     public static RelativeContactDto ToDto(RelativeContact contact)
     {
         return new RelativeContactDto
@@ -16,6 +18,7 @@ public static class RelativeContactMapper
         };
     }
 
+    // Maps a RelativeContactDto to a new RelativeContact entity (without ID).
     public static RelativeContact ToEntity(RelativeContactDto dto)
     {
         return new RelativeContact
@@ -26,6 +29,7 @@ public static class RelativeContactMapper
         };
     }
 
+    // Maps a RelativeContactDto to a RelativeContact entity with a specified ID (used for updates).
     public static RelativeContact ToEntity(int id, RelativeContactDto dto)
     {
         return new RelativeContact

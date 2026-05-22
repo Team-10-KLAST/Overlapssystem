@@ -6,8 +6,8 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.Api.Controllers;
 
-// API controller for the activity log.
-// Only accessible by Admin users.
+// API controller responsible for exposing the activity log endpoints.
+// Only accessible by users with the "Admin" role.
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Roles = "Admin")]
@@ -21,18 +21,16 @@ public class ActivityLogController : ControllerBase
         _service = service;
     }
 
-    // GET api/activitylog?employeeId=3&from=2026-05-01&to=2026-05-11
     // Returns all logged actions for a specific employee in the given period.
+    // GET api/activitylog?employeeId=123&from=2024-01-01&to=2024-01-31
     [HttpGet]
     public async Task<ActionResult<List<ActivityLogEntryDto>>> GetByEmployee(
         [FromQuery] int employeeId,
         [FromQuery] DateTime from,
         [FromQuery] DateTime to)
     {
-        // Fetch log entries from the database via service
         var entries = await _service.GetByEmployeeAsync(employeeId, from, to);
 
-        // Map entities to DTOs in the API layer (our convention)
         var dtos = ActivityLogMapper.ToDtoList(entries);
 
         return Ok(dtos);

@@ -5,19 +5,22 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.Api.Controllers;
 
+// API controller responsible for managing phone entries, allowing retrieval,
+// creation, updating, and deletion of phone data.
 [ApiController]
 [Route("api/[controller]")]
 public class PhonesController : ControllerBase
 {
     private readonly IPhoneService _phoneService;
 
+    // Constructor — receives the phone service via dependency injection.
     public PhonesController(IPhoneService phoneService)
     {
         _phoneService = phoneService;
     }
 
-    // GET: api/phones
     // Gets a list of all phone entries mapped to DTOs
+    // GET: api/phones
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PhoneDto>>> GetAll()
     {
@@ -28,8 +31,8 @@ public class PhonesController : ControllerBase
         return Ok(dtos);
     }
 
-    // POST: api/phones
     // Creates a new phone entry and returns its generated Id
+    // POST: api/phones
     [HttpPost]
     public async Task<ActionResult<int>> Create([FromBody] string phoneNumber)
     {
@@ -43,8 +46,8 @@ public class PhonesController : ControllerBase
         return Ok(phoneId);
     }
 
-    // PUT: api/phones/{id}
     // Updates the employee assignment and checked status for a specific phone entry
+    // PUT: api/phones/{id}
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] PhoneDto dto)
     {
@@ -58,8 +61,8 @@ public class PhonesController : ControllerBase
         return NoContent();
     }
 
+    // Permanently deletes a phone entry by its Id
     // DELETE: api/phones/{id}
-    // Deletes a phone entry by its Id
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
