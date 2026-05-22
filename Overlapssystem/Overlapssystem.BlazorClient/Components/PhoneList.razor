@@ -10,11 +10,11 @@
         <h5 class="fw-bold m-0" style="font-size: 16px;">Telefonliste</h5>
         @if (phones != null && phones.Any())
         {
-                <button class="btn btn-outline-secondary btn-sm" 
-                        style="font-size: 11px; padding: 2px 8px; border-radius: 4px;"
-                        @onclick="ResetAllPhones">
-                    Nulstil alle
-                </button>
+            <button class="btn btn-outline-secondary btn-sm"
+                    style="font-size: 11px; padding: 2px 8px; border-radius: 4px;"
+                    @onclick="ResetAllPhones">
+                Nulstil alle
+            </button>
         }
     </div>
 
@@ -24,53 +24,58 @@
         <div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
     }
 
-    @* Column headers — phone number, employee, test status *@
+    @* Column headers *@
     <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; padding: 8px 12px; font-weight: bold; flex-shrink: 0; font-size: 14px; border-bottom: 2px solid ;">
         <span>Telefon</span>
         <span>Medarbejder</span>
         <span style="padding-right: 4px;">Test</span>
     </div>
 
-    @* Scrollable phone list — scrolls inside the fixed-height box when there are many entries *@
+    @* Scrollable phone list *@
     <div style="overflow-y: auto; flex: 1;">
         @if (phones == null)
         {
-                <p class="p-2 m-0" style="font-size: 13px;">Henter telefoner...</p>
+            <p class="p-2 m-0" style="font-size: 13px;">Henter telefoner...</p>
         }
         else if (!phones.Any())
         {
-                <p class="p-2 m-0 text-muted" style="font-size: 13px;">Ingen telefoner fundet.</p>
+            <p class="p-2 m-0 text-muted" style="font-size: 13px;">Ingen telefoner fundet.</p>
         }
         else
         {
             @foreach (var phone in phones)
             {
-                        <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; padding: 4px 12px; border-bottom: 1px solid #eee; align-items: center; font-size: 13px;">
-                            @* Phone number *@
-                            <span class="fw-bold text-secondary">@phone.Number</span>
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; padding: 4px 12px; border-bottom: 1px solid #eee; align-items: center; font-size: 13px;">
 
-                            @* Dropdown for assigning an employee to this phone *@
-                            <select class="form-select form-select-sm border-0 bg-transparent p-0"
-                                    style="box-shadow: none; cursor: pointer;"
-                                    value="@phone.EmployeeId"
-                                    @onchange="@(e => OnEmployeeChanged(e, phone))">
-                                <option value="">tilføj</option>
+                    @* Phone number *@
+                    <span class="fw-bold text-secondary">@phone.Number</span>
+
+                    @* Dropdown for assigning an employee to this phone *@
+                    <select class="form-select form-select-sm border-0 bg-transparent p-0"
+                            style="box-shadow: none; cursor: pointer;"
+                            value="@(phone.EmployeeId?.ToString() ?? "")"
+                            @onchange="@(e => OnEmployeeChanged(e, phone))">
+                        <option value="">tilføj</option>
                         @foreach (var emp in AllEmployees)
                         {
-                                        <option value="@emp.EmployeeId">@emp.Initials</option>
+                            var takenByOther = phones!.Any(p => p.Id != phone.Id && p.EmployeeId == emp.EmployeeId);
+                            <option value="@emp.EmployeeId" disabled="@takenByOther">
+                                @(takenByOther ? $"✓ {emp.Initials}" : emp.Initials)
+                            </option>
                         }
-                            </select>
+                    </select>
 
-                            @* Test checkbox — disabled until an employee is assigned *@
-                            <div style="display: flex; align-items: center; justify-content: center; width: 24px;">
-                                <input type="checkbox"
-                                       class="form-check-input m-0"
-                                       style="cursor: @(phone.EmployeeId == null ? "not-allowed" : "pointer");"
-                                       disabled="@(phone.EmployeeId == null)"
-                                       checked="@phone.IsTested"
-                                       @onchange="@(e => OnTestChanged(e, phone))" />
-                            </div>
-                        </div>
+                    @* Test checkbox — disabled until an employee is assigned *@
+                    <div style="display: flex; align-items: center; justify-content: center; width: 24px;">
+                        <input type="checkbox"
+                               class="form-check-input m-0"
+                               style="@($"cursor: {(phone.EmployeeId == null ? "not-allowed" : "pointer")}")"
+                               disabled="@(phone.EmployeeId == null)"
+                               checked="@phone.IsTested"
+                               @onchange="@(e => OnTestChanged(e, phone))" />
+                    </div>
+
+                </div>
             }
         }
     </div>
@@ -81,7 +86,7 @@
     [Parameter] public List<EmployeeDto> AllEmployees { get; set; } = new();
 
     private List<PhoneDto>? phones;
-	private string? _errorMessage;
+    private string? _errorMessage;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -107,6 +112,8 @@
 
     private async Task OnEmployeeChanged(ChangeEventArgs e, PhoneDto phone)
     {
+        var previousEmployeeId = phone.EmployeeId;
+
         if (int.TryParse(e.Value?.ToString(), out var employeeId))
             phone.EmployeeId = employeeId;
         else
@@ -115,9 +122,15 @@
             phone.IsTested = false;
         }
 
+        StateHasChanged();
+
         var result = await PhoneService.UpdatePhoneAsync(phone);
         if (!result.IsSuccess)
+        {
+            phone.EmployeeId = previousEmployeeId;
             _errorMessage = result.Error;
+            StateHasChanged();
+        }
     }
 
     private async Task OnTestChanged(ChangeEventArgs e, PhoneDto phone)
@@ -136,7 +149,6 @@
         }
     }
 
-    // Resets all phones to unassigned and untested.
     private async Task ResetAllPhones()
     {
         if (phones == null || !phones.Any()) return;
