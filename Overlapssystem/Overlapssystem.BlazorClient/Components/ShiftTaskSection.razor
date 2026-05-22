@@ -1,44 +1,66 @@
-﻿@inject IDepartmentTaskDataService TaskService
+@* ============================================================
+   SHIFT TASK SECTION COMPONENT
+   Displays and manages department task assignments for the shift.
+   ============================================================ *@
 
-<div style="border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.2); display: flex; flex-direction: column; height: 274px;">
-    <div style="display: grid; grid-template-columns: 1fr 1fr auto; background-color: #d9edf7; padding: 8px 12px; font-weight: bold; flex-shrink: 0;">
-        <span>Ansvarsopgaver</span>
-        <span>Medarbejder</span>
-        <span></span>
+@inject IDepartmentTaskDataService TaskService
+
+<div class="task-panel">
+
+    @* Panel header *@
+    <div class="task-panel-header">
+        <span class="task-panel-title">Ansvarsopgaver</span>
     </div>
 
+    @* Error message *@
     @if (_errorMessage != null)
     {
         <div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
     }
 
-    <div style="overflow-y: auto; flex: 1;">
+    @* Scrollable task rows — column headers are sticky inside so widths always match *@
+    <div class="task-list-body">
+
+        @* Column headers — sticky so they stay visible when scrolling *@
+        <div class="task-col-headers">
+            <span>Opgaver</span>
+            <span>Medarbejder</span>
+            <span></span>
+        </div>
+
         @if (tasks == null)
         {
-            <p class="p-2">Henter opgaver...</p>
+            <p class="p-2 m-0" style="font-size: 13px;">Henter opgaver...</p>
         }
         else
         {
             @foreach (var task in tasks)
             {
-                <div style="display: grid; grid-template-columns: 1fr 1fr auto; padding: 4px 8px; border-bottom: 1px solid #eee; align-items: center;">
-                    <input class="form-control form-control-sm border-0"
-                           placeholder="Ny opgave..."
+                <div class="task-row">
+                    @* Task name — fixed 130px width *@
+                    <input class="task-name-input"
+                           placeholder="Opgavenavn..."
                            @bind="task.TaskName"
                            @bind:event="onchange"
                            @bind:after="() => UpdateTaskName(task)" />
-                    <input class="form-control form-control-sm border-0"
+
+                    @* Assigned employee input *@
+                    <input class="task-employee-input"
                            placeholder="Navn/initialer..."
                            @bind="task.AssignedEmployee"
                            @bind:event="onchange"
                            @bind:after="() => SaveAssignment(task)" />
-                    <button class="btn btn-sm text-danger border-0 bg-transparent" @onclick="() => DeleteTask(task)">✕</button>
+
+                    @* Delete task button *@
+                    <button class="task-delete-btn" @onclick="() => DeleteTask(task)">✕</button>
                 </div>
             }
         }
     </div>
-    <div style="padding: 4px 8px; border-top: 1px solid #eee; flex-shrink: 0;">
-        <button class="btn btn-sm btn-outline-secondary w-100" @onclick="AddTask">+ Tilføj opgave</button>
+
+    @* Add task button — full width, dark gray *@
+    <div class="task-add-wrapper">
+        <button class="task-add-btn" @onclick="AddTask">+ Tilføj opgave</button>
     </div>
 </div>
 
@@ -47,7 +69,7 @@
     [Parameter] public int ShiftId { get; set; }
 
     private List<DepartmentTaskDto>? tasks;
-	private string? _errorMessage;
+    private string? _errorMessage;
 
     protected override async Task OnParametersSetAsync()
     {
