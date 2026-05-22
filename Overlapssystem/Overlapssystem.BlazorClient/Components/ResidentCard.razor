@@ -231,13 +231,17 @@
     {
         if (args.employeeId.HasValue)
         {
-            var success = await AssignmentService.AssignEmployeeAsync(
+            var result = await AssignmentService.AssignEmployeeAsync(
                 Schema.ResidentSchemaId, args.employeeId.Value, args.position);
 
-            if (success)
+            if (result.IsSuccess)
             {
                 if (args.position == 1) Schema.SelectedPrimaryId = args.employeeId;
                 else Schema.SelectedSecondaryId = args.employeeId;
+            }
+            else
+            {
+                _errorMessage = result.Error;
             }
         }
         else
