@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Overlapssystem.Shared.DTOs;
 
+// DTO representing a department task with its current employee assignment for a specific shift.
 public class DepartmentTaskDto
 {
     public int Id { get; set; }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Overlapssystem.Shared.DTOs;
 
-// Used when the client sends login credentials to the server for authentication.
+// DTO for transferring login credentials from the client to the API for authentication.
 public class LoginDto
 {
     [Required]

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Overlapssystem.Shared.DTOs;
 
+// DTO representing an employee with basic identification and name information.
 public class EmployeeDto
 {
     public int EmployeeId { get; set; }
