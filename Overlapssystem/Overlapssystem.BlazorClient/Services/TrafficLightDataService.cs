@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Overlapssystem.BlazorClient.Models;
 using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
@@ -16,9 +17,20 @@ public class TrafficLightDataService : ITrafficLightDataService
 
     // Sends a PUT request to the API to update the traffic light status
     // for a specific resident schema.
-    public async Task UpdateTrafficLightAsync(int residentSchemaId, string? trafficLight)
+    public async Task<Result> UpdateTrafficLightAsync(int residentSchemaId, string? trafficLight)
     {
-        var dto = new UpdateTrafficLightDto { TrafficLight = trafficLight };
-        await _http.PutAsJsonAsync($"api/trafficlight/{residentSchemaId}", dto);
+        try
+        {
+            var dto = new UpdateTrafficLightDto { TrafficLight = trafficLight };
+            var response = await _http.PutAsJsonAsync($"api/trafficlight/{residentSchemaId}", dto);
+
+            return response.IsSuccessStatusCode
+                ? Result.Success()
+                : Result.Failure("Kunne ikke opdatere risikovurdering.");
+        }
+        catch (HttpRequestException)
+        {
+            return Result.Failure("Ingen forbindelse til serveren.");
+        }
     }
 }

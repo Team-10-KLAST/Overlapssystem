@@ -6,6 +6,12 @@
         <span>Medarbejder</span>
         <span></span>
     </div>
+
+    @if (_errorMessage != null)
+    {
+        <div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
+    }
+
     <div style="overflow-y: auto; flex: 1;">
         @if (tasks == null)
         {
@@ -41,36 +47,49 @@
     [Parameter] public int ShiftId { get; set; }
 
     private List<DepartmentTaskDto>? tasks;
+	private string? _errorMessage;
 
     protected override async Task OnParametersSetAsync()
     {
         if (DepartmentId > 0 && ShiftId > 0)
         {
             var result = await TaskService.GetTasksAsync(DepartmentId, ShiftId);
-            tasks = result.ToList();
+            if (result.IsSuccess)
+                tasks = result.Data!.ToList();
+            else
+                _errorMessage = result.Error;
         }
     }
 
     private async Task UpdateTaskName(DepartmentTaskDto task)
     {
-        await TaskService.UpdateTaskNameAsync(task);
+        var result = await TaskService.UpdateTaskNameAsync(task);
+        if (!result.IsSuccess)
+            _errorMessage = result.Error;
     }
 
     private async Task SaveAssignment(DepartmentTaskDto task)
     {
-        await TaskService.SaveAssignmentAsync(ShiftId, task);
+        var result = await TaskService.SaveAssignmentAsync(ShiftId, task);
+        if (!result.IsSuccess)
+            _errorMessage = result.Error;
     }
 
     private async Task AddTask()
     {
-        var newTask = await TaskService.CreateTaskAsync(DepartmentId);
-        if (newTask != null)
-            tasks?.Add(newTask);
+        var result = await TaskService.CreateTaskAsync(DepartmentId);
+        if (result.IsSuccess)
+            tasks?.Add(result.Data!);
+        else
+            _errorMessage = result.Error;
     }
 
     private async Task DeleteTask(DepartmentTaskDto task)
     {
-        await TaskService.DeleteTaskAsync(task.Id);
-        tasks?.Remove(task);
+        var result = await TaskService.DeleteTaskAsync(task.Id);
+        if (result.IsSuccess)
+            tasks?.Remove(task);
+        else
+            _errorMessage = result.Error;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Overlapssystem.BlazorClient.Models;
 using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
@@ -15,10 +16,20 @@ public class ResidentStatusDataService : IResidentStatusDataService
     }
 
     // Calls PUT /api/residentstatus/{id} to update the status text.
-    public async Task<bool> UpdateStatusAsync(int residentSchemaId, string newStatus)
+    public async Task<Result> UpdateStatusAsync(int residentSchemaId, string newStatus)
     {
-        var dto = new UpdateStatusDto { Status = newStatus };
-        var response = await _http.PutAsJsonAsync($"api/residentstatus/{residentSchemaId}", dto);
-        return response.IsSuccessStatusCode;
+        try
+        {
+            var dto = new UpdateStatusDto { Status = newStatus };
+            var response = await _http.PutAsJsonAsync($"api/residentstatus/{residentSchemaId}", dto);
+
+            return response.IsSuccessStatusCode
+                ? Result.Success()
+                : Result.Failure("Kunne ikke gemme status.");
+        }
+        catch (HttpRequestException)
+        {
+            return Result.Failure("Ingen forbindelse til serveren.");
+        }
     }
 }

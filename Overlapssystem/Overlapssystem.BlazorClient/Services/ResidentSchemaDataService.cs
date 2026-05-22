@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Overlapssystem.BlazorClient.Models;
 using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
@@ -15,12 +16,17 @@ public class ResidentSchemaDataService : IResidentSchemaDataService
     }
 
     // Calls GET/api/residentschema/shift/{shiftId}
-    public async Task<IEnumerable<ResidentSchemaDto>> GetByShiftAsync(int shiftId)
+    public async Task<Result<IEnumerable<ResidentSchemaDto>>> GetByShiftAsync(int shiftId)
     {
-        var result = await _http.GetFromJsonAsync<List<ResidentSchemaDto>>($"api/residentschema/shift/{shiftId}");
-
-        // return empty list if the API returns null 
-        return result ?? new List<ResidentSchemaDto>();
+        try
+        {
+            var result = await _http.GetFromJsonAsync<List<ResidentSchemaDto>>($"api/residentschema/shift/{shiftId}");
+            return Result<IEnumerable<ResidentSchemaDto>>.Success(result ?? new List<ResidentSchemaDto>());
+        }
+        catch (HttpRequestException)
+        {
+            return Result<IEnumerable<ResidentSchemaDto>>.Failure("Kunne ikke hente borgerskemaer.");
+        }
     }
 
   

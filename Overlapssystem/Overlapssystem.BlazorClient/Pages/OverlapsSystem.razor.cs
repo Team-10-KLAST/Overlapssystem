@@ -18,26 +18,37 @@ public partial class OverlapsSystem
     private string departmentName = string.Empty;
     private string shiftDate = string.Empty;
     private string shiftType = string.Empty;
+    private string? _errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        var shift = await ShiftService.GetByIdAsync(ShiftId);
-        if (shift != null)
+        var shiftResult = await ShiftService.GetByIdAsync(ShiftId);
+
+        if (!shiftResult.IsSuccess)
         {
-            int.TryParse(shift.DepartmentId, out currentDepartment);
-            departmentName = currentDepartment switch
-            {
-                1 => "Skoven",
-                2 => "Slottet",
-                _ => "Ukendt afdeling"
-            };
-            shiftType = shift.ShiftType;
-            if (DateTime.TryParse(shift.DateTime, out var parsedDate))
-                shiftDate = parsedDate.ToString("dd-MM-yyyy");
-            else
-                shiftDate = shift.DateTime;
+            _errorMessage = shiftResult.Error;
+            return;
         }
-        schemas = await SchemaService.GetByShiftAsync(ShiftId);
+
+        var shift = shiftResult.Data!;
+        int.TryParse(shift.DepartmentId, out currentDepartment);
+        departmentName = currentDepartment switch
+        {
+            1 => "Skoven",
+            2 => "Slottet",
+            _ => "Ukendt afdeling"
+        };
+        shiftType = shift.ShiftType;
+        if (DateTime.TryParse(shift.DateTime, out var parsedDate))
+            shiftDate = parsedDate.ToString("dd-MM-yyyy");
+        else
+            shiftDate = shift.DateTime;
+
+        var schemasResult = await SchemaService.GetByShiftAsync(ShiftId);
+        if (schemasResult.IsSuccess)
+            schemas = schemasResult.Data;
+        else
+            _errorMessage = schemasResult.Error;
     }
 
     private async Task HandleLogout()

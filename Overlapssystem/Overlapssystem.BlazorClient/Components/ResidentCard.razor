@@ -29,6 +29,11 @@
         <span class="initials">@Schema.Initials</span>
     </div>
 
+    @if (_errorMessage != null)
+    {
+        <div class="card-error">@_errorMessage</div>
+    }
+
     @* RISK ASSESSMENT  *@
     <div class="card-section risk-section">
         <span class="section-label">Risiko</span>
@@ -104,6 +109,9 @@
     // True if any API call in OnInitializedAsync failed — triggers the error message in the card.
     private bool loadError = false;
 
+    // A general error message string that can be set by any operation in the card to show an error to the user.
+    private string? _errorMessage;
+
     // All PN registrations for this schema, owned by ResidentCard and passed to PNMedication.
     private List<PNDto> pnTimes = new();
 
@@ -117,99 +125,104 @@
         var pnsTask = PNDataService.GetPNsBySchemaAsync(Schema.ResidentSchemaId);
         var contactsTask = RelativeContactService.GetBySchemaAsync(Schema.ResidentSchemaId);
 
-        try { allEmployees = (await employeesTask).ToList(); } catch (Exception) { loadError = true; }
-        try { pnTimes = (await pnsTask).ToList(); } catch (Exception) { loadError = true; }
-        try { relativeContact = (await contactsTask).FirstOrDefault(); } catch (Exception) { loadError = true; }
+        var employeesResult = await employeesTask;
+        if (employeesResult.IsSuccess)
+            allEmployees = employeesResult.Data!.ToList();
+        else
+            loadError = true;
+
+        var pnsResult = await pnsTask;
+        if (pnsResult.IsSuccess)
+            pnTimes = pnsResult.Data!.ToList();
+        else
+            loadError = true;
+
+        var contactsResult = await contactsTask;
+        if (contactsResult.IsSuccess)
+            relativeContact = contactsResult.Data!.FirstOrDefault();
+        else
+            loadError = true;
     }
 
     // Persists the new traffic light color via the API and updates the local schema on success.
     // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleTrafficLightChanged(string newColor)
     {
-        try
-        {
-            await TrafficLightService.UpdateTrafficLightAsync(Schema.ResidentSchemaId, newColor);
+        var result = await TrafficLightService.UpdateTrafficLightAsync(Schema.ResidentSchemaId, newColor);
+
+        if (result.IsSuccess)
             Schema.TrafficLight = newColor;
-        }
-        catch (Exception)
-        {
-        }
+
+        else
+            _errorMessage = result.Error;
     }
 
     // Persists the new status text via the API and updates the local schema on success.
     // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleStatusSaved(string newStatus)
     {
-        try
-        {
-            var success = await StatusService.UpdateStatusAsync(Schema.ResidentSchemaId, newStatus);
-            if (success)
-            {
-                Schema.Status = newStatus;
-            }
-        }
-        catch (Exception)
-        {
-        }
+        var result = await StatusService.UpdateStatusAsync(Schema.ResidentSchemaId, newStatus);
+
+        if (result.IsSuccess)
+            Schema.Status = newStatus;
+        else
+            _errorMessage = result.Error;
     }
 
     // Persists the medication as given via the API and updates the local state on success.
     // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleMedicationGiven(MedicationTimeDto med)
     {
-        try
-        {
-            await MedicationService.MarkAsGivenAsync(Schema.ResidentSchemaId, med.MedicationTimeId);
+        var result = await MedicationService.MarkAsGivenAsync(Schema.ResidentSchemaId, med.MedicationTimeId);
+
+        if (result.IsSuccess)
             med.IsGiven = true;
-        }
-        catch (Exception)
-        {
-        }
+        else
+            _errorMessage = result.Error;
     }
 
     // Registers a new PN time via the API and adds the saved entry to the local list.
     private async Task HandlePNAdded(PNDto dto)
     {
-        try
-        {
-            var saved = await PNDataService.RegisterPNAsync(dto);
-            pnTimes.Add(saved);
-        }
-        catch (Exception)
-        {
-        }
+        var result = await PNDataService.RegisterPNAsync(dto);
+
+        if (result.IsSuccess)
+            pnTimes.Add(result.Data!);
+        else
+            _errorMessage = result.Error;
     }
 
     // Deletes a PN time via the API and removes it from the local list.
     private async Task HandlePNDeleted(PNDto dto)
     {
-        try
-        {
-            await PNDataService.DeletePNAsync(dto.PNId);
+        var result = await PNDataService.DeletePNAsync(dto.PNId);
+
+        if (result.IsSuccess)
             pnTimes.Remove(dto);
-        }
-        catch (Exception)
-        {
-        }
+        else
+            _errorMessage = result.Error;
     }
 
     // Saves the relative contact note via the API — creates a new record or updates the existing one.
     private async Task HandleContactSaved(RelativeContactDto dto)
     {
-        try
+        if (relativeContact == null)
         {
-            if (relativeContact == null)
-            {
-                relativeContact = await RelativeContactService.CreateAsync(dto);
-            }
+            var result = await RelativeContactService.CreateAsync(dto);
+
+            if (result.IsSuccess)
+                relativeContact = result.Data;
             else
-            {
-                await RelativeContactService.UpdateAsync(dto);
-                relativeContact = dto;
-            }
+                _errorMessage = result.Error;
         }
-        catch (Exception)
+        else
         {
+            var result = await RelativeContactService.UpdateAsync(dto);
+
+            if (result.IsSuccess)
+                relativeContact = dto;
+            else
+                _errorMessage = result.Error;
         }
     }
 
@@ -218,13 +231,17 @@
     {
         if (args.employeeId.HasValue)
         {
-            var success = await AssignmentService.AssignEmployeeAsync(
+            var result = await AssignmentService.AssignEmployeeAsync(
                 Schema.ResidentSchemaId, args.employeeId.Value, args.position);
 
-            if (success)
+            if (result.IsSuccess)
             {
                 if (args.position == 1) Schema.SelectedPrimaryId = args.employeeId;
                 else Schema.SelectedSecondaryId = args.employeeId;
+            }
+            else
+            {
+                _errorMessage = result.Error;
             }
         }
         else

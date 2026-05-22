@@ -3,6 +3,11 @@
 
 <h2>Aktivitetslog</h2>
 
+@if (_errorMessage != null)
+{
+    <div class="alert alert-danger m-2">@_errorMessage</div>
+}
+
 <div class="filters">
     <div class="filter-group">
         <label>Medarbejder</label>
@@ -52,7 +57,7 @@ else if (logEntries != null && logEntries.Any())
             @foreach (var entry in logEntries)
             {
                 <tr>
-                    <td>@entry.Timestamp.ToString("dd/MM-yyyy HH:mm")</td>
+                    <td>@entry.Timestamp.ToLocalTime().ToString("dd/MM-yyyy HH:mm")</td>
                     <td>@entry.EmployeeName</td>
                     <td>@entry.ActionType</td>
                     <td>@entry.Description</td>

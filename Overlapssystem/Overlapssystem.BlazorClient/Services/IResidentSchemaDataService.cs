@@ -1,4 +1,5 @@
-﻿using Overlapssystem.Shared.DTOs;
+﻿using Overlapssystem.BlazorClient.Models;
+using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
@@ -6,6 +7,6 @@ namespace Overlapssystem.BlazorClient.Services;
 public interface IResidentSchemaDataService
 {
     // Fetches all resident schemas from the API 
-    Task<IEnumerable<ResidentSchemaDto>> GetByShiftAsync(int shiftId);
+    Task<Result<IEnumerable<ResidentSchemaDto>>> GetByShiftAsync(int shiftId);
 
 }

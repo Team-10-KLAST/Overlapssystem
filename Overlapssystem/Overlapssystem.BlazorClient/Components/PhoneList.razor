@@ -18,6 +18,12 @@
         }
     </div>
 
+    @* Error message *@
+    @if (_errorMessage != null)
+    {
+        <div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
+    }
+
     @* Column headers — phone number, employee, test status *@
     <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; padding: 8px 12px; font-weight: bold; flex-shrink: 0; font-size: 14px; border-bottom: 2px solid ;">
         <span>Telefon</span>
@@ -75,39 +81,43 @@
     [Parameter] public List<EmployeeDto> AllEmployees { get; set; } = new();
 
     private List<PhoneDto>? phones;
+	private string? _errorMessage;
 
     protected override async Task OnParametersSetAsync()
     {
         if (ShiftId > 0)
         {
-            var result = await PhoneService.GetPhonesAsync();
-            var employees = await EmployeeService.GetEmployeesAsync();
+            var errors = new List<string>();
 
-            phones = result.OrderBy(p => p.Number).ToList();
-            AllEmployees = employees.ToList();
+            var phonesResult = await PhoneService.GetPhonesAsync();
+            if (phonesResult.IsSuccess)
+                phones = phonesResult.Data!.OrderBy(p => p.Number).ToList();
+            else
+                errors.Add(phonesResult.Error!);
+
+            var employeesResult = await EmployeeService.GetEmployeesAsync();
+            if (employeesResult.IsSuccess)
+                AllEmployees = employeesResult.Data!.ToList();
+            else
+                errors.Add(employeesResult.Error!);
+
+            _errorMessage = errors.Any() ? string.Join(" | ", errors) : null;
         }
     }
 
     private async Task OnEmployeeChanged(ChangeEventArgs e, PhoneDto phone)
     {
-        string? stringValue = e.Value?.ToString();
-
-        if (int.TryParse(stringValue, out var employeeId))
-        {
+        if (int.TryParse(e.Value?.ToString(), out var employeeId))
             phone.EmployeeId = employeeId;
-        }
         else
         {
             phone.EmployeeId = null;
             phone.IsTested = false;
         }
 
-        bool success = await PhoneService.UpdatePhoneAsync(phone);
-
-        if (!success)
-        {
-            Console.WriteLine($"Kunne ikke opdatere medarbejder for telefon {phone.Number}");
-        }
+        var result = await PhoneService.UpdatePhoneAsync(phone);
+        if (!result.IsSuccess)
+            _errorMessage = result.Error;
     }
 
     private async Task OnTestChanged(ChangeEventArgs e, PhoneDto phone)
@@ -117,13 +127,11 @@
         if (e.Value is bool isTested)
         {
             phone.IsTested = isTested;
-
-            bool success = await PhoneService.UpdatePhoneAsync(phone);
-
-            if (!success)
+            var result = await PhoneService.UpdatePhoneAsync(phone);
+            if (!result.IsSuccess)
             {
                 phone.IsTested = !isTested;
-                Console.WriteLine($"Kunne ikke opdatere test-status for telefon {phone.Number}");
+                _errorMessage = result.Error;
             }
         }
     }
@@ -139,7 +147,6 @@
             {
                 phone.EmployeeId = null;
                 phone.IsTested = false;
-
                 await PhoneService.UpdatePhoneAsync(phone);
             }
         }

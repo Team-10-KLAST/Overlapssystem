@@ -17,6 +17,11 @@
         </div>
     </div>
 
+    @if (_errorMessage != null)
+    {
+        <div class="alert alert-danger m-2">@_errorMessage</div>
+    }
+
     <div class="overlap-middle">
         @if (schemas == null)
         {

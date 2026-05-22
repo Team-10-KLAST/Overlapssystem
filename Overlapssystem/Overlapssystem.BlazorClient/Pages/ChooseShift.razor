@@ -131,15 +131,11 @@
 
     private async Task SaveShift()
     {
-        (int? shiftId, string error) = await SaveShiftService.SaveShiftAsync(model);
+        var result = await SaveShiftService.SaveShiftAsync(model);
 
-        if (shiftId.HasValue)
-        {
-            Navigation.NavigateTo($"/overlapssystem/{shiftId.Value}");
-        }
+        if (result.IsSuccess)
+            Navigation.NavigateTo($"/overlapssystem/{result.Data}");
         else
-        {
-            message = error;
-        }
+            message = result.Error!;
     }
 }
