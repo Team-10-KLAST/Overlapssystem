@@ -25,6 +25,6 @@ public class ResidentSchema
     public int? SecondaryEmployeeId { get; set; }
     public Employee? SecondaryEmployee { get; set; }
 
-    // Navigation property to the medication registrations belonging to this schema.
+    // Navigation property to the medication registrations belonging to this schema
     public ICollection<MedicationRegistration> MedicationRegistrations { get; set; } = new List<MedicationRegistration>();
 }
