@@ -2,7 +2,7 @@ using Overlapssystem.Domain.Enums;
 
 namespace Overlapssystem.Domain.Entities;
 
-//Shift-entity som repræsenterer en vagt i systemet
+// Represents a shift (dag, aften, or nat) for a specific department on a specific date.
 public class Shift
 {
     public int Id { get; set; }

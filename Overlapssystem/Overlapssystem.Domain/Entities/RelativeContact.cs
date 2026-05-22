@@ -1,5 +1,6 @@
 namespace Overlapssystem.Domain.Entities;
 
+// Represents a relative contact entry for a resident.
 public class RelativeContact
 {
     public int Id { get; set; }
