@@ -86,10 +86,14 @@ public class DepartmentTaskService : IDepartmentTaskService
     public async Task DeleteTaskAsync(int taskId)
     {
         var task = await _context.DepartmentTasks.FindAsync(taskId);
-        if (task != null)
-        {
-            _context.DepartmentTasks.Remove(task);
-            await _context.SaveChangesAsync();
-        }
+        if (task == null) return;
+
+        var assignments = await _context.ShiftTaskAssignments
+            .Where(a => a.DepartmentTaskId == taskId)
+            .ToListAsync();
+
+        _context.ShiftTaskAssignments.RemoveRange(assignments);
+        _context.DepartmentTasks.Remove(task);
+        await _context.SaveChangesAsync();
     }
 }
