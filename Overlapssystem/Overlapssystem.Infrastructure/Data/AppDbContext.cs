@@ -8,14 +8,15 @@ using Overlapssystem.Infrastructure.Identity;
 
 namespace Overlapssystem.Infrastructure.Data;
 
-// Inherits from IdentityDbContext so Identity tables (AspNetUsers, AspNetRoles, etc.) are included in the database
-// and share the same DbContext as the rest of the application data
+// The main database context for the application, responsible for managing all database interactions.
+// Inherits from IdentityDbContext so Identity tables (AspNetUsers, AspNetRoles, etc.) are included
+// and share the same database as the appllication data.
 public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
 {
-    // DbContextOptions are provided via dependency injection (configured in Program.cs)
+    // Initializes the context with the provided options via dependency injection.
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    // DbSets for EF Core so it can create tables and manage data for these entities
+    // DbSets representing each table in the database.
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Phone> Phones => Set<Phone>();
     public DbSet<Resident> Residents => Set<Resident>();
@@ -31,13 +32,9 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
     public DbSet<DepartmentTask> DepartmentTasks => Set<DepartmentTask>();
     public DbSet<ShiftTaskAssignment> ShiftTaskAssignments => Set<ShiftTaskAssignment>();
 
-    /// OnModelCreating is EF Core's hook for configuring the model. 
-    /// We use it here to seed mock data so every developer
-    /// gets the same residents and schemas in their local database. 
+    // Configures the entity relationships, constraints, and seed data for the database.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Always call base.OnModelCreating first
-        // - it lets EF Core apply its default conventions before we add our own
         base.OnModelCreating(modelBuilder);
 
         //Configure the one-to-one relationship between ApplicationUser and Employee
@@ -49,7 +46,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        //Configure Employee entity details
+        // Configure Employee entity constraints.
         modelBuilder.Entity<Employee>(employee =>
         {
             employee.HasKey(e => e.EmployeeId);
@@ -57,6 +54,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             employee.Property(e => e.LastName).IsRequired().HasMaxLength(100);
         });
 
+        // Configure Phone entity constraints and relationships.
         modelBuilder.Entity<Phone>(phone =>
         {
             phone.HasKey(p => p.Id); 
@@ -71,6 +69,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
                 .IsUnique();
         });
 
+        // Configure the relationships for PN and ResidentSchema
         modelBuilder.Entity<PN>()
             .HasOne(p => p.ResidentSchema)
             .WithMany()
@@ -79,8 +78,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
 
 
 
-        //Configure the relationships for Resident, ResidentSchema,
-        //MedicationTime, and MedicationRegistration
+        // Configure MedicationRegistration relationships to ResidentSchema and MedicationTime.
         modelBuilder.Entity<MedicationRegistration>()
             .HasOne(mr => mr.ResidentSchema)
             .WithMany(rs => rs.MedicationRegistrations)
@@ -95,8 +93,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             .OnDelete(DeleteBehavior.NoAction);
 
 
-        // Configure Employee relationships on ResidentSchema
-        // Three separate FK's to Employee — must be explicit to avoid EF Core confusion
+        // Configure primary and secondary employee relationships on ResidentSchema.
         modelBuilder.Entity<ResidentSchema>()
             .HasOne(rs => rs.PrimaryEmployee)
             .WithMany()
@@ -109,7 +106,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             .HasForeignKey(rs => rs.SecondaryEmployeeId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        // Configure ActivityLogEntry relationships
+        // Configure ActivityLogEntry relationships Employee and ResidentSchema.
         modelBuilder.Entity<ActivityLogEntry>()
             .HasOne(a => a.Employee)
             .WithMany()
@@ -122,14 +119,14 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             .HasForeignKey(a => a.ResidentSchemaId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        // Configure DepartmentTask
+        // Configure DepartmentTask relationship to Department.
         modelBuilder.Entity<DepartmentTask>()
             .HasOne(dt => dt.Department)
             .WithMany()
             .HasForeignKey(dt => dt.DepartmentId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Configure ShiftTaskAssignment
+        // Configure ShiftTaskAssignment relationships to Shift and DepartmentTask.
         modelBuilder.Entity<ShiftTaskAssignment>()
             .HasOne(sta => sta.Shift)
             .WithMany()
@@ -143,9 +140,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             .OnDelete(DeleteBehavior.Restrict);
 
 
-        //Seed Residents - 8 mock residents 
-        // Structure from excisting Exce-bases system.
-        // Seed departments 
+        // Seed departments.
         modelBuilder.Entity<Department>().HasData(
             new Department { DepartmentId = 1, DepartmentName = "Skoven" },
             new Department { DepartmentId = 2, DepartmentName = "Slottet" }
@@ -184,6 +179,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
 
         // Seed MedicationTimes - residents get between 1-4 planned medication times.
         modelBuilder.Entity<MedicationTime>().HasData(
+            
             // Skoven
             new MedicationTime { MedicationTimeId = 1, ResidentId = 1, PlannedTime = new TimeOnly(8, 0) },
             new MedicationTime { MedicationTimeId = 17, ResidentId = 1, PlannedTime = new TimeOnly(12, 0) },
@@ -205,6 +201,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             new MedicationTime { MedicationTimeId = 8, ResidentId = 8, PlannedTime = new TimeOnly(8, 0) },
             new MedicationTime { MedicationTimeId = 27, ResidentId = 8, PlannedTime = new TimeOnly(13, 0) },
             new MedicationTime { MedicationTimeId = 28, ResidentId = 8, PlannedTime = new TimeOnly(21, 0) },
+            
             // Slottet
             new MedicationTime { MedicationTimeId = 9, ResidentId = 9, PlannedTime = new TimeOnly(9, 0) },
             new MedicationTime { MedicationTimeId = 29, ResidentId = 9, PlannedTime = new TimeOnly(21, 0) },
@@ -251,7 +248,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             new ResidentSchema { ResidentSchemaId = 16, ResidentId = 16, ShiftId = 2, RelativeContact = "Aftalt med far at han kommer lørdag.", Status = "Stille dag, så film om eftermiddagen.", TrafficLight = TrafficLight.Green }
         );
 
-        // Seed fixed tasks for both departments
+        // Seed fixed department tasks for both departments
         modelBuilder.Entity<DepartmentTask>().HasData(
             new DepartmentTask { Id = 1, DepartmentId = 1, TaskName = "Medicinansvar" },
             new DepartmentTask { Id = 2, DepartmentId = 1, TaskName = "Hygiejne" },
