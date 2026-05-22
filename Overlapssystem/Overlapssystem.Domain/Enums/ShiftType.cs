@@ -1,6 +1,6 @@
 namespace Overlapssystem.Domain.Enums;
 
-//enum til at repræsentere vagttyper i systemet
+// Represents the type of shift (dag, aften, or nat) in the system.
 public enum ShiftType
 {
     None = 0,

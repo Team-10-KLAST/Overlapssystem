@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Overlapssystem.Domain.Entities;
 
-namespace Overlapssystem.Domain.Entities;
-
+// Represents a scheduled medication time for a resident.
+// A resident can have multiple medication times throughout the day.
 public class MedicationTime
 {
     public int MedicationTimeId { get; set; }
     public int ResidentId { get; set; }
     public TimeOnly PlannedTime { get; set; }
 
-    // Navigation property to Resident. Each MedicationTime is associated with one Resident.
+    // Navigation property to the resident this medication time belongs to.
     public Resident Resident { get; set; } = null!;
 }
 

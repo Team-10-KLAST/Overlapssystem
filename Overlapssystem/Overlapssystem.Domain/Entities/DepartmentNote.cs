@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Overlapssystem.Domain.Entities;
 
-// Entity for huskeseddel - følger deparmentId
+// Represents a shared note (huskeseddel) for a department.
+// There is one note per department, identified by DepartmentId as the primary key.
 public class DepartmentNote
 {
     [Key]
