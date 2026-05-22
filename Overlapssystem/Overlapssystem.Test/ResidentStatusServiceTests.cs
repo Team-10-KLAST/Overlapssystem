@@ -6,10 +6,12 @@ using Overlapssystem.Infrastructure.Data;
 
 namespace Overlapssystem.Test;
 
+// Tests for ResidentStatusService 
+// Uses in-memory database so we dont touch the real databas
+// Each test gets a fresh database to avoid interference between tests.
 [TestClass]
 public class ResidentStatusServiceTests
 {
-    // Creates a fresh in-memory database for each test.
     private AppDbContext CreateContext(string databaseName)
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -19,7 +21,6 @@ public class ResidentStatusServiceTests
         return new AppDbContext(options);
     }
 
-    // Seeds a single resident schema with a known status.
     private void SeedTestData(AppDbContext context)
     {
         context.Residents.Add(new Resident
@@ -51,14 +52,15 @@ public class ResidentStatusServiceTests
         context.SaveChanges();
     }
 
-    [TestMethod]
     // Tests that UpdateStatusAsync returns true when the schema exists.
+    [TestMethod]
     public async Task UpdateStatusAsync_SchemaExists_ReturnsTrue()
     {
         // ARRANGE
         var context = CreateContext("UpdateStatus_ReturnsTrue");
         SeedTestData(context);
-        var service = new ResidentStatusService(context);
+        var logService = new ActivityLogService(context);
+        var service = new ResidentStatusService(context, logService);
 
         // ACT
         var result = await service.UpdateStatusAsync(1, "Ny status", 1);
@@ -67,33 +69,35 @@ public class ResidentStatusServiceTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod]
     // Tests that UpdateStatusAsync actually changes the status in the database.
+    [TestMethod]
     public async Task UpdateStatusAsync_SchemaExists_StatusIsUpdated()
     {
         // ARRANGE
         var context = CreateContext("UpdateStatus_StatusChanged");
         SeedTestData(context);
-        var service = new ResidentStatusService(context);
+        var logService = new ActivityLogService(context);
+        var service = new ResidentStatusService(context, logService);
 
         // ACT
         await service.UpdateStatusAsync(1, "Ny status", 1);
 
-        // ASSERT - Read from database to verify the change was persisted.
+        // ASSERT 
         var schema = await context.ResidentSchemas.FindAsync(1);
         Assert.AreEqual("Ny status", schema!.Status);
     }
 
-    [TestMethod]
     // Tests that UpdateStatusAsync returns false when schema doesn't exist.
+    [TestMethod]
     public async Task UpdateStatusAsync_SchemaNotFound_ReturnsFalse()
     {
         // ARRANGE
         var context = CreateContext("UpdateStatus_NotFound");
         SeedTestData(context);
-        var service = new ResidentStatusService(context);
+        var logService = new ActivityLogService(context);
+        var service = new ResidentStatusService(context, logService);
 
-        // ACT - use an ID that doesn't exist
+        // ACT 
         var result = await service.UpdateStatusAsync(999, "Ny status", 1);
 
         // ASSERT

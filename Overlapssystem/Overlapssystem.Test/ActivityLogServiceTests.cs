@@ -6,13 +6,12 @@ using Overlapssystem.Infrastructure.Data;
 
 namespace Overlapssystem.Test;
 
-// Unit tests for ActivityLogService.
+// Tests for ActivityLogService.
 // Uses in-memory database so we dont touch the real database.
 // Each test gets a fresh database to avoid interference between tests.
 [TestClass]
 public class ActivityLogServiceTests
 {
-    // Creates a fresh in-memory database context for each test.
     private AppDbContext CreateContext(string databaseName)
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -22,8 +21,6 @@ public class ActivityLogServiceTests
         return new AppDbContext(options);
     }
 
-    // Seeds the base data needed for all tests:
-    // a department, an employee, a resident, a shift, and a resident schema.
     private void SeedBaseData(AppDbContext context)
     {
         context.Departments.Add(new Department
@@ -76,8 +73,8 @@ public class ActivityLogServiceTests
         context.SaveChanges();
     }
 
+    // Tests that AddLogEntry saves a new entry to the database.
     [TestMethod]
-    // Tests that LogActionAsync saves a new entry to the database.
     public async Task LogActionAsync_SavesEntryToDatabase()
     {
         // ARRANGE
@@ -85,18 +82,10 @@ public class ActivityLogServiceTests
         SeedBaseData(context);
         var service = new ActivityLogService(context);
 
-        var entry = new ActivityLogEntry
-        {
-            ActionType = "Medicin",
-            Description = "Markerede medicin som givet kl. 08:00",
-            Timestamp = new DateTime(2026, 5, 10, 8, 15, 0),
-            EmployeeId = 1,
-            ResidentSchemaId = 1
-        };
-
         // ACT
-        await service.LogActionAsync(entry);
-
+        await service.AddLogEntry("Medicin", "Markerede medicin som givet kl 08:00", 1, 1);
+        await context.SaveChangesAsync();
+        
         // ASSERT
         var saved = context.ActivityLogEntries.FirstOrDefault();
         Assert.IsNotNull(saved);
@@ -104,8 +93,8 @@ public class ActivityLogServiceTests
         Assert.AreEqual(1, saved.EmployeeId);
     }
 
-    [TestMethod]
     // Tests that GetByEmployeeAsync returns entries for the specified employee.
+    [TestMethod]
     public async Task GetByEmployeeAsync_ReturnsEntriesForEmployee()
     {
         // ARRANGE
@@ -134,15 +123,14 @@ public class ActivityLogServiceTests
         Assert.AreEqual("Trafiklys", result[0].ActionType);
     }
 
-    [TestMethod]
     // Tests that GetByEmployeeAsync only returns entries within the date range.
+    [TestMethod]
     public async Task GetByEmployeeAsync_FiltersOnDateRange()
     {
         // ARRANGE
         var context = CreateContext("GetByEmployee_FiltersDateRange");
         SeedBaseData(context);
 
-        // Entry WITHIN range
         context.ActivityLogEntries.Add(new ActivityLogEntry
         {
             ActivityLogEntryId = 1,
@@ -153,7 +141,6 @@ public class ActivityLogServiceTests
             ResidentSchemaId = 1
         });
 
-        // Entry OUTSIDE range
         context.ActivityLogEntries.Add(new ActivityLogEntry
         {
             ActivityLogEntryId = 2,
@@ -175,15 +162,14 @@ public class ActivityLogServiceTests
         Assert.AreEqual(1, result.Count);
     }
 
-    [TestMethod]
     // Tests that GetByEmployeeAsync only returns entries for the specified employee.
+    [TestMethod]
     public async Task GetByEmployeeAsync_FiltersOnEmployeeId()
     {
         // ARRANGE
         var context = CreateContext("GetByEmployee_FiltersEmployeeId");
         SeedBaseData(context);
 
-        // Entry for employee 1
         context.ActivityLogEntries.Add(new ActivityLogEntry
         {
             ActivityLogEntryId = 1,
@@ -194,7 +180,6 @@ public class ActivityLogServiceTests
             ResidentSchemaId = 1
         });
 
-        // Entry for employee 2
         context.ActivityLogEntries.Add(new ActivityLogEntry
         {
             ActivityLogEntryId = 2,
@@ -217,8 +202,8 @@ public class ActivityLogServiceTests
         Assert.AreEqual(1, result[0].EmployeeId);
     }
 
-    [TestMethod]
     // Tests that GetByEmployeeAsync returns empty list when no entries match.
+    [TestMethod]
     public async Task GetByEmployeeAsync_NoMatches_ReturnsEmptyList()
     {
         // ARRANGE
