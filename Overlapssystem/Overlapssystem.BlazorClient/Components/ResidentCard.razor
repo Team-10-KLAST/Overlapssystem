@@ -27,36 +27,36 @@
     @* HEADER  *@
     <div class="card-header">
         <span class="initials">@Schema.Initials</span>
-    </div>
 
-    @if (_errorMessage != null)
-    {
-        <div class="card-error">@_errorMessage</div>
-    }
+        @if (_errorMessage != null)
+        {
+            <div class="card-error">@_errorMessage</div>
+        }
+    </div>
 
     @* RISK ASSESSMENT  *@
     <div class="card-section risk-section">
         <span class="section-label">Risiko</span>
         <div class="traffic-light-placeholder">
             <TrafficLight CurrentColor="@Schema.TrafficLight"
-                          OnColorChanged="HandleTrafficLightChanged"
-                          Initials="@Schema.Initials" />
+            OnColorChanged="HandleTrafficLightChanged"
+            Initials="@Schema.Initials" />
         </div>
     </div>
 
     @* FIXED MEDICATION *@
     <div class="card-section">
         <FixedMedication MedicationTimes="@Schema.MedicationTimes"
-                         Initials="@Schema.Initials"
-                         OnMedicationGiven="HandleMedicationGiven" />
+        Initials="@Schema.Initials"
+        OnMedicationGiven="HandleMedicationGiven" />
     </div>
 
     @* PN MEDICATION *@
     <div class="card-section">
         <PNMedication Schema="@Schema"
-                      ExistingPNTimes="@pnTimes"
-                      OnPNAdded="HandlePNAdded"
-                      OnPNDeleted="HandlePNDeleted" />
+        ExistingPNTimes="@pnTimes"
+        OnPNAdded="HandlePNAdded"
+        OnPNDeleted="HandlePNDeleted" />
     </div>
 
     @* SHOPPING DAY *@
@@ -74,24 +74,24 @@
     @* RELATIVE CONTACT *@
     <div class="card-section">
         <RelativeContact Schema="@Schema"
-                         ExistingContact="@relativeContact"
-                         OnContactSaved="HandleContactSaved" />
+        ExistingContact="@relativeContact"
+        OnContactSaved="HandleContactSaved" />
     </div>
 
     @* EMPLOYEE ASSIGNMENT *@
     <EmployeeAssignment ResidentSchemaId="@Schema.ResidentSchemaId" 
-                     AllEmployees="@allEmployees"
-                     SelectedPrimaryId="@Schema.SelectedPrimaryId"
-                     SelectedSecondaryId="@Schema.SelectedSecondaryId" 
-                     OnEmployeeChanged="HandleEmployeeChanged" />
+    AllEmployees="@allEmployees"
+    SelectedPrimaryId="@Schema.SelectedPrimaryId"
+    SelectedSecondaryId="@Schema.SelectedSecondaryId" 
+    OnEmployeeChanged="HandleEmployeeChanged" />
 
     @* STATUS - Editable status field with save and confirm dialog. *@
     <div class="card-section status-section">
         <span class="section-label">Status</span>
         <StatusField Status="@Schema.Status"
-                     ResidentSchemaId="@Schema.ResidentSchemaId"
-                     Initials="@Schema.Initials"
-                     OnStatusSaved="HandleStatusSaved" />
+        ResidentSchemaId="@Schema.ResidentSchemaId"
+        Initials="@Schema.Initials"
+        OnStatusSaved="HandleStatusSaved" />
     </div>
 
 </div>
