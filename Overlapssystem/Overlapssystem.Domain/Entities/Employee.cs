@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Overlapssystem.Domain.Entities;
 
-namespace Overlapssystem.Domain.Entities;
-
+// Represents an employee.
 public class Employee
 {
     public int EmployeeId { get; set; }

@@ -11,7 +11,7 @@ using Overlapssystem.Infrastructure.Data;
 
 namespace Overlapssystem.Test;
 
-// Unit tests for MedicationService
+// Tests for MedicationService
 // Uses in-memory database so we dont touch the real database
 // Each test gets a fresh database to avoid interference between tests.
 [TestClass]
@@ -78,14 +78,15 @@ public class MedicationServiceTests
         context.SaveChanges();
     }
 
-    [TestMethod]
     // Tests that MarkAsGivenAsync creates a new MedicationRegistration in the database.
+    [TestMethod]
     public async Task MarkAsGivenAsync_CreatesRegistration()
     {
         // ARRANGE
         var context = CreateContext("MarkAsGiven_CreatesRegistration");
         SeedTestData(context);
-        var service = new MedicationService(context);
+        var logService = new ActivityLogService(context);
+        var service = new MedicationService(context, logService);
 
         // ACT
         await service.MarkAsGivenAsync(1, 1, 1);
@@ -98,14 +99,15 @@ public class MedicationServiceTests
         Assert.IsTrue(registration.Given);
     }
 
-    [TestMethod]
     // Tests that MarkAsGivenAsync sets GivenTime to a recent UTC timestamp.
+    [TestMethod]
     public async Task MarkAsGivenAsync_SetsGivenTimeToUtcNow()
     {
         // ARRANGE
         var context = CreateContext("MarkAsGiven_SetsGivenTime");
         SeedTestData(context);
-        var service = new MedicationService(context);
+        var logService = new ActivityLogService(context);
+        var service = new MedicationService(context, logService);
         var beforeCall = DateTime.UtcNow;
 
         // ACT
@@ -118,8 +120,8 @@ public class MedicationServiceTests
         Assert.IsTrue(registration.GivenTime <= DateTime.UtcNow);
     }
 
-    [TestMethod]
     // Tests that MarkAsGivenAsync creates separate registrations for multiple medication times.
+    [TestMethod]
     public async Task MarkAsGivenAsync_MultipleTimes_CreatesMultipleRegistrations()
     {
         // ARRANGE
@@ -132,7 +134,8 @@ public class MedicationServiceTests
             PlannedTime = new TimeOnly(20, 0)
         });
         context.SaveChanges();
-        var service = new MedicationService(context);
+        var logService = new ActivityLogService(context);
+        var service = new MedicationService(context, logService);
 
         // ACT
         await service.MarkAsGivenAsync(1, 1, 1);
@@ -145,15 +148,16 @@ public class MedicationServiceTests
         Assert.IsTrue(registrations.Any(r => r.MedicationTimeId == 2));
     }
 
-    [TestMethod]
     // Tests that MarkAsGivenAsync only creates one registration per medication time per shift,
     // even if called multiple times with the same arguments.
+    [TestMethod]
     public async Task MarkAsGivenAsync_CalledTwice_DoesNotCreateDuplicateRegistration()
     {
         // ARRANGE
         var context = CreateContext("MarkAsGiven_NoDuplicates");
         SeedTestData(context);
-        var service = new MedicationService(context);
+        var logService = new ActivityLogService(context);
+        var service = new MedicationService(context, logService);
 
         // ACT
         await service.MarkAsGivenAsync(1, 1, 1);

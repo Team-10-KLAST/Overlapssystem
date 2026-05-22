@@ -60,35 +60,39 @@ public class ResidentSchemaService : IResidentSchemaService
     }
 
     // Creates new ResidentSchemas for all residents in a department wehen a new shift starts
+    // Find all residents -> Check for existing residentshema -> List of resident ID -> Get previous schemas -> Post info into new schemas
     public async Task<IEnumerable<ResidentSchema>> InitializeSchemaForShiftAsync(int shiftId, int departmentId)
-    {
-        // Find all residents
+    {        
         var residents = await _context.Residents
             .Where(r => r.DepartmentId == departmentId)
             .ToListAsync();
 
-        // Check if schemas already exists for this shift 
-        // Prefvents duplicates if this method is called twice 
         var existingSchemaResidentIds = await _context.ResidentSchemas
             .Where(s => s.ShiftId == shiftId)
             .Select(s => s.ResidentId)
             .ToListAsync();
 
+        var residentIds = residents.Select(r => r.ResidentId).ToList();
+
+        var previousSchemasLookup = (await _context.ResidentSchemas
+            .Where(s => s.ShiftId != shiftId && residentIds.Contains(s.ResidentId))
+            .AsNoTracking()
+            .ToListAsync())
+            .GroupBy(s => s.ResidentId)
+            .ToDictionary(
+                g => g.Key,
+                g => g.OrderByDescending(s => s.ShiftId).FirstOrDefault()
+            );
+
         var newSchemas = new List<ResidentSchema>();
 
         foreach(var resident in residents)
-        {
-            // skip if schema already exists for this resident in this shift
+        {            
             if (existingSchemaResidentIds.Contains(resident.ResidentId))
                 continue;
 
-            // Find most recent schema for this resident
-            var previousSchema = await _context.ResidentSchemas
-                .Where(s => s.ResidentId == resident.ResidentId && s.ShiftId != shiftId)
-                .OrderByDescending(s => s.ShiftId)
-                .FirstOrDefaultAsync();
+            previousSchemasLookup.TryGetValue(resident.ResidentId, out var previousSchema);
 
-            // Create new schema, copying all firlds from previous shift
             var newSchema = new ResidentSchema
             {
                 ResidentId = resident.ResidentId,
@@ -101,7 +105,6 @@ public class ResidentSchemaService : IResidentSchemaService
             newSchemas.Add(newSchema);          
         }
 
-        // Save all new schemas to database
         _context.ResidentSchemas.AddRange(newSchemas);
         await _context.SaveChangesAsync();
 

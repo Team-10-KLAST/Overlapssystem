@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Overlapssystem.Domain.Entities;
 
-namespace Overlapssystem.Domain.Entities;
-
-// Represents a record of medication administration for a resident in
-// a specific resident schema at a specific medication time.
+// Represents a registration of medication given to a resident
+// at a specific scheduled medication time within a resident schema.
 public class MedicationRegistration
 {
     public int MedicationRegistrationId { get; set; }
@@ -16,9 +10,8 @@ public class MedicationRegistration
     public int ResidentSchemaId { get; set; }
     public int MedicationTimeId { get; set; }
 
-    // Navigation properties
+    // Navigation properties to the resident schema and medication time this registration belongs to.
     public ResidentSchema ResidentSchema { get; set; } = null!;
     public MedicationTime MedicationTime { get; set; } = null!;
-
 }
 

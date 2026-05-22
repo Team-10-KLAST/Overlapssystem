@@ -4,7 +4,7 @@
     height: 100vh;
     gap: 4px;
     padding: 8px;
-    background-color: #f0f0f0;
+    background-color: #eef1f5;
 }
 
 .overlap-top {
@@ -27,7 +27,7 @@
 
 .overlap-middle {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: scroll;
     padding: 8px 8px 0 8px;
     min-height: 0;
 }
@@ -41,8 +41,22 @@
 
 .overlap-bottom {
     flex-shrink: 0;
-    background-color: #dff0d8;
-    padding: 8px 16px;
-    border-radius: 4px;
-    min-height: 250px;
+    background-color: #d9edf7;
+    padding: 8px 8px 0 8px;
+}
+
+.bottom-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding-right: 17px;
+    align-items: stretch;
+}
+
+.note-wrapper {
+    grid-column: auto;
+}
+
+.bottom-grid > * {
+    height: 280px;
 }
