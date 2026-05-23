@@ -4,13 +4,10 @@
    ============================================================ *@
 
 <div class="task-panel">
-
-    @* Panel header *@
     <div class="task-panel-header">
         <span class="task-panel-title">Ansvarsopgaver</span>
     </div>
 
-    @* Error message *@
     @if (_errorMessage != null)
     {
         <div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
@@ -18,8 +15,6 @@
 
     @* Scrollable task rows — column headers are sticky inside so widths always match *@
     <div class="task-list-body">
-
-        @* Column headers — sticky so they stay visible when scrolling *@
         <div class="task-col-headers">
             <span>Opgaver</span>
             <span>Medarbejder</span>
@@ -35,7 +30,7 @@
             @foreach (var task in tasks)
             {
                 <div class="task-row">
-                    @* Task name — fixed 130px width *@
+                    @* Task name *@
                     <input class="task-name-input"
                            placeholder="Opgavenavn..."
                            @bind="task.TaskName"
@@ -56,7 +51,7 @@
         }
     </div>
 
-    @* Add task button — full width, dark gray *@
+    @* Add task button *@
     <div class="task-add-wrapper">
         <button class="task-add-btn" @onclick="AddTask">+ Tilføj opgave</button>
     </div>

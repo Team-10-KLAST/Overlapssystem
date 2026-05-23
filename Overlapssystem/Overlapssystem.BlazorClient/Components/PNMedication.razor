@@ -5,12 +5,9 @@
    Delete requires confirmation via ConfirmDialog.
    ============================================================ *@
 
-@* PN label *@
 <span style="font-weight: bold; min-width: 70px; flex-shrink: 0; color: #333;">PN</span>
 
-@* List of registered PN times with add and delete support *@
 <span class="section-value">
-    @* Empty state — dash shown when no times are registered *@
     @if (ExistingPNTimes.Count == 0 && !IsAddingNew)
     {
         <span class="pn-time" @onclick="StartAddNew">—</span>
@@ -24,7 +21,6 @@
             var pn = ExistingPNTimes[index];
             @if (EditingIndex == index)
             {
-                @* Time input shown when editing an existing entry *@
                 <input class="pn-input"
                        type="time"
                        value="@pn.GivenTime"
@@ -33,7 +29,6 @@
             }
             else
             {
-                @* Time label and delete button for this entry *@
                 <span class="pn-entry"><span class="pn-time" @onclick="() => StartEdit(index)">@FormatTime(pn.GivenTime)</span><span class="pn-delete" @onclick="() => StartDelete(pn)" title="Slet">✕</span></span>
             }
         }
@@ -41,7 +36,6 @@
         @* New time input or + button *@
         @if (IsAddingNew)
         {
-            @* Time input for registering a new PN time *@
             <input class="pn-input"
                    type="time"
                    value=""
@@ -51,13 +45,11 @@
         }
         else
         {
-            @* Button to add a new PN time *@
             <span class="pn-add" @onclick="StartAddNew">+</span>
         }
     }
 </span>
 
-@* Delete confirmation — uses the shared ConfirmDialog component *@
 <ConfirmDialog IsVisible="showDeleteConfirm"
                Message="Er du sikker?"
                SubMessage="Slet denne PN-tid permanent?"

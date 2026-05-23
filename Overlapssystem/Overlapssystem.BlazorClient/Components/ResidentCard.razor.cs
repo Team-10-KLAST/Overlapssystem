@@ -4,6 +4,10 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Components;
 
+// Code-behind for ResidentCard.razor
+// Displays and manages all information related to a resident, including traffic light, status, medications,
+// PN times, assigned employees, and relative contact info. ResidentCard is responsible for all API
+// interactions related to the resident's data and holds the main state for the card.
 public partial class ResidentCard
 {
     [Inject] private ITrafficLightDataService TrafficLightService { get; set; } = default!;
@@ -14,22 +18,14 @@ public partial class ResidentCard
     [Inject] private IRelativeContactDataService RelativeContactService { get; set; } = default!;
     [Inject] private IEmployeeAssignmentDataService AssignmentService { get; set; } = default!;
 
-    // The schema data passed in from the parent page.
-    // [Parameter] means the parent provides this value:
-    // <ResidentCard Schema="@schema" />
     [Parameter] public ResidentSchemaDto Schema { get; set; } = default!;
+    
     private List<EmployeeDto> allEmployees = new();
-
-    // True if any API call in OnInitializedAsync failed — triggers the error message in the card.
     private bool loadError = false;
-
-    // A general error message string that can be set by any operation in the card to show an error to the user.
     private string? _errorMessage;
-
-    // All PN registrations for this schema, owned by ResidentCard and passed to PNMedication.
     private List<PNDto> pnTimes = new();
 
-    // Loads employees, PN times, and the relative contact in parallel when the card initializes.
+    // Loads employees and PN times on first render.
     protected override async Task OnInitializedAsync()
     {
         var employeesTask = EmployeeDataService.GetEmployeesAsync();
@@ -49,7 +45,6 @@ public partial class ResidentCard
     }
 
     // Persists the new traffic light color via the API and updates the local schema on success.
-    // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleTrafficLightChanged(string newColor)
     {
         var result = await TrafficLightService.UpdateTrafficLightAsync(Schema.ResidentSchemaId, newColor);
@@ -62,7 +57,6 @@ public partial class ResidentCard
     }
 
     // Persists the new status text via the API and updates the local schema on success.
-    // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleStatusSaved(string newStatus)
     {
         var result = await StatusService.UpdateStatusAsync(Schema.ResidentSchemaId, newStatus);
@@ -74,7 +68,6 @@ public partial class ResidentCard
     }
 
     // Persists the medication as given via the API and updates the local state on success.
-    // ResidentCard owns this because it holds the schema and is responsible for all data mutations.
     private async Task HandleMedicationGiven(MedicationTimeDto med)
     {
         var result = await MedicationService.MarkAsGivenAsync(Schema.ResidentSchemaId, med.MedicationTimeId);

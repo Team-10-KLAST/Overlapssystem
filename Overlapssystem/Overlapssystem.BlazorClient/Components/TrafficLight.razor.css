@@ -1,5 +1,4 @@
-﻿/* This only applies to the TrafficLight component */
-.traffic-light-interactive {
+﻿.traffic-light-interactive {
     display: flex;
     gap: 4px;
     flex: 1;
@@ -12,7 +11,7 @@
     border: 1px solid rgba(0,0,0,0.1);
     cursor: pointer;
     transition: all 0.2s ease;
-    border-radius: 2px; /* Optional: matches your resident card style */
+    border-radius: 2px;
 }
 
     .light:hover {

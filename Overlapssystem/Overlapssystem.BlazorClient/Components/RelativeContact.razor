@@ -4,15 +4,11 @@
    to inform the next shift. Supports save and cancel.
    ============================================================ *@
 
-@* Label — matches section-label style used across the card *@
 <span style="font-weight: bold; min-width: 70px; flex-shrink: 0; color: #333;">Pårørende</span>
 
-@* Content area — grows to fill remaining width of card section *@
 <div class="rc-content">
-
     @if (hasSavedMessage && !isEditing)
     {
-        @* Saved state: renders newlines as <br> so line breaks entered by the user are preserved *@
         <div class="rc-saved-text" title="@currentMessage" @onclick="StartEditing">
             @SavedMessageHtml
         </div>
