@@ -4,33 +4,19 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Components;
 
+// Code-behind for PNMedication.razor.
+// Displays and manages the list of PN medication times for a resident schema.
 public partial class PNMedication
 {
-    // The schema data passed in from ResidentCard.
     [Parameter] public ResidentSchemaDto Schema { get; set; } = default!;
-
-    // All registered PN times for this schema, loaded and passed in by ResidentCard.
     [Parameter] public List<PNDto> ExistingPNTimes { get; set; } = new();
-
-    // Raised when the user adds a new PN time — ResidentCard calls the API.
     [Parameter] public EventCallback<PNDto> OnPNAdded { get; set; }
-
-    // Raised when the user deletes a PN time — ResidentCard calls the API.
     [Parameter] public EventCallback<PNDto> OnPNDeleted { get; set; }
 
-    // Index of the time currently being edited, or -1 if none.
     private int EditingIndex { get; set; } = -1;
-
-    // True when the new-time input field is visible.
     private bool IsAddingNew { get; set; } = false;
-
-    // PN registration awaiting delete confirmation.
     private PNDto? pendingDelete = null;
-
-    // True when the delete confirm dialog is visible.
     private bool showDeleteConfirm = false;
-
-    // Tracks the time value as the user types, used to save on Enter.
     private string pendingTime = string.Empty;
 
     // Opens the inline edit input for the time at the given index.
@@ -48,14 +34,12 @@ public partial class PNMedication
         pendingTime = string.Empty;
     }
 
-    // Opens the delete confirmation dialog for the given PN.
     private void StartDelete(PNDto pn)
     {
         pendingDelete = pn;
         showDeleteConfirm = true;
     }
 
-    // Notifies ResidentCard to delete the PN via the API, then closes the dialog.
     private async Task ConfirmDelete()
     {
         if (pendingDelete == null)
@@ -66,7 +50,6 @@ public partial class PNMedication
         pendingDelete = null;
     }
 
-    // Cancels the delete without deleting.
     private void CancelDelete()
     {
         showDeleteConfirm = false;

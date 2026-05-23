@@ -20,7 +20,6 @@
     flex: 1;
 }
 
-/* Styling af dropdown så den ligner en diskret knap */
 .employee-select {
     display: inline-flex;
     padding: 1px 4px;
@@ -40,7 +39,6 @@
         border-color: #666;
     }
 
-    /* Styling af det valgte navn så det ser mere permanent ud */
     .employee-select:not([value=""]) {
         color: #333;
         font-weight: bold;

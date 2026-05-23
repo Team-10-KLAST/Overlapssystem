@@ -6,29 +6,15 @@ namespace Overlapssystem.BlazorClient.Components;
 // Handles editing and saving of a resident's status text.
 public partial class StatusField
 {
-    // The current status text, passed in from ResidentCard.
-    [Parameter]
-    public string Status { get; set; } = string.Empty;
+    [Parameter] public string Status { get; set; } = string.Empty;
+    [Parameter] public int ResidentSchemaId { get; set; }
+    [Parameter] public string? Initials { get; set; }
+    [Parameter] public EventCallback<string> OnStatusSaved { get; set; }
 
-    // The ResidentSchema ID, needed to identify which schema to update.
-    [Parameter]
-    public int ResidentSchemaId { get; set; }
-
-    // The initials of the resident, used for display in the confirm dialog.
-    [Parameter]
-    public string? Initials { get; set; }
-
-    // Event callback to notify ResidentCard when status is saved.
-    [Parameter]
-    public EventCallback<string> OnStatusSaved { get; set; }
-
-    // Local copy of the status text for editing.
     private string currentStatus = string.Empty;
-
-    // Controls confirm dialog visibility.
     private bool showConfirm = false;
 
-    // True if the user has changed the text.
+    // True if the user has made changes to the status that haven't been saved yet.
     private bool HasChanges => currentStatus != Status;
 
     // Initialize local copy when component first loads.

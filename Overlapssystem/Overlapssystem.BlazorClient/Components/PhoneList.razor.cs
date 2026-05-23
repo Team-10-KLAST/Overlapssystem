@@ -4,17 +4,19 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Components;
 
+// Code-behind for PhoneList.razor.
+// Displays a list of phones for the current shift, allowing assignment to employees and marking as tested.
 public partial class PhoneList
 {
     [Inject] private IPhoneDataService PhoneService { get; set; } = default!;
     [Inject] private IEmployeeDataService EmployeeService { get; set; } = default!;
-
     [Parameter] public int ShiftId { get; set; }
     [Parameter] public List<EmployeeDto> AllEmployees { get; set; } = new();
 
     private List<PhoneDto>? phones;
     private string? _errorMessage;
 
+    // Loads the list of phones and all employees when ShiftId changes.
     protected override async Task OnParametersSetAsync()
     {
         if (ShiftId > 0)
@@ -37,6 +39,7 @@ public partial class PhoneList
         }
     }
 
+    // Called when the user changes the assigned employee for a phone.
     private async Task OnEmployeeChanged(ChangeEventArgs e, PhoneDto phone)
     {
         var previousEmployeeId = phone.EmployeeId;
@@ -60,6 +63,7 @@ public partial class PhoneList
         }
     }
 
+    // Called when the user toggles the "tested" status of a phone.
     private async Task OnTestChanged(ChangeEventArgs e, PhoneDto phone)
     {
         if (phone.EmployeeId == null) return;
@@ -76,6 +80,7 @@ public partial class PhoneList
         }
     }
 
+    // Resets all phones by unassigning them from employees and marking them as not tested.
     private async Task ResetAllPhones()
     {
         if (phones == null || !phones.Any()) return;

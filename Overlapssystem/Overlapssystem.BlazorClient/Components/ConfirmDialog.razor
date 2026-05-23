@@ -1,6 +1,6 @@
 ﻿@* ============================================================
    CONFIRM DIALOG COMPONENT
-   Handles the display and interaction for confirmation dialogs across the application.
+   Reusable confirmation dialog displayed as a modal overlay.
    ============================================================ *@
 
 @if (IsVisible)
@@ -8,7 +8,7 @@
     <div class="modal-overlay">
         <div class="modal-box">
             <p>@Message</p>
-            <p class="color-change">@SubMessage</p>
+            <p class="sub-message-warning">@SubMessage</p>
             <div class="modal-buttons">
                 <button class="btn-confirm" @onclick="OnConfirm">Ja</button>
                 <button class="btn-cancel" @onclick="OnCancel">Annuller</button>

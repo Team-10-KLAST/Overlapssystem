@@ -4,16 +4,19 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Components;
 
+// Code-behind for ShiftTaskSection.razor.
+// Displays and manages the list of tasks for a given department and shift, allowing adding,
+// renaming, deleting, and assigning tasks to employees.
 public partial class ShiftTaskSection
 {
     [Inject] private IDepartmentTaskDataService TaskService { get; set; } = default!;
-
     [Parameter] public int DepartmentId { get; set; }
     [Parameter] public int ShiftId { get; set; }
 
     private List<DepartmentTaskDto>? tasks;
     private string? _errorMessage;
 
+    // Load tasks when parameters change (e.g., when a different shift is selected).
     protected override async Task OnParametersSetAsync()
     {
         if (DepartmentId > 0 && ShiftId > 0)

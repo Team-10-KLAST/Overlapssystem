@@ -8,7 +8,6 @@
     height: 280px;
 }
 
-/* Yellow header bar with bold black text */
 .note-panel-header {
     background-color: #f5c400;
     padding: 8px 12px;
@@ -22,6 +21,11 @@
     font-size: 13px;
 }
 
+.note-error {
+    font-size: 12px;
+    margin: 4px;
+}
+
 .note-body {
     background-color: #fefde8;
     display: flex;
@@ -29,7 +33,6 @@
     flex: 1;
 }
 
-/* Textarea — no border, transparent background, always black text */
 .note-textarea {
     width: 100%;
     height: calc(280px - 40px);
@@ -53,4 +56,9 @@
     height: 28px;
     padding: 4px 8px;
     flex-shrink: 0;
+}
+
+.note-saving-text {
+    color: #6c757d;
+    font-style: italic;
 }

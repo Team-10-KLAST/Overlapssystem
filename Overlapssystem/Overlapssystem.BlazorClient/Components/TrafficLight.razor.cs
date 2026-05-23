@@ -2,20 +2,17 @@
 
 namespace Overlapssystem.BlazorClient.Components;
 
+// Code-behind for TrafficLight.razor.
+// Displays the traffic light color for a resident and allows changing it with confirmation.
 public partial class TrafficLight
 {
     [Parameter] public string? CurrentColor { get; set; }
     [Parameter] public string? Initials { get; set; }
-
-    // This allows the parent (ResidentCard) to respond to the change
     [Parameter] public EventCallback<string> OnColorChanged { get; set; }
 
     private bool showConfirm = false;
     private string? pendingColor;
 
-
-    // Method to handle clicks on the traffic light. 
-    // It sets the pending color and shows the confirmation dialog.
     private void HandleClick(string newColor)
     {
         if (CurrentColor != newColor)
@@ -25,7 +22,6 @@ public partial class TrafficLight
         }
     }
 
-    // If the user confirms, we invoke the callback to notify the parent of the change.
     private async Task ConfirmChange()
     {
         await OnColorChanged.InvokeAsync(pendingColor);
@@ -33,7 +29,6 @@ public partial class TrafficLight
         pendingColor = null;
     }
 
-    // If the user cancels, we hide the confirmation dialog and clear the pending color.
     private void CancelChange()
     {
         showConfirm = false;

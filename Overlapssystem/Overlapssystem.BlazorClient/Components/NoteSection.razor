@@ -4,16 +4,13 @@
    ============================================================ *@
 
 <div class="note-panel">
-
-    @* Panel header — yellow background, bold black title *@
     <div class="note-panel-header">
         <span class="note-panel-title">Huskeseddel</span>
     </div>
 
-    @* Error message *@
     @if (_errorMessage != null)
     {
-        <div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
+        <div class="alert alert-danger note-error">@_errorMessage</div>
     }
 
     @* Note content area *@
@@ -29,7 +26,7 @@
         <div class="note-saving-indicator">
             @if (isSaving)
             {
-                <small style="color: #6c757d; font-style: italic;">Gemmer ændringer...</small>
+                <small class="note-saving-text">Gemmer ændringer...</small>
             }
         </div>
     </div>

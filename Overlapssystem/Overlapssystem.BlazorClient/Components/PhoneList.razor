@@ -4,69 +4,63 @@
    ============================================================ *@
 
 <div class="phone-panel">
+	<div class="phone-panel-header">
+		<span class="phone-panel-title">Telefonliste</span>
+		@if (phones != null && phones.Any())
+		{
+			<button class="phone-reset-btn" @onclick="ResetAllPhones">Nulstil alle</button>
+		}
+	</div>
 
-    @* Panel header with title and reset button *@
-    <div class="phone-panel-header">
-        <span class="phone-panel-title">Telefonliste</span>
-        @if (phones != null && phones.Any())
-        {
-            <button class="phone-reset-btn" @onclick="ResetAllPhones">Nulstil alle</button>
-        }
-    </div>
+	@if (_errorMessage != null)
+	{
+		<div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
+	}
 
-    @* Error message *@
-    @if (_errorMessage != null)
-    {
-        <div class="alert alert-danger m-1" style="font-size: 12px;">@_errorMessage</div>
-    }
+	@* Column headers *@
+	<div class="phone-col-headers">
+		<span>Telefon</span>
+		<span>Medarbejder</span>
+		<span>Test</span>
+	</div>
 
-    @* Column headers *@
-    <div class="phone-col-headers">
-        <span>Telefon</span>
-        <span>Medarbejder</span>
-        <span>Test</span>
-    </div>
+	@* Scrollable phone rows *@
+	<div class="phone-list-body">
+		@if (phones == null)
+		{
+			<p class="p-2 m-0" style="font-size: 13px;">Henter telefoner...</p>
+		}
+		else if (!phones.Any())
+		{
+			<p class="p-2 m-0" style="font-size: 13px; color: #6b7280;">Ingen telefoner fundet.</p>
+		}
+		else
+		{
+			@foreach (var phone in phones)
+			{
+				<div class="phone-row">
+					<span class="phone-number">@phone.Number</span>
 
-    @* Scrollable phone rows *@
-    <div class="phone-list-body">
-        @if (phones == null)
-        {
-            <p class="p-2 m-0" style="font-size: 13px;">Henter telefoner...</p>
-        }
-        else if (!phones.Any())
-        {
-            <p class="p-2 m-0" style="font-size: 13px; color: #6b7280;">Ingen telefoner fundet.</p>
-        }
-        else
-        {
-            @foreach (var phone in phones)
-            {
-                <div class="phone-row">
-                    @* Phone number *@
-                    <span class="phone-number">@phone.Number</span>
+					<select class="phone-employee-select @(phone.EmployeeId == null ? "empty" : "")"
+							value="@(phone.EmployeeId?.ToString() ?? "")"
+							@onchange="@(e => OnEmployeeChanged(e, phone))">
+						<option value="">Tilføj initialer</option>
+						@foreach (var emp in AllEmployees)
+						{
+							var takenByOther = phones!.Any(p => p.Id != phone.Id && p.EmployeeId == emp.EmployeeId);
+							<option value="@emp.EmployeeId" disabled="@takenByOther">
+								@(takenByOther ? $"✓ {emp.Initials}" : emp.Initials)
+							</option>
+						}
+					</select>
 
-                    @* Employee dropdown styled as plain input *@
-                    <select class="phone-employee-select @(phone.EmployeeId == null ? "empty" : "")"
-                            value="@(phone.EmployeeId?.ToString() ?? "")"
-                            @onchange="@(e => OnEmployeeChanged(e, phone))">
-                        <option value="">Tilføj initialer</option>
-                        @foreach (var emp in AllEmployees)
-                        {
-                          var takenByOther = phones!.Any(p => p.Id != phone.Id && p.EmployeeId == emp.EmployeeId);
-                          <option value="@emp.EmployeeId" disabled="@takenByOther">
-                            @(takenByOther ? $"✓ {emp.Initials}" : emp.Initials)
-                          </option>
-                        }
-                    </select>
-
-                    @* Round test checkbox *@
-                    <input type="checkbox"
-                           class="phone-checkbox"
-                           disabled="@(phone.EmployeeId == null)"
-                           checked="@phone.IsTested"
-                           @onchange="@(e => OnTestChanged(e, phone))" />
-                </div>
-            }
-        }
-    </div>
+					<input type="checkbox"
+						   class="phone-checkbox"
+						   disabled="@(phone.EmployeeId == null)"
+						   checked="@phone.IsTested"
+						   @onchange="@(e => OnTestChanged(e, phone))" />
+				</div>
+			}
+		}
+	</div>
 </div>
