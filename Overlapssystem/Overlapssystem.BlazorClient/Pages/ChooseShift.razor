@@ -5,9 +5,6 @@
 
 @page "/choose-shift"
 @using System.Globalization
-@inject HttpClient Http
-@inject ISaveShiftService SaveShiftService
-@inject NavigationManager Navigation
 
 <style>
     .choose-shift-page {
@@ -124,23 +121,3 @@
     </div>
 </div>
 
-@code {
-    private string MaxDate => DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-
-    private CreateShiftDto model = new()
-    {
-        Date = DateTime.Today
-    };
-
-    private string message = string.Empty;
-
-    private async Task SaveShift()
-    {
-        var result = await SaveShiftService.SaveShiftAsync(model);
-
-        if (result.IsSuccess)
-            Navigation.NavigateTo($"/overlapssystem/{result.Data}");
-        else
-            message = result.Error!;
-    }
-}
