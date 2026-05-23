@@ -1,0 +1,27 @@
+﻿.medication-label {
+    font-weight: bold;
+    min-width: 70px;
+    flex-shrink: 0;
+    color: #333;
+}
+
+.medication-times {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.medication-time-entry {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.medication-checkbox {
+    width: 11px;
+    height: 11px;
+    margin: 0;
+    cursor: pointer;
+    display: block;
+}
