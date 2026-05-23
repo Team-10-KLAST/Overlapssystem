@@ -1,6 +1,6 @@
 ﻿namespace Overlapssystem.BlazorClient.Models;
 
-// Used when we want to return only the success status and error message (if any)
+// Represents the outcome of an operation with no return value.
 public class Result
 {
     public bool IsSuccess { get; }
@@ -16,7 +16,7 @@ public class Result
     public static Result Failure(string error) => new(false, error);
 }
 
-// Used when we want to return some data along with the success status and error message (if any)
+// Represents the outcome of an operation that returns data of type T on success.
 public class Result<T> : Result
 {
     public T? Data { get; }
