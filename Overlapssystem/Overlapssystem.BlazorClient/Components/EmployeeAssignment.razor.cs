@@ -3,18 +3,18 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Components;
 
+// Code-behind for EmployeeAssignment.razor.
+// Manages primary and secondary employee selection for a resident schema entry.
 public partial class EmployeeAssignment
 {
     [Parameter] public int ResidentSchemaId { get; set; }
     [Parameter] public List<EmployeeDto> AllEmployees { get; set; } = new();
-
-    // Disse bindes til data fra ResidentSchema
     [Parameter] public int? SelectedPrimaryId { get; set; }
     [Parameter] public int? SelectedSecondaryId { get; set; }
-
     [Parameter] public EventCallback<(int position, int? employeeId)> OnEmployeeChanged { get; set; }
 
-    // Filtrerer listen så den valgte medarbejder ikke vises i den anden dropdown
+    // Filters the employee list so that the employee selected in one dropdown
+    // is excluded from the other, preventing duplicate assignments.
     private IEnumerable<EmployeeDto> GetAvailableEmployees(int position)
     {
         if (position == 1)
@@ -27,6 +27,7 @@ public partial class EmployeeAssignment
         }
     }
 
+    // Handles the change event when an employee is selected from the dropdown.
     private async Task OnEmployeeSelected(ChangeEventArgs e, int position)
     {
         string? stringValue = e.Value?.ToString();

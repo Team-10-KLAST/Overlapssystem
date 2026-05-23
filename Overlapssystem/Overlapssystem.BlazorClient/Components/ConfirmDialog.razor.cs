@@ -2,6 +2,8 @@
 
 namespace Overlapssystem.BlazorClient.Components;
 
+// Code-behind for ConfirmDialog.razor.
+// Exposes parameters for controlling visibility, messages and callbacks.
 public partial class ConfirmDialog
 {
     [Parameter] public bool IsVisible { get; set; }
