@@ -5,23 +5,20 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Pages;
 
-// Code-behind for the Login.razor component, which handles user login functionality
+// Code-behind for the Login.razor.
+// Manages the login form, including handling user input, calling the authentication service,
+// and navigating to the appropriate page upon successful login.
 public partial class Login
 {
-    // Injected services
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
-
-    // Holds the login form data bound to the input fields in Login.razor
+    
     private LoginDto _loginDto = new();
-
-    // Holds an error message to display if login fails
     private string? _errorMessage;
-
-    // Controls whether the login button is disabled while the request is in progress
     private bool _isLoading = false;
 
-    // Called when the user clicks the login button
+    // Handles the login process when the user submits the form. It calls the authentication service
+    // and updates the UI based on the result.
     private async Task HandleLogin()
     {
         _errorMessage = null;

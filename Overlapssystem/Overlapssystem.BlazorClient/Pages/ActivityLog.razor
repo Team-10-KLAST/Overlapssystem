@@ -1,6 +1,6 @@
 ﻿@* ============================================================
    ACTIVITY LOG PAGE
-   Handles the display and interaction for the activity log.
+   Admin-only page displaying an activity log for a selected employee and date range.
    ============================================================ *@
 
 @page "/activitylog"
@@ -13,6 +13,7 @@
     <div class="alert alert-danger m-2">@_errorMessage</div>
 }
 
+@* Filters *@
 <div class="filters">
     <div class="filter-group">
         <label>Medarbejder</label>
@@ -41,6 +42,7 @@
     <button class="search-btn" @onclick="Search" disabled="@(!CanSearch)">Vis log</button>
 </div>
 
+@* Activity Log Entries *@
 @if (isLoading)
 {
     <p>Henter data...</p>

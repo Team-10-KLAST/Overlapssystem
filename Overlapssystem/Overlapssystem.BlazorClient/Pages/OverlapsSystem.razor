@@ -1,8 +1,16 @@
-﻿@page "/overlapssystem/{ShiftId:int}"
+﻿@* ============================================================
+   OVERLAP SYSTEM PAGE
+   Main page for the overlap system, displaying shift information, 
+   resident cards, phone list, shift tasks, and notes.
+   ============================================================ *@
+
+@page "/overlapssystem/{ShiftId:int}"
 
 <PageTitle>Overlapssystem</PageTitle>
 
 <div class="overlap-page">
+
+    @* Top section - shift info and actions *@
     <div class="overlap-top">
         <span>Vagtinfo: @shiftDate - @shiftType - @departmentName</span>
         <div class="overlap-top-actions">
@@ -22,6 +30,7 @@
         <div class="alert alert-danger m-2">@_errorMessage</div>
     }
 
+    @* Middle section - resident cards *@
     <div class="overlap-middle">
         @if (schemas == null)
         {
@@ -42,13 +51,11 @@
         }
     </div>
 
+    @* Bottom section - phone list, shift tasks, and notes *@
     <div class="overlap-bottom">
         <div class="bottom-grid">
-            @* Left panel — phone list *@
             <PhoneList ShiftId="@ShiftId" />
-            @* Center panel — shift tasks *@
             <ShiftTaskSection DepartmentId="@currentDepartment" ShiftId="@ShiftId" />
-            @* Right panel — note section spans columns 3 and 4 *@
             <div class="note-wrapper">
                 <NoteSection DepartmentId="@currentDepartment" />
             </div>
