@@ -21,6 +21,7 @@ public partial class ActivityLog
     private bool CanSearch => selectedEmployeeId.HasValue;
     private string? _errorMessage;
 
+    // Load the list of employees when the component initializes.
     protected override async Task OnInitializedAsync()
     {
         var result = await EmployeeService.GetEmployeesAsync();
@@ -31,6 +32,7 @@ public partial class ActivityLog
             _errorMessage = result.Error;
     }
 
+    // Update the selected employee ID when the user changes the selection.
     private void OnEmployeeChanged(ChangeEventArgs e)
     {
         if (int.TryParse(e.Value?.ToString(), out var id))
@@ -39,6 +41,7 @@ public partial class ActivityLog
             selectedEmployeeId = null;
     }
 
+    // Fetches the activity log entries for the selected employee and date range.
     private async Task Search()
     {
         if (!selectedEmployeeId.HasValue) return;

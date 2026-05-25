@@ -4,8 +4,7 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
-// Communicates with the PN API endpoint.
-// HttpClient is injected by the DI container.
+// Handles fetching and updating PN medication times from the API.
 public class PNDataService : IPNDataService
 {
     private readonly HttpClient _http;
@@ -15,7 +14,7 @@ public class PNDataService : IPNDataService
         _http = http;
     }
 
-    // Calls GET api/pn/{residentSchemaId} to fetch all PN registrations for a schema.
+    // Retrieves all PN medication times for a given resident schema ID.
     public async Task<Result<IEnumerable<PNDto>>> GetPNsBySchemaAsync(int residentSchemaId)
     {
         try
@@ -29,7 +28,7 @@ public class PNDataService : IPNDataService
         }
     }
 
-    // Calls POST api/pn to register a new PN medication time.
+    // Registers a new PN medication time.
     public async Task<Result<PNDto>> RegisterPNAsync(PNDto dto)
     {
         try
@@ -48,7 +47,7 @@ public class PNDataService : IPNDataService
         }
     }
 
-    // Calls DELETE api/pn/{id} to permanently delete a PN registration.
+    // Deletes a PN medication time by its ID.
     public async Task<Result> DeletePNAsync(int pnId)
     {
         try

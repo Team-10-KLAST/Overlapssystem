@@ -4,6 +4,7 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
+// Fetches activity log entries from the API for a given employee and date range.
 public class ActivityLogDataService : IActivityLogDataService
 {
     private readonly HttpClient _http;
@@ -13,6 +14,7 @@ public class ActivityLogDataService : IActivityLogDataService
         _http = http;
     }
 
+    // Retrieves log entries for the specified employee between the given dates.
     public async Task<Result<List<ActivityLogEntryDto>>> GetByEmployeeAsync(
         int employeeId, DateTime from, DateTime to)
     {

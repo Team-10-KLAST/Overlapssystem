@@ -5,8 +5,8 @@ using Microsoft.JSInterop;
 
 namespace Overlapssystem.BlazorClient.Services;
 
-// Custom AuthenticationStateProvider that uses JWT tokens stored in sessionStorage to manage
-// authentication state in Blazor
+// Custom AuthenticationStateProvider that reads a JWT token from
+// sessionStorage to determine the current user's authentication state.
 public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 {
     private readonly IJSRuntime _js;

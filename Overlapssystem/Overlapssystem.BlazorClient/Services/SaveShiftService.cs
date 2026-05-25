@@ -6,6 +6,7 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
+// Handles saving new shifts to the API.
 public class SaveShiftService : ISaveShiftService
 {
     private readonly HttpClient _http;
@@ -15,9 +16,7 @@ public class SaveShiftService : ISaveShiftService
         _http = http;
     }
 
-    // Returns the created shift's ID on success, or null on failure.
-    // Client-side validation for immediate user feedback.
-    // The same rules are enforced by model validation on the CreateShiftDto in the Shared project.
+    // Saves a new shift to the API. Validates the input model before sending the request.
     public async Task<Result<int>> SaveShiftAsync(CreateShiftDto model)
     {
         if (model.Date.Date > DateTime.Today)

@@ -4,8 +4,7 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
-// Service class responsible for communicating with the API
-// to update traffic light statuses for resident schemas.
+// Handles updating traffic light status for resident schemas through the API.
 public class TrafficLightDataService : ITrafficLightDataService
 {
     private readonly HttpClient _http;
@@ -15,8 +14,7 @@ public class TrafficLightDataService : ITrafficLightDataService
         _http = http;
     }
 
-    // Sends a PUT request to the API to update the traffic light status
-    // for a specific resident schema.
+    // Updates the traffic light status for a specific resident schema.
     public async Task<Result> UpdateTrafficLightAsync(int residentSchemaId, string? trafficLight)
     {
         try

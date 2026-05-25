@@ -3,10 +3,8 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
-// Contract for the Blazor-side service that fetches resident schemas. 
+// Interface for fetching resident schemas for a specific shift from the API. 
 public interface IResidentSchemaDataService
 {
-    // Fetches all resident schemas from the API 
     Task<Result<IEnumerable<ResidentSchemaDto>>> GetByShiftAsync(int shiftId);
-
 }

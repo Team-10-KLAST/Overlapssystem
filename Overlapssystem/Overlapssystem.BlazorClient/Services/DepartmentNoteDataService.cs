@@ -4,6 +4,7 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
+// Handles fetching and updating department notes from the API.
 public class DepartmentNoteDataService : IDepartmentNoteDataService
 {
     private readonly HttpClient _http;
@@ -13,7 +14,7 @@ public class DepartmentNoteDataService : IDepartmentNoteDataService
         _http = http;
     }
 
-    // Hent noten fra API'en
+    // Fetches the note for a specific department. Returns an empty list if no note exists.
     public async Task<Result<IEnumerable<DepartmentNoteDto>>> GetNoteByDepartmentIdAsync(int departmentId)
     {
         try
@@ -30,6 +31,8 @@ public class DepartmentNoteDataService : IDepartmentNoteDataService
             return Result<IEnumerable<DepartmentNoteDto>>.Failure("Kunne ikke hente note.");
         }
     }
+
+    // Updates the note for a department.
     public async Task<Result> UpdateNoteAsync(DepartmentNoteDto dto)
     {
         try

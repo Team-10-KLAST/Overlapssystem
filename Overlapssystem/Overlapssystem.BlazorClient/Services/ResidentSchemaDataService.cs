@@ -4,8 +4,7 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
-// Fetches resident schema data from the API via HTTP 
-// HttpClient is injected by DI container 
+// Fetches resident schema data from the API.
 public class ResidentSchemaDataService : IResidentSchemaDataService
 {
     private readonly HttpClient _http;
@@ -15,7 +14,7 @@ public class ResidentSchemaDataService : IResidentSchemaDataService
         _http = http;
     }
 
-    // Calls GET/api/residentschema/shift/{shiftId}
+    // Fetches resident schemas for a specific shift.
     public async Task<Result<IEnumerable<ResidentSchemaDto>>> GetByShiftAsync(int shiftId)
     {
         try
@@ -28,7 +27,4 @@ public class ResidentSchemaDataService : IResidentSchemaDataService
             return Result<IEnumerable<ResidentSchemaDto>>.Failure("Kunne ikke hente borgerskemaer.");
         }
     }
-
-  
-
 }

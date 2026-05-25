@@ -4,6 +4,7 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
+// Handles fetching shift data from the API.
 public class ShiftService : IShiftService
 {
     private readonly HttpClient _http;
@@ -13,6 +14,7 @@ public class ShiftService : IShiftService
         _http = http;
     }
 
+    // Fetches a shift by its ID from the API.
     public async Task<Result<ShiftDto>> GetByIdAsync(int id)
     {
         try

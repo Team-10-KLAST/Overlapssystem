@@ -3,7 +3,7 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
-// Defines the contract for fetching and updating department tasks from the API
+// Interface for fetching and updating department tasks through the API.
 public interface IDepartmentTaskDataService
 {
     Task<Result<IEnumerable<DepartmentTaskDto>>> GetTasksAsync(int departmentId, int shiftId);

@@ -3,7 +3,8 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
-// Handles communication with the API's authentication endpoints 
+// Handles communication with the API's authentication endpoints.
+// This service is responsible for sending login requests to the API and managing the authentication state.
 public class AuthService : IAuthService
 {
     private readonly HttpClient _httpClient;
@@ -15,7 +16,7 @@ public class AuthService : IAuthService
         _authStateProvider = authStateProvider;
     }
 
-    // Sends login credentials to the API and stores the returned token if successful
+    // Sends login credentials to the API and stores the returned token if successful.
     public async Task<bool> LoginAsync(LoginDto loginDto)
     {
         try
