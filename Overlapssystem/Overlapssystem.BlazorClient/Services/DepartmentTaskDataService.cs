@@ -4,7 +4,9 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
-// Handles HTTP communication with the DepartmentTask API endpoint
+// Handles HTTP communication with the DepartmentTask API endpoint.
+// This service is responsible for fetching, creating, updating, and deleting department tasks
+// and their employee assignments for specific shifts.
 public class DepartmentTaskDataService : IDepartmentTaskDataService
 {
     private readonly HttpClient _http;
@@ -14,7 +16,7 @@ public class DepartmentTaskDataService : IDepartmentTaskDataService
         _http = http;
     }
 
-    // Fetches all tasks for a department with employee assignments for a specific shift
+    // Fetches all tasks for a department with employee assignments for a specific shift.
     public async Task<Result<IEnumerable<DepartmentTaskDto>>> GetTasksAsync(int departmentId, int shiftId)
     {
         try
@@ -29,7 +31,7 @@ public class DepartmentTaskDataService : IDepartmentTaskDataService
         }
     }
 
-    // Updates the task name for a department task
+    // Updates the task name for a department task.
     public async Task<Result> UpdateTaskNameAsync(DepartmentTaskDto dto)
     {
         try
@@ -45,7 +47,7 @@ public class DepartmentTaskDataService : IDepartmentTaskDataService
         }
     }
 
-    // Saves or updates an employee assignment for a task in a specific shift
+    // Saves or updates an employee assignment for a task in a specific shift.
     public async Task<Result> SaveAssignmentAsync(int shiftId, DepartmentTaskDto dto)
     {
         try
@@ -61,7 +63,7 @@ public class DepartmentTaskDataService : IDepartmentTaskDataService
         }
     }
 
-    // Creates a new task for a department
+    // Creates a new task for a department.
     public async Task<Result<DepartmentTaskDto>> CreateTaskAsync(int departmentId)
     {
         try

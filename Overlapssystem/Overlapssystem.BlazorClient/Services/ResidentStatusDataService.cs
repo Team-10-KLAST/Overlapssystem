@@ -5,7 +5,6 @@ using Overlapssystem.Shared.DTOs;
 namespace Overlapssystem.BlazorClient.Services;
 
 // Calls the ResidentStatus API to update status text.
-// Separate from ResidentSchemaDataService (Single Responsibility).
 public class ResidentStatusDataService : IResidentStatusDataService
 {
     private readonly HttpClient _http;
@@ -15,7 +14,7 @@ public class ResidentStatusDataService : IResidentStatusDataService
         _http = http;
     }
 
-    // Calls PUT /api/residentstatus/{id} to update the status text.
+    // Updates the status for a resident.
     public async Task<Result> UpdateStatusAsync(int residentSchemaId, string newStatus)
     {
         try

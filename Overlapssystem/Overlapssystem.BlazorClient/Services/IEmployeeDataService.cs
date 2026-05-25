@@ -3,8 +3,8 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
+// Interface for fetching employee data from the API.
 public interface IEmployeeDataService
 {
-    // Henter listen af medarbejdere fra API'en
     Task<Result<IEnumerable<EmployeeDto>>> GetEmployeesAsync();
 }

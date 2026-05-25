@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 
 namespace Overlapssystem.BlazorClient.Services;
 
+// Handles fetching employee data from the API.
 public class EmployeeDataService : IEmployeeDataService
 {
     private readonly HttpClient _httpClient;
