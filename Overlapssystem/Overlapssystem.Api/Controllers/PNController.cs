@@ -46,7 +46,8 @@ public class PNController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, PNDto dto)
     {
-        var success = await _service.UpdatePNAsync(id, TimeOnly.Parse(dto.GivenTime));
+        var employeeId = int.Parse(User.FindFirstValue("EmployeeId")!);
+        var success = await _service.UpdatePNAsync(id, TimeOnly.Parse(dto.GivenTime), employeeId);
         if (!success) return NotFound();
         return NoContent();
     }

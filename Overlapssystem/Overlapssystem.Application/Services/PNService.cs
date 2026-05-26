@@ -47,19 +47,21 @@ public class PNService : IPNService
     }
 
     // Finds the PN by id, updates GivenTime, and saves. Returns false if not found.
-    public async Task<bool> UpdatePNAsync(int pnId, TimeOnly givenTime)
+    public async Task<bool> UpdatePNAsync(int pnId, TimeOnly givenTime, int employeeId)
     {
-        // step 1: find PN by primary key
         var pn = await _context.PNs.FindAsync(pnId);
 
-        // step 2: if not found, return false
         if (pn == null)
             return false;
 
-        // step 3: update the given time
         pn.GivenTime = givenTime;
 
-        // step 4: save changes to database
+        await _activityLogService.AddLogEntry(
+            "PN",
+            $"Redigerede PN medicin til kl. {givenTime:HH:mm}",
+            employeeId,
+            pn.ResidentSchemaId);
+
         await _context.SaveChangesAsync();
 
         return true;

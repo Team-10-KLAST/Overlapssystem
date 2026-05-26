@@ -11,5 +11,5 @@ public interface IPNService
 
     Task<bool> DeletePNAsync(int pnId, int employeeId);
 
-    Task<bool> UpdatePNAsync(int pnId, TimeOnly givenTime);
+    Task<bool> UpdatePNAsync(int pnId, TimeOnly givenTime, int employeeId);
 }
