@@ -9,7 +9,6 @@ namespace Overlapssystem.BlazorClient.Components;
 // Displays and manages the list of PN medication times for a resident schema.
 public partial class PNMedication
 {
-    // The PN data service, used to persist updates to the API.
     [Inject]
     private IPNDataService PNDataService { get; set; } = default!;
 
@@ -24,7 +23,6 @@ public partial class PNMedication
     private bool showDeleteConfirm = false;
     private string pendingTime = string.Empty;
 
-    // Holds an error message if the last update failed.
     private string? errorMessage = null;
 
     // Opens the inline edit input for the time at the given index.
@@ -78,13 +76,10 @@ public partial class PNMedication
         var time = e.Value?.ToString() ?? string.Empty;
         if (!string.IsNullOrEmpty(time))
         {
-            // step 1: update local display immediately
             ExistingPNTimes[index].GivenTime = time;
 
-            // step 2: send the updated time to the API
             var result = await PNDataService.UpdatePNAsync(ExistingPNTimes[index]);
 
-            // step 3: store error message if update failed
             if (!result.IsSuccess)
                 errorMessage = result.Error;
         }
