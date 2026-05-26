@@ -2,28 +2,27 @@
 
 #nullable disable
 
-namespace Overlapssystem.Infrastructure.Migrations
+namespace Overlapssystem.Infrastructure.Migrations;
+
+/// <inheritdoc />
+public partial class RemoveContactType : Migration
 {
     /// <inheritdoc />
-    public partial class RemoveContactType : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "ContactType",
-                table: "RelativeContacts");
-        }
+        migrationBuilder.DropColumn(
+            name: "ContactType",
+            table: "RelativeContacts");
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<string>(
-                name: "ContactType",
-                table: "RelativeContacts",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AddColumn<string>(
+            name: "ContactType",
+            table: "RelativeContacts",
+            type: "nvarchar(max)",
+            nullable: false,
+            defaultValue: "");
     }
 }
