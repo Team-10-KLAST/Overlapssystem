@@ -4,6 +4,7 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
+// Handles assigning employees to resident schemas through the API.
 public class EmployeeAssignmentDataService : IEmployeeAssignmentDataService
 {
     private readonly HttpClient _httpClient;
@@ -13,6 +14,8 @@ public class EmployeeAssignmentDataService : IEmployeeAssignmentDataService
         _httpClient = httpClient;
     }
 
+    // Assigns an employee to a resident schema with a specific position.
+    // 1 for primary, 2 for secondary.
     public async Task<Result> AssignEmployeeAsync(int residentSchemaId, int employeeId, int position)
     {
         try

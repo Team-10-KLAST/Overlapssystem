@@ -108,6 +108,11 @@
     background-color: white;
 }
 
+/* Taken Employees appears gray */
+.phone-employee-select option:disabled {
+    color: #9ca3af; /* light-gray */
+}
+
 /* Round checkbox — 18px circle with blue fill when checked */
 .phone-checkbox {
     width: 18px;

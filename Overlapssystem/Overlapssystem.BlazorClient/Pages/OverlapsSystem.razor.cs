@@ -4,6 +4,8 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Pages;
 
+// Code-behind for OverlapsSystem.razor.
+// Loads shift details and resident schemas on init, and exposes logout.
 public partial class OverlapsSystem
 {
     [Inject] private IAuthService AuthService { get; set; } = default!;
@@ -20,6 +22,8 @@ public partial class OverlapsSystem
     private string shiftType = string.Empty;
     private string? _errorMessage;
 
+    // Loads the shift and its resident schemas.
+    // Parses department, shift type and date for display in the top bar.
     protected override async Task OnInitializedAsync()
     {
         var shiftResult = await ShiftService.GetByIdAsync(ShiftId);

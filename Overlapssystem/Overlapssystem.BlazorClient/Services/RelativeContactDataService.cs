@@ -5,7 +5,6 @@ using Overlapssystem.Shared.DTOs;
 namespace Overlapssystem.BlazorClient.Services;
 
 // Communicates with the RelativeContact API endpoint.
-// HttpClient is injected by the DI container.
 public class RelativeContactDataService : IRelativeContactDataService
 {
     private readonly HttpClient _http;
@@ -15,7 +14,7 @@ public class RelativeContactDataService : IRelativeContactDataService
         _http = http;
     }
 
-    // Calls PUT api/relativecontact/{residentSchemaId} to update the contact string.
+    // Updates the contact note for a resident's relative contact.
     public async Task<Result> UpdateAsync(int residentSchemaId, string contactNote)
     {
         try

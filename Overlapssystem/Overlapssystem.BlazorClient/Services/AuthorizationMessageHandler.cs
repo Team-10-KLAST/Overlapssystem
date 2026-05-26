@@ -2,8 +2,8 @@
 
 namespace Overlapssystem.BlazorClient.Services;
 
-// A DelegatingHandler that automatically attaches the JWT token to every HTTP request
-// sent to the API, so the user does not have to manually include it each time
+// A DelegatingHandler that automatically attaches the JWT token from sessionStorage
+// to every HTTP request sent to the API.
 public class AuthorizationMessageHandler : DelegatingHandler
 {
     private readonly IJSRuntime _js;

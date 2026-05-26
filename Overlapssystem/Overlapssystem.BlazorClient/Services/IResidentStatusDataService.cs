@@ -3,9 +3,8 @@ using Overlapssystem.Shared.DTOs;
 
 namespace Overlapssystem.BlazorClient.Services;
 
-// Contract for the Blazor-side service that updates resident status.
+// Interface for updating resident status through the API.
 public interface IResidentStatusDataService
 {
-    // Updates the status text for a specific resident schema.
     Task<Result> UpdateStatusAsync(int residentSchemaId, string newStatus);
 }

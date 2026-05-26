@@ -10,11 +10,13 @@
     <div class="choose-shift-card">
         <h3 class="choose-shift-title">Vælg vagt</h3>
 
+		@* Date Picker *@
         <div class="shift-form-group">
             <label class="shift-form-label">Dato</label>
             <input type="date" class="shift-form-input" @bind="model.Date" @bind:format="yyyy-MM-dd" max="@MaxDate" />
         </div>
 
+        @* Shift Type *@
         <div class="shift-form-group">
             <label class="shift-form-label">Vagt type</label>
             <select class="shift-form-input" @bind="model.ShiftType">
@@ -25,6 +27,7 @@
             </select>
         </div>
 
+        @* Department *@
         <div class="shift-form-group">
             <label class="shift-form-label">Afdeling</label>
             <select class="shift-form-input" @bind="model.DepartmentId">
@@ -33,7 +36,8 @@
                 <option value="2">Slottet</option>
             </select>
         </div>
-
+        
+        @* Submit Button *@
         <button class="shift-submit-btn" @onclick="SaveShift">Start vagt</button>
 
         @if (!string.IsNullOrEmpty(message))
