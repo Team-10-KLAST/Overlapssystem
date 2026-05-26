@@ -56,14 +56,14 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
         // Configure Phone entity constraints and relationships.
         modelBuilder.Entity<Phone>(phone =>
         {
-            phone.HasKey(p => p.Id); 
+            phone.HasKey(p => p.Id);
             phone.Property(p => p.Number).IsRequired().HasMaxLength(20);
 
             phone.HasOne(p => p.Employee)
-                .WithOne() 
-                .HasForeignKey<Phone>(p => p.EmployeeId) 
-                .OnDelete(DeleteBehavior.SetNull); 
-                        
+                .WithOne()
+                .HasForeignKey<Phone>(p => p.EmployeeId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             phone.HasIndex(p => p.EmployeeId)
                 .IsUnique();
         });
@@ -123,6 +123,13 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             .HasOne(dt => dt.Department)
             .WithMany()
             .HasForeignKey(dt => dt.DepartmentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure Shift relationship to Department.
+        modelBuilder.Entity<Shift>()
+            .HasOne(s => s.Department)
+            .WithMany()
+            .HasForeignKey(s => s.DepartmentId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // Configure ShiftTaskAssignment relationships to Shift and DepartmentTask.
@@ -189,7 +196,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
 
         // Seed MedicationTimes - residents get between 1-4 planned medication times.
         modelBuilder.Entity<MedicationTime>().HasData(
-            
+
             // Skoven
             new MedicationTime { MedicationTimeId = 1, ResidentId = 1, PlannedTime = new TimeOnly(8, 0) },
             new MedicationTime { MedicationTimeId = 17, ResidentId = 1, PlannedTime = new TimeOnly(12, 0) },
@@ -211,7 +218,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             new MedicationTime { MedicationTimeId = 8, ResidentId = 8, PlannedTime = new TimeOnly(8, 0) },
             new MedicationTime { MedicationTimeId = 27, ResidentId = 8, PlannedTime = new TimeOnly(13, 0) },
             new MedicationTime { MedicationTimeId = 28, ResidentId = 8, PlannedTime = new TimeOnly(21, 0) },
-            
+
             // Slottet
             new MedicationTime { MedicationTimeId = 9, ResidentId = 9, PlannedTime = new TimeOnly(9, 0) },
             new MedicationTime { MedicationTimeId = 29, ResidentId = 9, PlannedTime = new TimeOnly(21, 0) },
