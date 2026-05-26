@@ -138,6 +138,17 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>, IAppDbContext
             .HasForeignKey(sta => sta.DepartmentTaskId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // Configure the one-to-one relationship between Department and DepartmentNote.
+        modelBuilder.Entity<DepartmentNote>(entity =>
+        {
+            entity.HasKey(n => n.DepartmentId);
+
+            entity.HasOne<Department>()
+                  .WithOne()
+                  .HasForeignKey<DepartmentNote>(n => n.DepartmentId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
 
         // Seed departments.
         modelBuilder.Entity<Department>().HasData(

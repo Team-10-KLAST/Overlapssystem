@@ -221,10 +221,7 @@ namespace Overlapssystem.Infrastructure.Migrations
             modelBuilder.Entity("Overlapssystem.Domain.Entities.DepartmentNote", b =>
                 {
                     b.Property<int>("DepartmentId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"));
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -1216,6 +1213,15 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Navigation("Employee");
 
                     b.Navigation("ResidentSchema");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.DepartmentNote", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.Department", null)
+                        .WithOne()
+                        .HasForeignKey("Overlapssystem.Domain.Entities.DepartmentNote", "DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.DepartmentTask", b =>
