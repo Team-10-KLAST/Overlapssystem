@@ -8,5 +8,8 @@ public class Shift
     public int Id { get; set; }
     public DateTime Date { get; set; }
     public ShiftType Type { get; set; }
+
+    // Navigation property to the department this shift belongs to.
     public int DepartmentId { get; set; }
+    public Department Department { get; set; } = null!;
 }

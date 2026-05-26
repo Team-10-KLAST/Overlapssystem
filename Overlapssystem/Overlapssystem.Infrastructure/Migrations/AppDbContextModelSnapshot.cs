@@ -1027,6 +1027,8 @@ namespace Overlapssystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentId");
+
                     b.ToTable("Shifts");
 
                     b.HasData(
@@ -1328,6 +1330,17 @@ namespace Overlapssystem.Infrastructure.Migrations
                     b.Navigation("SecondaryEmployee");
 
                     b.Navigation("Shift");
+                });
+
+            modelBuilder.Entity("Overlapssystem.Domain.Entities.Shift", b =>
+                {
+                    b.HasOne("Overlapssystem.Domain.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Overlapssystem.Domain.Entities.ShiftTaskAssignment", b =>
