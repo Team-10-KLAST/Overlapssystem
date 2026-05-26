@@ -14,4 +14,7 @@ public interface IPNDataService
 
     // Sends a DELETE request to permanently remove a PN registration by ID.
     Task<Result> DeletePNAsync(int pnId);
+
+    // Sends a PUT request to update the GivenTime of an existing PN registration.
+    Task<Result> UpdatePNAsync(PNDto dto);
 }
