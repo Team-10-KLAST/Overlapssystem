@@ -10,4 +10,6 @@ public interface IPNService
     Task<IEnumerable<PN>> GetPNsBySchemaAsync(int residentSchemaId);
 
     Task<bool> DeletePNAsync(int pnId, int employeeId);
+
+    Task<bool> UpdatePNAsync(int pnId, TimeOnly givenTime);
 }

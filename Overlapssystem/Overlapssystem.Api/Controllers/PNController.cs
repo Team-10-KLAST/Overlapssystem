@@ -14,7 +14,7 @@ public class PNController : ControllerBase
 {
     private readonly IPNService _service;
 
-    // Constructor — receives the PN service via dependency injection.
+    // Constructor ï¿½ receives the PN service via dependency injection.
     public PNController(IPNService service)
     {
         _service = service;
@@ -38,6 +38,17 @@ public class PNController : ControllerBase
         var pns = await _service.GetPNsBySchemaAsync(residentSchemaId);
         var dtos = pns.Select(PNMapper.ToDto);
         return Ok(dtos);
+    }
+
+    // PUT api/pn/{id}
+    // Updates the GivenTime of the PN registration with the given ID.
+    // Returns 204 No Content on success, 404 Not Found if the PN does not exist.
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, PNDto dto)
+    {
+        var success = await _service.UpdatePNAsync(id, TimeOnly.Parse(dto.GivenTime));
+        if (!success) return NotFound();
+        return NoContent();
     }
 
     // DELETE api/pn/{id}

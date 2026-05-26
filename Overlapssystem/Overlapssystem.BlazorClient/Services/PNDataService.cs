@@ -47,7 +47,24 @@ public class PNDataService : IPNDataService
         }
     }
 
-    // Deletes a PN medication time by its ID.
+    // Calls PUT api/pn/{id} to update the GivenTime of an existing PN registration.
+    public async Task<Result> UpdatePNAsync(PNDto dto)
+    {
+        try
+        {
+            var response = await _http.PutAsJsonAsync($"api/pn/{dto.PNId}", dto);
+
+            return response.IsSuccessStatusCode
+                ? Result.Success()
+                : Result.Failure("Kunne ikke opdatere PN-tid.");
+        }
+        catch (HttpRequestException)
+        {
+            return Result.Failure("Ingen forbindelse til serveren.");
+        }
+    }
+
+    // Calls DELETE api/pn/{id} to permanently delete a PN registration.
     public async Task<Result> DeletePNAsync(int pnId)
     {
         try
