@@ -45,11 +45,8 @@ public class ShiftService : IShiftService
     }
 
     // Returns a shift by its ID, or null if not found. 
-    public async Task<Shift> GetShiftByIdAsync(int id)
+    public async Task<Shift?> GetShiftByIdAsync(int id)
     {
-        var shift = await _context.Shifts.FindAsync(id);
-        if (shift == null) return null;
-
-        return shift;
+        return await _context.Shifts.FindAsync(id);
     }
 }
