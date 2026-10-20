@@ -65,7 +65,7 @@ Overlapssystem.Test          → Tests
 ### Trin 1 – Klon projektet
 
 ```bash
-git clone https://github.com/Team-10-KLAST/Team-10---Eksamensprojekt.git
+git clone https://github.com/Team-10-KLAST/Overlapssystem.git
 cd Overlapssystem
 ```
 
